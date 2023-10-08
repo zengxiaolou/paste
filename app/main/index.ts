@@ -1,5 +1,5 @@
 const electron = require('electron');
-const { create: createMainWindow } = require('./windows/main.ts');
+const { create: createMainWindow } = require('./windows/main');
 const indexPath = require('path');
 
 const { app, Tray } = electron;
@@ -11,7 +11,7 @@ try {
 }
 
 let tray;
-let mainWindow: import('electron').BrowserWindow | undefined;
+let mainWindow: import('electron').BrowserWindow | null;
 
 app.whenReady().then(() => {
   mainWindow = createMainWindow();

@@ -4,7 +4,7 @@
     "emitDecoratorMetadata": true,
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client", "jest", "node"],
+    "types": [ "node"],
     "allowJs": false,
     "skipLibCheck": false,
     "esModuleInterop": true,

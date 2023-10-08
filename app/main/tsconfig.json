@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2018",
-    "module": "ES6",
+    "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./",
     "strict": true,
@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "sourceMap": true
   },
-  "include": ["app/**/*.ts"],
+  "include": ["./**/*.ts"],
   "exclude": [
     "node_modules"
   ]

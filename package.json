@@ -4,8 +4,9 @@
   "description": "electron clip manager",
   "main": "app/main/index.ts",
   "scripts": {
-    "start": "concurrently 'yarn run start:render' 'wait-on http://127.0.0.1:3061 && yarn run start:main'",
-    "start:main": "electron .",
+    "build:main": "tsc -p app/main/tsconfig.json",
+    "start": "concurrently 'yarn run start:render' 'wait-on http://127.0.0.1:3061 && yarn run build:main && yarn run start:main'",
+    "start:main": "electron app/main/dist/index.js",
     "start:render": "cd app/renderer/src/main && yarn start"
   },
   "author": "ruler",
@@ -31,6 +32,7 @@
     "stylelint": "^15.10.3",
     "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-standard": "^34.0.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "wait-on": "^7.0.1"
   },
