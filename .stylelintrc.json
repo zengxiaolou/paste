@@ -1,0 +1,30 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-prettier",
+    "stylelint-config-styled-components",
+    "stylelint-config-recommended"
+  ],
+  "processors": ["stylelint-processor-styled-components"],
+  "plugins": [
+    "stylelint-scss",
+    "stylelint-order"
+  ],
+  "syntax": "scss",
+  "rules": {
+    "indentation": 2,
+    "number-leading-zero": "always",
+    "string-quotes": "double",
+    "selector-max-id": 0,
+    "color-hex-length": "long",
+    "color-named": "never",
+    "selector-max-type": [0, { "ignore": ["child", "descendant"] }],
+    "order/order": [
+      "custom-properties",
+      "declarations"
+    ],
+    "order/properties-alphabetical-order": true,
+    "scss/dollar-variable-colon-space-after": "always",
+    "scss/dollar-variable-colon-space-before": "never"
+  }
+}

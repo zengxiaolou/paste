@@ -1,0 +1,11 @@
+{
+  "extends": ["../../.eslintrc.json"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "react-hooks/rules-of-hooks": "off"
+  }
+}
