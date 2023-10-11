@@ -1,0 +1,5 @@
+{
+  "watch": ["app/main/**/*ts"],
+  "exec": "tsc -p app/main/tsconfig.json",
+  "ext": "ts"
+}

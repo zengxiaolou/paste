@@ -23,6 +23,7 @@ function create() {
     webPreferences: {
       nodeIntegration: true,
     },
+    icon: path.join(__dirname, '../../../../assets/icon.ico'),
   });
   if (isDev) {
     win.loadURL('http://localhost:3061');
