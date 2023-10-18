@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/bytedance/.nvm/versions/node/v20.8.0/bin/node /usr/local/bin/yarn add @type/i18next --dev
+  /Users/bytedance/.nvm/versions/node/v20.8.0/bin/node /usr/local/bin/yarn add sqlite3
 
 PATH: 
   /Users/bytedance/.nvm/versions/node/v20.8.0/bin:/usr/local/go/bin:/usr/local/go1.18/bin:/Users/bytedance/.bytebm/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/opt/puppetlabs/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/bytedance/Documents/study/ecm/node_modules/.bin:/Users/bytedance/go/bin:/usr/local/go/bin
@@ -14,17 +14,10 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@type%2fi18next: Not found
-      at params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66138:18)
-      at self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140883:22)
-      at Request.emit (node:events:514:28)
-      at Request.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141855:10)
-      at Request.emit (node:events:514:28)
-      at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141777:12)
-      at Object.onceWrapper (node:events:628:28)
-      at IncomingMessage.emit (node:events:526:35)
-      at endReadableNT (node:internal/streams/readable:1408:12)
-      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+  Error: https://registry.yarnpkg.com/sqlite3: ETIMEDOUT
+      at Timeout._onTimeout (/usr/local/lib/node_modules/yarn/lib/cli.js:141543:19)
+      at listOnTimeout (node:internal/timers:573:17)
+      at process.processTimers (node:internal/timers:514:7)
 
 npm manifest: 
   {
@@ -35,7 +28,7 @@ npm manifest:
     "scripts": {
       "build:main": "tsc -p app/main/tsconfig.json",
       "start": "concurrently 'yarn run start:render' 'wait-on http://127.0.0.1:3061 && yarn run build:main && yarn run start:main'",
-      "start:main": "electron app/main/dist/index.js",
+      "start:main": "electron app/dist/index.js",
       "start:render": "cd app/renderer/src/main && yarn start",
       "watch:main": "nodemon"
     },
@@ -47,16 +40,18 @@ npm manifest:
       "react-i18next": "^13.2.2"
     },
     "devDependencies": {
+      "@types/i18next": "^13.0.0",
       "@types/node": "^20.8.2",
       "@types/react": "^18.2.25",
       "@types/react-dom": "^18.2.10",
       "@typescript-eslint/eslint-plugin": "5.62.0",
       "@typescript-eslint/parser": "5.62.0",
       "concurrently": "^8.2.1",
-      "electron": "^26.3.0",
+      "electron": "^27.0.0",
       "electron-reloader": "^1.2.3",
       "eslint": "^8.50.0",
       "eslint-config-prettier": "^9.0.0",
+      "eslint-plugin-electron": "^7.0.0",
       "eslint-plugin-prettier": "^5.0.0",
       "eslint-plugin-react": "^7.33.2",
       "eslint-plugin-react-hooks": "^4.6.0",
@@ -339,6 +334,13 @@ Lockfile:
     version "4.0.2"
     resolved "https://registry.yarnpkg.com/@types/http-cache-semantics/-/http-cache-semantics-4.0.2.tgz#abe102d06ccda1efdf0ed98c10ccf7f36a785a41"
     integrity sha512-FD+nQWA2zJjh4L9+pFXqWOi0Hs1ryBCfI+985NjluQ1p8EYtoLvjLOKidXBtZ4/IcxDX4o8/E8qDS3540tNliw==
+  
+  "@types/i18next@^13.0.0":
+    version "13.0.0"
+    resolved "https://registry.yarnpkg.com/@types/i18next/-/i18next-13.0.0.tgz#403ef338add0104e74d9759f1b39217e7c5d4084"
+    integrity sha512-gp/SIShAuf4WOqi8ey0nuI7qfWaVpMNCcs/xLygrh/QTQIXmlDC1E0TtVejweNW+7SGDY7g0lyxyKZIJuCKIJw==
+    dependencies:
+      i18next "*"
   
   "@types/json-schema@^7.0.9":
     version "7.0.13"
@@ -1100,10 +1102,10 @@ Lockfile:
       electron-is-dev "^1.2.0"
       find-up "^5.0.0"
   
-  electron@^26.3.0:
-    version "26.3.0"
-    resolved "https://registry.yarnpkg.com/electron/-/electron-26.3.0.tgz#3267773d170310384db76819cf6375bd98b3cc76"
-    integrity sha512-7ZpvSHu+jmqialSvywTZnOQZZGLqlyj+yV5HGDrEzFnMiFaXBRpbByHgoUhaExJ/8t/0xKQjKlMRAY65w+zNZQ==
+  electron@^27.0.0:
+    version "27.0.0"
+    resolved "https://registry.yarnpkg.com/electron/-/electron-27.0.0.tgz#bb6c45881e531b2ec1c7cc46c47aba773f38ee14"
+    integrity sha512-mr3Zoy82l8XKK/TgguE5FeNeHZ9KHXIGIpUMjbjZWIREfAv+X2Q3vdX6RG0Pmi1K23AFAxANXQezIHBA2Eypwg==
     dependencies:
       "@electron/get" "^2.0.0"
       "@types/node" "^18.11.18"
@@ -1247,6 +1249,13 @@ Lockfile:
     version "9.0.0"
     resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-9.0.0.tgz#eb25485946dd0c66cd216a46232dc05451518d1f"
     integrity sha512-IcJsTkJae2S35pRsRAwoCE+925rJJStOdkKnLVgtE+tEpqU0EVVM7OqrwxqgptKdX29NUwC82I5pXsGFIgSevw==
+  
+  eslint-plugin-electron@^7.0.0:
+    version "7.0.0"
+    resolved "https://registry.yarnpkg.com/eslint-plugin-electron/-/eslint-plugin-electron-7.0.0.tgz#b628faecea134c29374320ad93cceedc0fe958ed"
+    integrity sha512-VPWbLwWwoIzyR7Tz1XQoD1tOkq80E1IozUvWlZCAcul07uiyohMeu3A+bU90EKthwxogznZr5iI8LzuEQbdeGQ==
+    dependencies:
+      requireindex "~1.1.0"
   
   eslint-plugin-prettier@^5.0.0:
     version "5.0.0"
@@ -1817,7 +1826,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-4.3.1.tgz#ab7f811e851fca97ffbd2c1fe9a958964de321b2"
     integrity sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==
   
-  i18next@^23.5.1:
+  i18next@*, i18next@^23.5.1:
     version "23.5.1"
     resolved "https://registry.yarnpkg.com/i18next/-/i18next-23.5.1.tgz#7f7c35ffaa907618d9489f106d5006b09fbca3d3"
     integrity sha512-JelYzcaCoFDaa+Ysbfz2JsGAKkrHiMG6S61+HLBUEIPaF40WMwW9hCPymlQGrP+wWawKxKPuSuD71WZscCsWHg==
@@ -2836,6 +2845,11 @@ Lockfile:
     version "2.0.2"
     resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
     integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
+  
+  requireindex@~1.1.0:
+    version "1.1.0"
+    resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.1.0.tgz#e5404b81557ef75db6e49c5a72004893fe03e162"
+    integrity sha512-LBnkqsDE7BZKvqylbmn7lTIVdpx4K/QCduRATpO5R+wtPmky/a8pN1bO2D6wXppn1497AJF9mNjqAXr6bdl9jg==
   
   resolve-alpn@^1.0.0:
     version "1.2.1"

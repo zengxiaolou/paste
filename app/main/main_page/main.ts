@@ -1,9 +1,10 @@
 const path = require('path');
 
-const { BrowserWindow } = require('electron');
+const { BrowserWindow, ipcMain } = require('electron');
 const isDev = require('electron-is-dev');
+const { getRowsByPage: getByPage } = require('./database');
 
-let win;
+let win: import('electron').BrowserWindow | null;
 
 function create() {
   const { screen } = require('electron');
@@ -22,6 +23,8 @@ function create() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: true,
+      preload: path.join(__dirname, '../../renderer/src/main/src/preload.ts'),
     },
     icon: path.join(__dirname, '../../../../assets/icon.ico'),
   });
@@ -33,6 +36,26 @@ function create() {
   win.on('closed', () => {
     win = null;
   });
+
+  ipcMain.on('toggle-always-on-top', event => {
+    if (win) {
+      const isTopmost = win.isAlwaysOnTop();
+      win.setAlwaysOnTop(!isTopmost);
+      event.returnValue = !isTopmost;
+    }
+  });
+
+  ipcMain.on('get-data', async (event, arg) => {
+    try {
+      const rows = await getByPage(arg.size, arg.page);
+      console.log('🤮 ~ file:main method: line:53 -----', rows);
+      event.sender.send('data-response', rows);
+    } catch (err: any) {
+      console.error(err);
+      event.sender.send('data-error', err?.message);
+    }
+  });
+
   return win;
 }
 

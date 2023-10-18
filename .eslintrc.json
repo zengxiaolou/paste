@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "electron"],
   "extends": ["eslint:recommended", "plugin:prettier/recommended"],
   "rules": {
     "prettier/prettier": [0],
@@ -17,5 +17,9 @@
   "parserOptions": {
     "ecmaVersion": 2018,
     "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "node": true
   }
 }
