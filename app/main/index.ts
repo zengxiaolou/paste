@@ -1,3 +1,5 @@
+import { clipData } from './main_page/type';
+
 const electron = require('electron');
 const { create: createMainWindow, sendClipboardDataToRenderer: sendClipboard } = require('./main_page/main');
 const indexPath = require('path');
@@ -31,7 +33,7 @@ app
         mainWindow?.show();
       }
     });
-    getLastRow().then((res: any) => setInitContent(res.type, res.content));
+    getLastRow().then((res: clipData) => setInitContent(res.type, res.content));
   })
   .catch(err => {
     console.error(err);

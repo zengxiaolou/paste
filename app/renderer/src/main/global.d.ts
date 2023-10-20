@@ -4,7 +4,7 @@ declare global {
       toggleAlwaysOnTop: () => void;
       getData: (size: number, page: number) => any;
       onClipboardData: (callback: (data: any) => void) => void;
-      requestPaste: (type: number, content: string, id: number) => void;
+      requestPaste: (type: string, content: string, id: number) => void;
     };
   }
 }

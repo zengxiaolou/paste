@@ -17,17 +17,18 @@ if (!fs.existsSync(imageDir)) {
 }
 
 let lastHtmlContent: string | undefined = undefined;
-let lastImageHash: string | undefined = undefined; // 用于存储上一次图像的哈希值
+let lastImageHash: string | undefined = undefined;
+let pasteContent: clipData | undefined;
 
 const setInitContent = (type: 'html' | 'image', content: string) => {
   if (type === 'html') {
     lastHtmlContent = content;
   } else {
-    fs.reandFile(content, (err: Error | null, data: any) => {
+    fs.readFile(content, (err: Error | null, data: any) => {
       if (err) {
         console.log('Error reading file: ', err);
       } else {
-        lastImageHash = crypto.createHash('mad5').update(data).digest('hex');
+        lastImageHash = crypto.createHash('md5').update(data).digest('hex');
       }
     });
   }
@@ -37,7 +38,13 @@ const checkClipboardContent = (): clipData | undefined => {
   const htmlContent = clipboard.readHTML();
   const imageContent = clipboard.readImage();
   const imageBuffer = imageContent.toPNG();
-  const currentImageHash = crypto.createHash('sha256').update(imageBuffer).digest('hex');
+  const currentImageHash = crypto.createHash('md5').update(imageBuffer).digest('hex');
+  if (pasteContent?.type === 'html' && htmlContent === pasteContent?.content) {
+    return undefined;
+  }
+  if (pasteContent?.type === 'image' && currentImageHash === pasteContent?.content) {
+    return undefined;
+  }
 
   if (htmlContent && htmlContent !== lastHtmlContent) {
     lastHtmlContent = htmlContent;
@@ -50,7 +57,6 @@ const checkClipboardContent = (): clipData | undefined => {
     return { type: 'image', content: imagePath };
   }
 
-  // 如果没有检测到新的内容，返回undefined
   return undefined;
 };
 
@@ -64,8 +70,20 @@ const saveImageToDisk = (image: electron.NativeImage): string => {
 const paste = (type: string, content: string) => {
   if (type === 'html') {
     const dom = new JSDOM(content);
-    clipboard.writeText(dom.window.document.body.textContent || '');
+    const text = dom.window.document.body.textContent || '';
+    pasteContent = { type, content: text };
+    clipboard.writeText(text);
   } else if (type === 'image') {
+    pasteContent = { type, content };
+    fs.readFile(content, (err: Error | null, data: any) => {
+      if (err) {
+        console.log('Error reading file: ', err);
+      } else {
+        if (pasteContent?.content) {
+          pasteContent.content = crypto.createHash('md5').update(data).digest('hex');
+        }
+      }
+    });
     clipboard.writeImage(nativeImage.createFromPath(content));
   }
 

@@ -1,3 +1,5 @@
+import { clipData } from './type';
+
 const path = require('path');
 
 const { BrowserWindow, ipcMain, nativeImage } = require('electron');
@@ -53,7 +55,7 @@ ipcMain.on('toggle-always-on-top', event => {
 ipcMain.handle('get-data', async (event, arg) => {
   try {
     const row = await getByPage(arg.size, arg.page);
-    return row.map((item: any) => {
+    return row.map((item: clipData) => {
       if (item.type === 'image') {
         const image = nativeImage.createFromPath(item.content);
         const dataURL = image.toDataURL();
@@ -75,7 +77,7 @@ ipcMain.handle('request-paste', async (event, args) => {
   paste(args.type, args.content);
 });
 
-const sendClipboardDataToRenderer = (data: any) => {
+const sendClipboardDataToRenderer = (data: clipData) => {
   if (win) {
     if (data.type === 'image') {
       const image = nativeImage.createFromPath(data.content);

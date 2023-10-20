@@ -6,12 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { formatDateTime } from './utils/time';
 import { extractMostFrequentBackgroundColor } from './utils/string';
 import { debounce } from './utils/func';
+import { clipData } from './type';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
 export const Body = memo(() => {
   const [page, setPage] = useState(1);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<clipData[]>([]);
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const isFetching = useRef(false);
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ export const Body = memo(() => {
     isFetching.current = true;
     const result = await window.ipc.getData(defaultSize, page);
     if (result) {
-      setData((prevData: any) => (prevData ? [...prevData, ...result] : [...result]));
+      setData(prevData => (prevData ? [...prevData, ...result] : [...result]));
       setPage(prevPage => prevPage + 1);
     }
     isFetching.current = false;
@@ -34,7 +35,7 @@ export const Body = memo(() => {
     }
   };
 
-  const handleClipboardData = (data: any) => {
+  const handleClipboardData = (data: clipData) => {
     data && setData((prevData: any) => (prevData ? [data, ...prevData] : [data]));
   };
   const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
@@ -51,7 +52,7 @@ export const Body = memo(() => {
     <CTabs type="rounded" defaultActiveTab="all" showAddButton editable={true} addButton={<Button>添加</Button>}>
       <TabPane title={t('All')} key="all">
         <BodyContainer onScroll={handleScroll}>
-          {data?.map((v: any, index: number) => (
+          {data?.map((v: clipData, index: number) => (
             <UCard
               key={index}
               isActive={activeCard === index}

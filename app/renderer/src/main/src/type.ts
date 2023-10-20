@@ -1,5 +1,5 @@
 export interface clipData {
-  id?: number;
+  id: number;
   type: string;
   content: string;
 
