@@ -4,6 +4,7 @@ const ChannelsMap = {
   ON_TOP: 'toggle-always-on-top',
   GET_DATA: 'get-data',
   CLIPBOARD_DATA: 'clipboard-data',
+  REQUEST_PASTE: 'request-paste',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -15,5 +16,8 @@ contextBridge.exposeInMainWorld('ipc', {
     ipcRenderer.on(ChannelsMap.CLIPBOARD_DATA, (event, data) => {
       callback(data);
     });
+  },
+  requestPaste: async (type, content) => {
+    return await ipcRenderer.invoke(ChannelsMap.REQUEST_PASTE, { type, content });
   },
 });

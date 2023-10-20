@@ -1,6 +1,8 @@
 import * as electron from 'electron';
 import { clipData } from './type';
 import * as crypto from 'crypto';
+import nativeImage = electron.nativeImage;
+import { exec } from 'child_process';
 
 const { clipboard } = require('electron');
 const fs = require('fs');
@@ -57,4 +59,20 @@ const saveImageToDisk = (image: electron.NativeImage): string => {
   return imagePath;
 };
 
-module.exports = { checkClipboardContent, setInitContent };
+const paste = (type: string, content: string) => {
+  if (type === 'html') {
+    clipboard.writeText(content);
+  } else if (type === 'image') {
+    clipboard.writeImage(nativeImage.createFromPath(content));
+  }
+
+  if (process.platform === 'darwin') {
+    exec('osascript -e \'tell application "System Events" to keystroke "v" using command down\'');
+  } else if (process.platform === 'win32') {
+    exec('echo off | clip && echo ' + content + ' | clip');
+  } else {
+    exec('xdotool key ctrl+v');
+  }
+};
+
+module.exports = { checkClipboardContent, setInitContent, paste };

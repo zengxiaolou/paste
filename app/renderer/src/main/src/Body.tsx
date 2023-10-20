@@ -57,6 +57,7 @@ export const Body = memo(() => {
               isActive={activeCard === index}
               bgColor={extractMostFrequentBackgroundColor(v.content)}
               onClick={() => setActiveCard(index)}
+              onDoubleClick={() => window.ipc.requestPaste(v.type, v.content)}
             >
               <Container>
                 {v.type === 'html' ? (

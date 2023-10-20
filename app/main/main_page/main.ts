@@ -3,6 +3,7 @@ const path = require('path');
 const { BrowserWindow, ipcMain, nativeImage } = require('electron');
 const isDev = require('electron-is-dev');
 const { getRowsByPage: getByPage } = require('./database');
+const { paste } = require('./clip');
 
 let win: import('electron').BrowserWindow | null;
 
@@ -52,7 +53,7 @@ ipcMain.on('toggle-always-on-top', event => {
 ipcMain.handle('get-data', async (event, arg) => {
   try {
     const row = await getByPage(arg.size, arg.page);
-    const newRow = row.map((item: any) => {
+    return row.map((item: any) => {
       if (item.type === 'image') {
         const image = nativeImage.createFromPath(item.content);
         const dataURL = image.toDataURL();
@@ -60,11 +61,14 @@ ipcMain.handle('get-data', async (event, arg) => {
       }
       return item;
     });
-    return newRow;
   } catch (err: any) {
     console.error(err);
     event.sender.send('data-error', err?.message);
   }
+});
+
+ipcMain.handle('request-paste', async (event, args) => {
+  paste(args.type, args.content);
 });
 
 const sendClipboardDataToRenderer = (data: any) => {
