@@ -3,30 +3,37 @@ import React from 'react';
 import { Header } from './Header';
 import '@arco-design/web-react/dist/css/arco.css';
 import { Body } from './Body';
+import { Layout } from '@arco-design/web-react';
 import { Footer } from './Footer';
+const { Header: AHeader, Content } = Layout;
 
 function App() {
   return (
     <Container>
-      <Header />
-      <BodyContainer>
+      <FixedHeader>
+        <Header />
+      </FixedHeader>
+      <Content>
         <Body />
-      </BodyContainer>
+      </Content>
       <Footer />
     </Container>
   );
 }
 
-const Container = styled.div`
-  background-color: rgba(41, 41, 42, 0.8);
-  backdrop-filter: blur(40px);
-  width: 100%;
-  height: 98vh;
-  display: flex;
-  flex-direction: column;
+const Container = styled('Layout')`
+  background-color: rgba(41, 41, 42);
+  backdrop-filter: blur(100px);
+  overflow: hidden;
+  position: relative; // 添加这行
+  height: 100vh; // 使容器占据整个视口高度
 `;
-const BodyContainer = styled.div`
-  flex-grow: 1;
+
+const FixedHeader = styled(AHeader)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 30px;
 `;
 
 export default App;

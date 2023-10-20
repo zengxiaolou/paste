@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { BrowserWindow, ipcMain } = require('electron');
+const { BrowserWindow, ipcMain, nativeImage } = require('electron');
 const isDev = require('electron-is-dev');
 const { getRowsByPage: getByPage } = require('./database');
 
@@ -22,9 +22,10 @@ function create() {
     transparent: true,
     frame: false,
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, '../../renderer/src/main/src/preload.ts'),
+      preload: path.join(__dirname, '../../renderer/src/main/src/preload.js'),
+      devTools: true,
     },
     icon: path.join(__dirname, '../../../../assets/icon.ico'),
   });
@@ -33,30 +34,44 @@ function create() {
   } else {
     win.loadURL(path.resolve(__dirname, '../../renderer/index.pages/main/index.html'));
   }
+  win.webContents.openDevTools();
   win.on('closed', () => {
     win = null;
   });
-
-  ipcMain.on('toggle-always-on-top', event => {
-    if (win) {
-      const isTopmost = win.isAlwaysOnTop();
-      win.setAlwaysOnTop(!isTopmost);
-      event.returnValue = !isTopmost;
-    }
-  });
-
-  ipcMain.on('get-data', async (event, arg) => {
-    try {
-      const rows = await getByPage(arg.size, arg.page);
-      console.log('🤮 ~ file:main method: line:53 -----', rows);
-      event.sender.send('data-response', rows);
-    } catch (err: any) {
-      console.error(err);
-      event.sender.send('data-error', err?.message);
-    }
-  });
-
   return win;
 }
 
-module.exports = { create };
+ipcMain.on('toggle-always-on-top', event => {
+  if (win) {
+    const isTopmost = win.isAlwaysOnTop();
+    win.setAlwaysOnTop(!isTopmost);
+    event.returnValue = !isTopmost;
+  }
+});
+
+ipcMain.handle('get-data', async (event, arg) => {
+  try {
+    const row = await getByPage(arg.size, arg.page);
+    const newRow = row.map((item: any) => {
+      if (item.type === 'image') {
+        const image = nativeImage.createFromPath(item.content);
+        const dataURL = image.toDataURL();
+        return { ...item, content: dataURL };
+      }
+      return item;
+    });
+    return newRow;
+  } catch (err: any) {
+    console.error(err);
+    event.sender.send('data-error', err?.message);
+  }
+});
+
+const sendClipboardDataToRenderer = (data: any) => {
+  if (win) {
+    Object.assign(data, { created_at: new Date().toISOString() });
+    win.webContents.send('clipboard-data', data);
+  }
+};
+
+module.exports = { create, sendClipboardDataToRenderer };

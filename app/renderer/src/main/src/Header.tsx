@@ -13,8 +13,12 @@ export const Header = () => {
   const [fixed, setFixed] = React.useState(false);
   const { t } = useTranslation();
   const handleFixed = () => {
-    window.ipc.toggleAlwaysOnTop();
-    setFixed(!fixed);
+    if (window.ipc) {
+      window.ipc.toggleAlwaysOnTop();
+      setFixed(!fixed);
+    } else {
+      console.error('ipc object is not defined on window');
+    }
   };
   return (
     <Wrapper>

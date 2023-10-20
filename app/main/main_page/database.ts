@@ -7,7 +7,6 @@ let db: sqlite3.Database | null = null;
 
 const createDatabase = () => {
   const dbPath = dataPath.join(dbApp.getPath('userData'), 'clipboard.db');
-  console.log('Database Path:', dbPath);
   db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
 
   db.run(

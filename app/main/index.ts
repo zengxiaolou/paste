@@ -1,5 +1,5 @@
 const electron = require('electron');
-const { create: createMainWindow } = require('./main_page/main');
+const { create: createMainWindow, sendClipboardDataToRenderer: sendClipboard } = require('./main_page/main');
 const indexPath = require('path');
 const { createDatabase: createDB, saveToDatabase, getLastRow } = require('./main_page/database');
 const { checkClipboardContent, setInitContent } = require('./main_page/clip');
@@ -45,6 +45,7 @@ app.on('activate', function () {
 setInterval(() => {
   const clipboardData = checkClipboardContent();
   if (clipboardData) {
+    sendClipboard(clipboardData);
     saveToDatabase(clipboardData);
   }
 }, 1000);

@@ -1,43 +1,78 @@
-import { Button, Card, Space, Tabs, Notification } from '@arco-design/web-react';
-import React, { useEffect, useState } from 'react';
+import { Button, Card, Space, Tabs, Image } from '@arco-design/web-react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { useTranslation } from 'react-i18next';
+import { formatDateTime } from './utils/time';
+import { extractMostFrequentBackgroundColor } from './utils/string';
+import { debounce } from './utils/func';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
-export const Body = () => {
-  const [page, setPage] = useState(0);
+export const Body = memo(() => {
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState<any>(null);
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const isFetching = useRef(false);
   const { t } = useTranslation();
-  // useEffect(() => {
-  //   Notification.error({ content: 'aaaa' });
-  //   window.ipc.getData();
-  // }, []);
 
-  // useEffect(() => {
-  //   const handleDataResponse = (data: any) => {
-  //     console.log(data); // 在控制台打印从主进程接收到的数据
-  //     // 处理接收到的数据...
-  //     setPage(page + 1);
-  //   };
-  //
-  //   window.ipc.onData(handleDataResponse);
-  //
-  //   // // 清除监听器以避免内存泄漏
-  //   // return () => {
-  //   //   window.ipc.removeDataListener(handleDataResponse);
-  //   // };
-  // }, []);
+  const fetchData = async () => {
+    if (isFetching.current) return;
+    isFetching.current = true;
+    const result = await window.ipc.getData(defaultSize, page);
+    if (result) {
+      setData((prevData: any) => (prevData ? [...prevData, ...result] : [...result]));
+      setPage(prevPage => prevPage + 1);
+    }
+    isFetching.current = false;
+  };
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLDivElement;
+    if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+      fetchData().then();
+    }
+  };
+
+  const handleClipboardData = (data: any) => {
+    data && setData((prevData: any) => (prevData ? [data, ...prevData] : [data]));
+  };
+  const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
+
+  useEffect(() => {
+    fetchData().then();
+  }, []);
+
+  useEffect(() => {
+    window.ipc.onClipboardData(handleClipboardDataDebounced);
+  }, []);
 
   return (
     <CTabs type="rounded" defaultActiveTab="all" showAddButton editable={true} addButton={<Button>添加</Button>}>
       <TabPane title={t('All')} key="all">
-        <UCard>
-          <Container>
-            <Space>图标/内容</Space>
-            <Space>时间</Space>
-          </Container>
-        </UCard>
+        <BodyContainer onScroll={handleScroll}>
+          {data?.map((v: any, index: number) => (
+            <UCard
+              key={index}
+              isActive={activeCard === index}
+              bgColor={extractMostFrequentBackgroundColor(v.content)}
+              onClick={() => setActiveCard(index)}
+            >
+              <Container>
+                {v.type === 'html' ? (
+                  <Space>
+                    <Html dangerouslySetInnerHTML={{ __html: v?.content }} />
+                  </Space>
+                ) : (
+                  <ImageContainer>
+                    <CenteredImage src={v?.content} loader={true} height={60} />
+                  </ImageContainer>
+                )}
+                <Space>{v?.created_at && formatDateTime(v?.created_at)}</Space>
+              </Container>
+            </UCard>
+          ))}
+        </BodyContainer>
       </TabPane>
       <TabPane title={t('Collect')} key="collect">
         Tab 2
@@ -56,17 +91,76 @@ export const Body = () => {
       </TabPane>
     </CTabs>
   );
-};
+});
 
 const CTabs = styled(Tabs)`
   margin: 16px;
   height: 100%;
+  top: 60px;
 `;
-const UCard = styled(Card)`
-  border-radius: 10px;
+
+const BodyContainer = styled.div`
+  overflow-y: scroll;
+  height: calc(100vh - 130px);
+  /* 滚动条样式 */
+  &::-webkit-scrollbar {
+    width: 10px;
+    background-color: #2b2c2d;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #78797a;
+    border-radius: 10px;
+    background-clip: content-box;
+    border: 2px solid transparent;
+  }
+
+  &::-webkit-scrollbar-button,
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-track-piece,
+  &::-webkit-scrollbar-corner,
+  &::-webkit-resizer {
+    display: none;
+  }
+`;
+
+const UCard = styled(Card)<{ isActive?: boolean; bgColor?: string }>`
+  border-radius: 15px;
+  margin-bottom: 8px;
+  margin-right: 8px;
+  .arco-card-body {
+    padding: 8px 16px;
+  }
+  align-content: center;
+  border: ${props => (props.isActive ? '1px solid #007AFF' : 'none')};
+  background-color: ${props => props.bgColor || 'defaultBgColor'};
 `;
 
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const Html = styled.div`
+  height: 60px;
+  max-height: 60px;
+  max-width: 900px;
+  overflow: hidden;
+  align-content: center;
+`;
+
+const ImageContainer = styled.div`
+  height: 70px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+const CenteredImage = styled(Image)`
+  max-height: 100%;
+  max-width: 100%;
+  margin: auto;
+  display: block;
 `;

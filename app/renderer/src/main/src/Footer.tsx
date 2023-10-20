@@ -6,8 +6,12 @@ export const Footer = () => {
 };
 
 const FooterContainer = styled.div`
-  background-color: #29292a;
+  background-color: rgba(41, 41, 42, 0.9);
   color: white;
-  padding: 10px 0;
   text-align: center;
+  position: absolute;
+  bottom: -66px;
+  left: 0;
+  right: 0;
+  height: 32px;
 `;
