@@ -2,7 +2,7 @@ const path = require('path');
 
 const { BrowserWindow, ipcMain, nativeImage } = require('electron');
 const isDev = require('electron-is-dev');
-const { getRowsByPage: getByPage } = require('./database');
+const { getRowsByPage: getByPage, getDataById } = require('./database');
 const { paste } = require('./clip');
 
 let win: import('electron').BrowserWindow | null;
@@ -68,11 +68,20 @@ ipcMain.handle('get-data', async (event, arg) => {
 });
 
 ipcMain.handle('request-paste', async (event, args) => {
+  if (args.type === 'image') {
+    const imageData = await getDataById(args.id);
+    args.content = imageData.content;
+  }
   paste(args.type, args.content);
 });
 
 const sendClipboardDataToRenderer = (data: any) => {
   if (win) {
+    if (data.type === 'image') {
+      const image = nativeImage.createFromPath(data.content);
+      const dataURL = image.toDataURL();
+      Object.assign(data, { content: dataURL });
+    }
     Object.assign(data, { created_at: new Date().toISOString() });
     win.webContents.send('clipboard-data', data);
   }

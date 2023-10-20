@@ -1,6 +1,6 @@
 export const formatDateTime = (input: Date | string): string => {
   const newDate = typeof input === 'string' ? new Date(input) : input;
-  const inputDate = new Date(formatDateTimeInUserTimezone(newDate));
+  const inputDate = formatDateTimeInUserTimezone(newDate);
   const today = new Date();
   const sameYear = inputDate.getFullYear() === today.getFullYear();
   const sameMonth = inputDate.getMonth() === today.getMonth();
@@ -24,7 +24,8 @@ const getUserTimezone = (): string => {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
 };
 
-const formatDateTimeInUserTimezone = (date: Date): string => {
+const formatDateTimeInUserTimezone = (date: Date): Date => {
   const userTimeZone = getUserTimezone();
-  return date.toLocaleString('en-US', { timeZone: userTimeZone });
+  const dateString = date.toLocaleString('en-US', { timeZone: userTimeZone });
+  return new Date(dateString);
 };

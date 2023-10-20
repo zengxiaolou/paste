@@ -17,7 +17,7 @@ contextBridge.exposeInMainWorld('ipc', {
       callback(data);
     });
   },
-  requestPaste: async (type, content) => {
-    return await ipcRenderer.invoke(ChannelsMap.REQUEST_PASTE, { type, content });
+  requestPaste: async (type, content, id) => {
+    return await ipcRenderer.invoke(ChannelsMap.REQUEST_PASTE, { type, content, id });
   },
 });

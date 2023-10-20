@@ -45,7 +45,7 @@ app.on('activate', function () {
 setInterval(() => {
   const clipboardData = checkClipboardContent();
   if (clipboardData) {
-    sendClipboard(clipboardData);
     saveToDatabase(clipboardData);
+    sendClipboard(clipboardData);
   }
 }, 1000);

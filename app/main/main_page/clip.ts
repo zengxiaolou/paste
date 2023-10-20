@@ -7,6 +7,8 @@ import { exec } from 'child_process';
 const { clipboard } = require('electron');
 const fs = require('fs');
 const clipPath = require('path');
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
 
 const imageDir = clipPath.join(__dirname, 'images');
 
@@ -38,12 +40,12 @@ const checkClipboardContent = (): clipData | undefined => {
   const currentImageHash = crypto.createHash('sha256').update(imageBuffer).digest('hex');
 
   if (htmlContent && htmlContent !== lastHtmlContent) {
-    lastHtmlContent = htmlContent; // 更新最后的HTML内容
-    lastImageHash = ''; // 重置图像哈希值
+    lastHtmlContent = htmlContent;
+    lastImageHash = '';
     return { type: 'html', content: htmlContent };
   } else if (!imageContent.isEmpty() && currentImageHash !== lastImageHash) {
-    lastImageHash = currentImageHash; // 更新图像哈希值
-    lastHtmlContent = ''; // 重置HTML内容
+    lastImageHash = currentImageHash;
+    lastHtmlContent = '';
     const imagePath = saveImageToDisk(imageContent);
     return { type: 'image', content: imagePath };
   }
@@ -61,7 +63,8 @@ const saveImageToDisk = (image: electron.NativeImage): string => {
 
 const paste = (type: string, content: string) => {
   if (type === 'html') {
-    clipboard.writeText(content);
+    const dom = new JSDOM(content);
+    clipboard.writeText(dom.window.document.body.textContent || '');
   } else if (type === 'image') {
     clipboard.writeImage(nativeImage.createFromPath(content));
   }

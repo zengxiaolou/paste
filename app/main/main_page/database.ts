@@ -31,14 +31,14 @@ const createDatabase = () => {
 
 const saveToDatabase = (clipData: clipData) => {
   const { icon, appName, content, tags, type } = clipData;
-
+  const now = new Date().toISOString();
   const query = `
     INSERT INTO clipboard
-    (icon, app_name, content, tags, type)
-    VALUES (?, ?, ?, ?, ?)
+    (icon, app_name, content, tags, type, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
 
-  db?.run(query, [icon, appName, content, tags, type], (err: Error | null) => {
+  db?.run(query, [icon, appName, content, tags, type, now], (err: Error | null) => {
     if (err) {
       console.error('Error inserting data:', err.message);
     } else {
@@ -62,13 +62,26 @@ const getLastRow = () => {
   });
 };
 
-const getRowsByPage = async (size: number, page: number) => {
-  // 计算偏移量
+const getDataById = async (id: number) => {
+  return new Promise((resolve, reject) => {
+    db?.serialize(() => {
+      const query = `SELECT * FROM clipboard WHERE id = ?`;
+      db?.get(query, [id], (err, row) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(row);
+        }
+      });
+    });
+  });
+};
+
+const getRowsByPage = (size: number, page: number) => {
   const offset = size * (page - 1);
 
   return new Promise((resolve, reject) => {
     db?.serialize(() => {
-      // 使用占位符（?）以避免SQL注入
       const query = `SELECT * FROM clipboard ORDER BY id DESC LIMIT ? OFFSET ?`;
       db?.all(query, [size, offset], (err, rows) => {
         if (err) {
@@ -81,4 +94,4 @@ const getRowsByPage = async (size: number, page: number) => {
   });
 };
 
-module.exports = { createDatabase, db, saveToDatabase, getLastRow, getRowsByPage };
+module.exports = { createDatabase, db, saveToDatabase, getLastRow, getRowsByPage, getDataById };

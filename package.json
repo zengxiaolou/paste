@@ -15,6 +15,7 @@
   "dependencies": {
     "electron-is-dev": "^2.0.0",
     "i18next": "^23.5.1",
+    "jsdom": "^22.1.0",
     "react-i18next": "^13.2.2",
     "sqlite3": "^5.1.6"
   },
