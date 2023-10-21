@@ -1,13 +1,13 @@
 import * as electron from 'electron';
+import { clipboard } from 'electron';
 import { ClipData } from './type';
 import * as crypto from 'crypto';
-import nativeImage = electron.nativeImage;
 import { exec } from 'child_process';
-
-import { clipboard } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { JSDOM } from 'jsdom';
+import { DataTypes } from './enum';
+import nativeImage = electron.nativeImage;
 
 class ClipboardManager {
   private lastHtmlContent: string | undefined = undefined;
@@ -23,7 +23,7 @@ class ClipboardManager {
     }
   }
 
-  setInitContent(type: 'html' | 'image', content: string) {
+  setInitContent(type: DataTypes, content: string) {
     if (type === 'html') {
       this.lastHtmlContent = content;
     } else {
@@ -42,22 +42,22 @@ class ClipboardManager {
     const imageContent = clipboard.readImage();
     const imageBuffer = imageContent.toPNG();
     const currentImageHash = crypto.createHash('md5').update(imageBuffer).digest('hex');
-    if (this.pasteContent?.type === 'html' && htmlContent === this.pasteContent?.content) {
+    if (this.pasteContent?.type === DataTypes.HTML && htmlContent === this.pasteContent?.content) {
       return undefined;
     }
-    if (this.pasteContent?.type === 'image' && currentImageHash === this.pasteContent?.content) {
+    if (this.pasteContent?.type === DataTypes.IMAGE && currentImageHash === this.pasteContent?.content) {
       return undefined;
     }
 
     if (htmlContent && htmlContent !== this.lastHtmlContent) {
       this.lastHtmlContent = htmlContent;
       this.lastImageHash = '';
-      return { type: 'html', content: htmlContent };
+      return { type: DataTypes.HTML, content: htmlContent };
     } else if (!imageContent.isEmpty() && currentImageHash !== this.lastImageHash) {
       this.lastImageHash = currentImageHash;
       this.lastHtmlContent = '';
       const imagePath = this.saveImageToDisk(imageContent);
-      return { type: 'image', content: imagePath };
+      return { type: DataTypes.IMAGE, content: imagePath };
     }
 
     return undefined;
@@ -71,12 +71,12 @@ class ClipboardManager {
   }
 
   paste(type: string, content: string) {
-    if (type === 'html') {
+    if (type === DataTypes.HTML) {
       const dom = new JSDOM(content);
       const text = dom.window.document.body.textContent || '';
       this.pasteContent = { type, content: text };
       clipboard.writeText(text);
-    } else if (type === 'image') {
+    } else if (type === DataTypes.IMAGE) {
       this.pasteContent = { type, content };
       fs.readFile(content, (err: Error | null, data: any) => {
         if (err) {
