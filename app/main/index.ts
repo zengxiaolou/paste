@@ -3,8 +3,7 @@ import { clipData } from './main_page/type';
 const electron = require('electron');
 const { create: createMainWindow, sendClipboardDataToRenderer: sendClipboard } = require('./main_page/main');
 const indexPath = require('path');
-const { createDatabase: createDB, saveToDatabase, getLastRow } = require('./main_page/database');
-const { checkClipboardContent, setInitContent } = require('./main_page/clip');
+const { dbManager, clipboardManager } = require('./singletons');
 
 const { app, Tray } = electron;
 
@@ -20,7 +19,6 @@ let mainWindow: import('electron').BrowserWindow | null;
 app
   .whenReady()
   .then(() => {
-    createDB();
     mainWindow = createMainWindow();
     tray = new Tray(indexPath.resolve(__dirname, '../../assets/tray16.png'));
     if (process.platform === 'darwin') {
@@ -33,7 +31,7 @@ app
         mainWindow?.show();
       }
     });
-    getLastRow().then((res: clipData) => setInitContent(res.type, res.content));
+    dbManager.getLastRow().then((res: clipData) => clipboardManager.setInitContent(res.type, res.content));
   })
   .catch(err => {
     console.error(err);
@@ -45,9 +43,9 @@ app.on('activate', function () {
 });
 
 setInterval(() => {
-  const clipboardData = checkClipboardContent();
+  const clipboardData = clipboardManager.checkClipboardContent();
   if (clipboardData) {
-    saveToDatabase(clipboardData);
+    dbManager.saveToDatabase(clipboardData);
     sendClipboard(clipboardData);
   }
 }, 1000);

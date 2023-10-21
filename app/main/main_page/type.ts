@@ -1,6 +1,6 @@
 export interface clipData {
   id?: number;
-  type: string;
+  type: 'html' | 'image';
   content: string;
 
   icon?: string;

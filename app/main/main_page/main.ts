@@ -4,8 +4,7 @@ const path = require('path');
 
 const { BrowserWindow, ipcMain, nativeImage } = require('electron');
 const isDev = require('electron-is-dev');
-const { getRowsByPage: getByPage, getDataById } = require('./database');
-const { paste } = require('./clip');
+const { dbManager, clipboardManager } = require('../singletons');
 
 let win: import('electron').BrowserWindow | null;
 
@@ -54,7 +53,7 @@ ipcMain.on('toggle-always-on-top', event => {
 
 ipcMain.handle('get-data', async (event, arg) => {
   try {
-    const row = await getByPage(arg.size, arg.page);
+    const row = await dbManager.getRowsByPage(arg.size, arg.page);
     return row.map((item: clipData) => {
       if (item.type === 'image') {
         const image = nativeImage.createFromPath(item.content);
@@ -71,10 +70,10 @@ ipcMain.handle('get-data', async (event, arg) => {
 
 ipcMain.handle('request-paste', async (event, args) => {
   if (args.type === 'image') {
-    const imageData = await getDataById(args.id);
+    const imageData = await dbManager.getDataById(args.id);
     args.content = imageData.content;
   }
-  paste(args.type, args.content);
+  clipboardManager.paste(args.type, args.content);
 });
 
 const sendClipboardDataToRenderer = (data: clipData) => {
