@@ -5,19 +5,22 @@ import '@arco-design/web-react/dist/css/arco.css';
 import { Body } from './Body';
 import { Layout } from '@arco-design/web-react';
 import { Footer } from './Footer';
+import { Provider } from './Context';
 const { Header: AHeader, Content } = Layout;
 
 function App() {
   return (
-    <Container>
-      <FixedHeader>
-        <Header />
-      </FixedHeader>
-      <Content>
-        <Body />
-      </Content>
-      <Footer />
-    </Container>
+    <Provider>
+      <Container>
+        <FixedHeader>
+          <Header />
+        </FixedHeader>
+        <Content>
+          <Body />
+        </Content>
+        <Footer />
+      </Container>
+    </Provider>
   );
 }
 

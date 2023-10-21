@@ -3,14 +3,18 @@ import styled from 'styled-components';
 import { Input, Popover, Space } from '@arco-design/web-react';
 import { IconPushpin, IconSettings } from '@arco-design/web-react/icon';
 import { useTranslation } from 'react-i18next';
+import { Context } from './Context';
 
 interface FixedProps {
   isFixed: boolean;
-  onClick: () => void; // 如果你也想类型化 onClick 事件处理函数
+  onClick: () => void;
 }
 
 export const Header = () => {
   const [fixed, setFixed] = React.useState(false);
+
+  const { search, setSearch } = React.useContext(Context);
+
   const { t } = useTranslation();
   const handleFixed = () => {
     if (window.ipc) {
@@ -26,7 +30,7 @@ export const Header = () => {
         <Popover content={fixed ? t('Remove from top') : t('On Top')}>
           <Fixed isFixed={fixed} onClick={handleFixed} />
         </Popover>
-        <Search placeholder={t('Type to Search ')} allowClear />
+        <Search placeholder={t('Type to Search ')} value={search} onChange={setSearch} allowClear />
       </Space>
       <Space>
         <Settings />

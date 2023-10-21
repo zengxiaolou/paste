@@ -13,9 +13,9 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
     }
   });
 
-  ipcMain.handle(Channels.GET_DATA, async (event, argument): Promise<ClipData[] | undefined> => {
+  ipcMain.handle(Channels.GET_DATA, async (event, arguments_): Promise<ClipData[] | undefined> => {
     try {
-      const row: ClipData[] = await databaseManager.getRowsByPage(argument.size, argument.page);
+      const row: ClipData[] = await databaseManager.getRowsByPage(arguments_.size, arguments_.page);
       return row.map((item: ClipData) => {
         if (item.type === DataTypes.IMAGE) {
           const image = nativeImage.createFromPath(item.content);
@@ -36,5 +36,9 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
       arguments_.content = imageData.content;
     }
     clipboardManager.paste(arguments_.type, arguments_.content);
+  });
+
+  ipcMain.handle(Channels.CONTENT_SEARCH, async (event, arguments_) => {
+    return await databaseManager.getByContent(arguments_);
   });
 };

@@ -4,4 +4,5 @@ export enum Channels {
   REQUEST_PASTE = 'request-paste',
   CLIPBOARD_DATA = 'clipboard-data',
   DATA_ERROR = 'data-error',
+  CONTENT_SEARCH = 'content-search',
 }

@@ -1,6 +1,6 @@
 import { DataTypes } from './enum';
 
-export interface clipData {
+export interface ClipData {
   id: number;
   type: DataTypes;
   content: string;

@@ -98,15 +98,15 @@ class DatabaseManager {
       });
     });
   }
-  public getByContent(content: string) {
+  public getByContent(content: string): Promise<ClipData[]> {
     return new Promise((resolve, reject) => {
       this.db?.serialize(() => {
-        const query = `SELECT * FROM clipboard WHERE content =?`;
-        this.db?.get(query, [content], (error, row) => {
+        const query = `SELECT * FROM clipboard WHERE content like ? and type =? order by created_at desc `;
+        this.db?.all(query, [`%${content}%`, 'html'], (error, rows: ClipData[]) => {
           if (error) {
             reject(error);
           } else {
-            resolve(row);
+            resolve(rows);
           }
         });
       });
