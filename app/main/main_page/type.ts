@@ -1,4 +1,4 @@
-export interface clipData {
+export interface ClipData {
   id?: number;
   type: 'html' | 'image';
   content: string;

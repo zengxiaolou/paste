@@ -1,7 +1,7 @@
 import * as sqlite3 from 'sqlite3';
-const dataPath = require('path');
-const { app: dbApp } = require('electron');
-import { clipData } from './type';
+import path from 'path';
+import { app } from 'electron';
+import { ClipData } from './type';
 
 class DatabaseManager {
   private db: sqlite3.Database | null = null;
@@ -11,7 +11,7 @@ class DatabaseManager {
   }
 
   private createDatabase() {
-    const dbPath = dataPath.join(dbApp.getPath('userData'), 'clipboard.db');
+    const dbPath = path.join(app.getPath('userData'), 'clipboard.db');
     this.db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
 
     this.db.run(
@@ -34,7 +34,7 @@ class DatabaseManager {
     );
   }
 
-  public saveToDatabase(clipData: clipData) {
+  public saveToDatabase(clipData: ClipData) {
     const { icon, appName, content, tags, type } = clipData;
     const now = new Date().toISOString();
     const query = `
@@ -52,7 +52,7 @@ class DatabaseManager {
     });
   }
 
-  public async getLastRow() {
+  public getLastRow() {
     return new Promise((resolve, reject) => {
       this.db?.serialize(() => {
         this.db?.get('SELECT * FROM clipboard ORDER BY id DESC LIMIT 1', (err, row) => {
@@ -67,7 +67,7 @@ class DatabaseManager {
     });
   }
 
-  public async getDataById(id: number) {
+  public getDataById(id: number) {
     return new Promise((resolve, reject) => {
       this.db?.serialize(() => {
         const query = `SELECT * FROM clipboard WHERE id = ?`;
@@ -93,6 +93,20 @@ class DatabaseManager {
             reject(err);
           } else {
             resolve(rows);
+          }
+        });
+      });
+    });
+  }
+  public getByContent(content: string) {
+    return new Promise((resolve, reject) => {
+      this.db?.serialize(() => {
+        const query = `SELECT * FROM clipboard WHERE content =?`;
+        this.db?.get(query, [content], (err, row) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(row);
           }
         });
       });

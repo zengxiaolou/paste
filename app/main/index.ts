@@ -1,11 +1,8 @@
-import { clipData } from './main_page/type';
-
-const electron = require('electron');
-const { create: createMainWindow, sendClipboardDataToRenderer: sendClipboard } = require('./main_page/main');
-const indexPath = require('path');
-const { dbManager, clipboardManager } = require('./singletons');
-
-const { app, Tray } = electron;
+import { ClipData } from './main_page/type';
+import { create, sendClipboardDataToRenderer } from './main_page/main';
+import { app, Tray, BrowserWindow } from 'electron';
+import path from 'path';
+import { dbManager, clipboardManager } from './singletons';
 
 try {
   require('electron-reloader')(module);
@@ -14,15 +11,15 @@ try {
 }
 
 let tray;
-let mainWindow: import('electron').BrowserWindow | null;
+let mainWindow: BrowserWindow | null;
 
 app
   .whenReady()
   .then(() => {
-    mainWindow = createMainWindow();
-    tray = new Tray(indexPath.resolve(__dirname, '../../assets/tray16.png'));
+    mainWindow = create();
+    tray = new Tray(path.resolve(__dirname, '../../assets/tray16.png'));
     if (process.platform === 'darwin') {
-      app.dock.setIcon(indexPath.resolve(__dirname, '../../assets/icon.png'));
+      app.dock.setIcon(path.resolve(__dirname, '../../assets/icon.png'));
     }
     tray.on('click', () => {
       if (mainWindow?.isVisible()) {
@@ -31,14 +28,14 @@ app
         mainWindow?.show();
       }
     });
-    dbManager.getLastRow().then((res: clipData) => clipboardManager.setInitContent(res.type, res.content));
+    dbManager.getLastRow().then((res: ClipData) => clipboardManager.setInitContent(res.type, res.content));
   })
   .catch(err => {
     console.error(err);
   });
 
 app.on('activate', function () {
-  if (mainWindow === null) createMainWindow();
+  if (mainWindow === null) create();
   else mainWindow?.show();
 });
 
@@ -46,6 +43,6 @@ setInterval(() => {
   const clipboardData = clipboardManager.checkClipboardContent();
   if (clipboardData) {
     dbManager.saveToDatabase(clipboardData);
-    sendClipboard(clipboardData);
+    sendClipboardDataToRenderer(clipboardData);
   }
 }, 1000);

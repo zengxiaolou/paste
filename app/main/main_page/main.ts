@@ -1,12 +1,15 @@
-import { clipData } from './type';
+import * as path from 'path';
+import { BrowserWindow, nativeImage } from 'electron';
+import * as isDev from 'electron-is-dev';
+import { registerIpcHandler } from './ipcHandlers';
+import { ClipData } from './type';
 
-const path = require('path');
-
-const { BrowserWindow, ipcMain, nativeImage } = require('electron');
-const isDev = require('electron-is-dev');
-const { dbManager, clipboardManager } = require('../singletons');
+const init = () => {
+  registerIpcHandler(win);
+};
 
 let win: import('electron').BrowserWindow | null;
+init();
 
 function create() {
   const { screen } = require('electron');
@@ -43,40 +46,7 @@ function create() {
   return win;
 }
 
-ipcMain.on('toggle-always-on-top', event => {
-  if (win) {
-    const isTopmost = win.isAlwaysOnTop();
-    win.setAlwaysOnTop(!isTopmost);
-    event.returnValue = !isTopmost;
-  }
-});
-
-ipcMain.handle('get-data', async (event, arg) => {
-  try {
-    const row = await dbManager.getRowsByPage(arg.size, arg.page);
-    return row.map((item: clipData) => {
-      if (item.type === 'image') {
-        const image = nativeImage.createFromPath(item.content);
-        const dataURL = image.toDataURL();
-        return { ...item, content: dataURL };
-      }
-      return item;
-    });
-  } catch (err: any) {
-    console.error(err);
-    event.sender.send('data-error', err?.message);
-  }
-});
-
-ipcMain.handle('request-paste', async (event, args) => {
-  if (args.type === 'image') {
-    const imageData = await dbManager.getDataById(args.id);
-    args.content = imageData.content;
-  }
-  clipboardManager.paste(args.type, args.content);
-});
-
-const sendClipboardDataToRenderer = (data: clipData) => {
+const sendClipboardDataToRenderer = (data: ClipData) => {
   if (win) {
     if (data.type === 'image') {
       const image = nativeImage.createFromPath(data.content);
@@ -88,4 +58,4 @@ const sendClipboardDataToRenderer = (data: clipData) => {
   }
 };
 
-module.exports = { create, sendClipboardDataToRenderer };
+export { create, sendClipboardDataToRenderer };

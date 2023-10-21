@@ -1,23 +1,22 @@
 import * as electron from 'electron';
-import { clipData } from './type';
+import { ClipData } from './type';
 import * as crypto from 'crypto';
 import nativeImage = electron.nativeImage;
 import { exec } from 'child_process';
 
-const { clipboard } = require('electron');
-const fs = require('fs');
-const clipPath = require('path');
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
+import { clipboard } from 'electron';
+import fs from 'fs';
+import path from 'path';
+import { JSDOM } from 'jsdom';
 
 class ClipboardManager {
   private lastHtmlContent: string | undefined = undefined;
   private lastImageHash: string | undefined = undefined;
-  private pasteContent: clipData | undefined;
+  private pasteContent: ClipData | undefined;
   private readonly imageDir: string;
 
   constructor() {
-    this.imageDir = clipPath.join(__dirname, 'images');
+    this.imageDir = path.join(__dirname, 'images');
 
     if (!fs.existsSync(this.imageDir)) {
       fs.mkdirSync(this.imageDir);
@@ -38,7 +37,7 @@ class ClipboardManager {
     }
   }
 
-  checkClipboardContent(): clipData | undefined {
+  checkClipboardContent(): ClipData | undefined {
     const htmlContent = clipboard.readHTML();
     const imageContent = clipboard.readImage();
     const imageBuffer = imageContent.toPNG();
@@ -66,7 +65,7 @@ class ClipboardManager {
 
   private saveImageToDisk(image: electron.NativeImage): string {
     const timestamp = new Date().toISOString().replace(/[:.-]/g, '');
-    const imagePath = clipPath.join(this.imageDir, `image-${timestamp}.png`);
+    const imagePath = path.join(this.imageDir, `image-${timestamp}.png`);
     fs.writeFileSync(imagePath, image.toPNG());
     return imagePath;
   }
