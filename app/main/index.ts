@@ -1,38 +1,35 @@
-import { ClipData } from './main_page/type';
+import { app, BrowserWindow } from 'electron';
 import { create, sendClipboardDataToRenderer } from './main_page/main';
-import { app, Tray, BrowserWindow } from 'electron';
-import path from 'path';
-import { dbManager, clipboardManager } from './singletons';
+import { dbManager as databaseManager, clipboardManager } from './singletons';
+import { createTray } from './tray';
+import { ClipData } from './main_page/type';
 
-try {
-  require('electron-reloader')(module);
-} catch (_) {
-  /* empty */
-}
-
-let tray;
 let mainWindow: BrowserWindow | null;
 
 app
   .whenReady()
-  .then(() => {
+  .then(async () => {
     mainWindow = create();
-    tray = new Tray(path.resolve(__dirname, '../../assets/tray16.png'));
-    if (process.platform === 'darwin') {
-      app.dock.setIcon(path.resolve(__dirname, '../../assets/icon.png'));
+    createTray(mainWindow);
+    try {
+      const lastClipboardData: ClipData = await databaseManager.getLastRow();
+      clipboardManager.setInitContent(lastClipboardData.type, lastClipboardData.content);
+      return lastClipboardData;
+    } catch (error) {
+      console.error('Error initializing clipboard:', error);
+      throw error;
     }
-    tray.on('click', () => {
-      if (mainWindow?.isVisible()) {
-        mainWindow.hide();
-      } else {
-        mainWindow?.show();
-      }
-    });
-    dbManager.getLastRow().then((res: ClipData) => clipboardManager.setInitContent(res.type, res.content));
   })
-  .catch(err => {
-    console.error(err);
+  // eslint-disable-next-line unicorn/prefer-top-level-await
+  .catch(error => {
+    console.error(error);
   });
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
 
 app.on('activate', function () {
   if (mainWindow === null) create();
@@ -42,7 +39,7 @@ app.on('activate', function () {
 setInterval(() => {
   const clipboardData = clipboardManager.checkClipboardContent();
   if (clipboardData) {
-    dbManager.saveToDatabase(clipboardData);
+    databaseManager.saveToDatabase(clipboardData);
     sendClipboardDataToRenderer(clipboardData);
   }
 }, 1000);

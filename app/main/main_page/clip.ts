@@ -1,13 +1,12 @@
-import * as electron from 'electron';
-import { clipboard } from 'electron';
-import { ClipData } from './type';
-import * as crypto from 'crypto';
-import { exec } from 'child_process';
-import fs from 'fs';
-import path from 'path';
+import crypto from 'node:crypto';
+import { exec } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { clipboard, nativeImage, NativeImage } from 'electron';
 import { JSDOM } from 'jsdom';
+import { ClipData } from './type';
 import { DataTypes } from './enum';
-import nativeImage = electron.nativeImage;
+import { MAIN_PAGE_DIRECTION } from './const';
 
 class ClipboardManager {
   private lastHtmlContent: string | undefined = undefined;
@@ -16,7 +15,7 @@ class ClipboardManager {
   private readonly imageDir: string;
 
   constructor() {
-    this.imageDir = path.join(__dirname, 'images');
+    this.imageDir = path.join(MAIN_PAGE_DIRECTION, 'images');
 
     if (!fs.existsSync(this.imageDir)) {
       fs.mkdirSync(this.imageDir);
@@ -27,9 +26,9 @@ class ClipboardManager {
     if (type === 'html') {
       this.lastHtmlContent = content;
     } else {
-      fs.readFile(content, (err: Error | null, data: any) => {
-        if (err) {
-          console.log('Error reading file: ', err);
+      fs.readFile(content, (error: Error | null, data: any) => {
+        if (error) {
+          console.log('Error reading file:', error);
         } else {
           this.lastImageHash = crypto.createHash('md5').update(data).digest('hex');
         }
@@ -63,8 +62,8 @@ class ClipboardManager {
     return undefined;
   }
 
-  private saveImageToDisk(image: electron.NativeImage): string {
-    const timestamp = new Date().toISOString().replace(/[:.-]/g, '');
+  private saveImageToDisk(image: NativeImage): string {
+    const timestamp = new Date().toISOString().replaceAll(/[.:-]/g, '');
     const imagePath = path.join(this.imageDir, `image-${timestamp}.png`);
     fs.writeFileSync(imagePath, image.toPNG());
     return imagePath;
@@ -78,9 +77,9 @@ class ClipboardManager {
       clipboard.writeText(text);
     } else if (type === DataTypes.IMAGE) {
       this.pasteContent = { type, content };
-      fs.readFile(content, (err: Error | null, data: any) => {
-        if (err) {
-          console.log('Error reading file: ', err);
+      fs.readFile(content, (error: Error | null, data: any) => {
+        if (error) {
+          console.log('Error reading file:', error);
         } else {
           if (this.pasteContent?.content) {
             this.pasteContent.content = crypto.createHash('md5').update(data).digest('hex');
@@ -93,6 +92,7 @@ class ClipboardManager {
     if (process.platform === 'darwin') {
       exec('osascript -e \'tell application "System Events" to keystroke "v" using command down\'');
     } else if (process.platform === 'win32') {
+      // eslint-disable-next-line security/detect-child-process
       exec('echo off | clip && echo ' + content + ' | clip');
     } else {
       exec('xdotool key ctrl+v');
@@ -100,4 +100,4 @@ class ClipboardManager {
   }
 }
 
-module.exports = ClipboardManager;
+export default ClipboardManager;

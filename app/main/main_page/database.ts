@@ -1,18 +1,18 @@
-import * as sqlite3 from 'sqlite3';
-import path from 'path';
+import { join } from 'node:path';
+import sqlite3 from 'sqlite3';
 import { app } from 'electron';
 import { ClipData } from './type';
 
 class DatabaseManager {
-  private db: sqlite3.Database | null = null;
+  private db: sqlite3.Database | undefined = undefined;
 
   constructor() {
     this.createDatabase();
   }
 
   private createDatabase() {
-    const dbPath = path.join(app.getPath('userData'), 'clipboard.db');
-    this.db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
+    const databasePath = join(app.getPath('userData'), 'clipboard.db');
+    this.db = new sqlite3.Database(databasePath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
 
     this.db.run(
       `CREATE TABLE IF NOT EXISTS clipboard (
@@ -24,9 +24,9 @@ class DatabaseManager {
       type TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`,
-      (err: Error | null) => {
-        if (err) {
-          console.error('Error creating table: ', err.message);
+      (error: Error | null) => {
+        if (error) {
+          console.error('Error creating table:', error.message);
         } else {
           console.log('Table clipboard created successfully or already exists');
         }
@@ -43,22 +43,22 @@ class DatabaseManager {
       VALUES (?, ?, ?, ?, ?, ?)
     `;
 
-    this.db?.run(query, [icon, appName, content, tags, type, now], (err: Error | null) => {
-      if (err) {
-        console.error('Error inserting data:', err.message);
+    this.db?.run(query, [icon, appName, content, tags, type, now], (error: Error | null) => {
+      if (error) {
+        console.error('Error inserting data:', error.message);
       } else {
         console.log('Data inserted successfully');
       }
     });
   }
 
-  public getLastRow() {
+  public getLastRow(): Promise<ClipData> {
     return new Promise((resolve, reject) => {
       this.db?.serialize(() => {
-        this.db?.get('SELECT * FROM clipboard ORDER BY id DESC LIMIT 1', (err, row) => {
-          if (err) {
-            console.error(err.message);
-            reject(err);
+        this.db?.get('SELECT * FROM clipboard ORDER BY id DESC LIMIT 1', (error, row: ClipData) => {
+          if (error) {
+            console.error(error.message);
+            reject(error);
           } else {
             resolve(row);
           }
@@ -67,13 +67,13 @@ class DatabaseManager {
     });
   }
 
-  public getDataById(id: number) {
+  public getDataById(id: number): Promise<ClipData> {
     return new Promise((resolve, reject) => {
       this.db?.serialize(() => {
         const query = `SELECT * FROM clipboard WHERE id = ?`;
-        this.db?.get(query, [id], (err, row) => {
-          if (err) {
-            reject(err);
+        this.db?.get(query, [id], (error, row: ClipData) => {
+          if (error) {
+            reject(error);
           } else {
             resolve(row);
           }
@@ -82,15 +82,15 @@ class DatabaseManager {
     });
   }
 
-  public getRowsByPage(size: number, page: number) {
+  public getRowsByPage(size: number, page: number): Promise<ClipData[]> {
     const offset = size * (page - 1);
 
     return new Promise((resolve, reject) => {
       this.db?.serialize(() => {
         const query = `SELECT * FROM clipboard ORDER BY id DESC LIMIT ? OFFSET ?`;
-        this.db?.all(query, [size, offset], (err, rows) => {
-          if (err) {
-            reject(err);
+        this.db?.all(query, [size, offset], (error, rows: ClipData[]) => {
+          if (error) {
+            reject(error);
           } else {
             resolve(rows);
           }
@@ -102,9 +102,9 @@ class DatabaseManager {
     return new Promise((resolve, reject) => {
       this.db?.serialize(() => {
         const query = `SELECT * FROM clipboard WHERE content =?`;
-        this.db?.get(query, [content], (err, row) => {
-          if (err) {
-            reject(err);
+        this.db?.get(query, [content], (error, row) => {
+          if (error) {
+            reject(error);
           } else {
             resolve(row);
           }
@@ -114,4 +114,4 @@ class DatabaseManager {
   }
 }
 
-module.exports = DatabaseManager;
+export default DatabaseManager;

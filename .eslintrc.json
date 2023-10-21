@@ -1,7 +1,10 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "electron"],
-  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "plugins": ["@typescript-eslint", "electron", "import", "react", "security", "promise", "node", "jsdoc",
+    "react-hooks", "complexity", "optimize-regex","unicorn", "jest", "jsx-a11y"],
+  "extends": ["eslint:recommended", "plugin:prettier/recommended", "plugin:security/recommended",
+    "plugin:promise/recommended", "plugin:node/recommended", "plugin:jsdoc/recommended", "plugin:unicorn/recommended",
+    "plugin:jest/recommended","plugin:jsx-a11y/recommended"],
   "rules": {
     "prettier/prettier": [0],
     "@typescript-eslint/explicit-function-return-type": "off",
@@ -12,13 +15,28 @@
     "@typescript-eslint/naming-convention": "off",
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": ["error", { "variables": false }],
-    "@typescript-eslint/no-unused-vars": ["error"]
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "import/order": "error",
+    "import/no-unused-modules": "error",
+    "react/jsx-uses-vars": "error",
+    "react/jsx-uses-react": "error",
+    "max-statements": ["error", 30],
+    "max-params": ["error", 4],
+    "node/no-unsupported-features/es-syntax": "off",
+    "node/no-unpublished-import": ["error", {"allowModules": ["electron"]}],
+    "node/no-missing-import": "off",
+    "security/detect-non-literal-fs-filename": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "complexity": ["error", { "max": 10 }],
+    "optimize-regex/optimize-regex": "warn"
   },
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": 2022,
     "sourceType": "module"
   },
   "env": {
+    "es2022": true,
     "browser": true,
     "node": true
   }

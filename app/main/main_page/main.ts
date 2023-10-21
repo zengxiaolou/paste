@@ -1,18 +1,23 @@
-import path from 'path';
+import path from 'node:path';
 import { BrowserWindow, nativeImage, screen } from 'electron';
 import isDev from 'electron-is-dev';
-import { registerIpcHandler } from './ipcHandlers';
+import { registerIpcHandler } from './ipc-handlers';
 import { ClipData } from './type';
 import { DataTypes } from './enum';
 import { Channels } from './channels';
+import { MAIN_PAGE_DIRECTION } from './const';
 
 const init = () => {
   registerIpcHandler(win);
 };
 
-let win: BrowserWindow | null;
+let win: BrowserWindow | undefined;
 init();
 
+/**
+ * create main page windows
+ *  @returns {BrowserWindow} windows
+ */
 function create() {
   const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
 
@@ -30,19 +35,29 @@ function create() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, '../../renderer/src/main/src/preload.js'),
+      preload: path.join(MAIN_PAGE_DIRECTION, '../../renderer/src/main/src/preload.js'),
       devTools: true,
     },
-    icon: path.join(__dirname, '../../../../assets/icon.ico'),
+    icon: path.join(MAIN_PAGE_DIRECTION, '../../../../assets/icon.ico'),
   });
   if (isDev) {
-    win.loadURL('http://localhost:3061').then();
+    win
+      .loadURL('http://localhost:3061')
+      .then(() => console.log('create success'))
+      .catch(error => {
+        console.error(error);
+      });
   } else {
-    win.loadURL(path.resolve(__dirname, '../../renderer/index.pages/main/index.html')).then();
+    win
+      .loadURL(path.resolve(MAIN_PAGE_DIRECTION, '../../renderer/index.pages/main/index.html'))
+      .then(() => console.log('create success'))
+      .catch(error => {
+        console.error(error);
+      });
   }
   win.webContents.openDevTools();
   win.on('closed', () => {
-    win = null;
+    win = undefined;
   });
   return win;
 }

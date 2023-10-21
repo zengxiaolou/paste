@@ -1,5 +1,5 @@
 import { Button, Card, Space, Tabs, Image } from '@arco-design/web-react';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,7 @@ export const Body = memo(() => {
   const isFetching = useRef(false);
   const { t } = useTranslation();
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (isFetching.current) return;
     isFetching.current = true;
     const result = await window.ipc.getData(defaultSize, page);
@@ -26,7 +26,8 @@ export const Body = memo(() => {
       setPage(prevPage => prevPage + 1);
     }
     isFetching.current = false;
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
@@ -42,10 +43,11 @@ export const Body = memo(() => {
 
   useEffect(() => {
     fetchData().then();
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     window.ipc.onClipboardData(handleClipboardDataDebounced);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

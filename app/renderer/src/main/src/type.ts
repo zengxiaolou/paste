@@ -1,6 +1,8 @@
+import { DataTypes } from './enum';
+
 export interface clipData {
   id: number;
-  type: string;
+  type: DataTypes;
   content: string;
 
   icon?: string;

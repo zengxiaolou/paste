@@ -25,8 +25,8 @@ const Container = styled('Layout')`
   background-color: rgba(41, 41, 42);
   backdrop-filter: blur(100px);
   overflow: hidden;
-  position: relative; // 添加这行
-  height: 100vh; // 使容器占据整个视口高度
+  position: relative;
+  height: 100vh;
 `;
 
 const FixedHeader = styled(AHeader)`
