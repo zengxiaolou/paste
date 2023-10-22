@@ -5,4 +5,5 @@ export enum Channels {
   CLIPBOARD_DATA = 'clipboard-data',
   DATA_ERROR = 'data-error',
   CONTENT_SEARCH = 'content-search',
+  DELETE_RECORD = 'delete-record',
 }

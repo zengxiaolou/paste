@@ -6,6 +6,7 @@ const ChannelsMap = {
   CLIPBOARD_DATA: 'clipboard-data',
   REQUEST_PASTE: 'request-paste',
   CONTENT_SEARCH: 'content-search',
+  DELETE_RECORD: 'delete-record',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -24,5 +25,9 @@ contextBridge.exposeInMainWorld('ipc', {
 
   searchContent: async content => {
     return await ipcRenderer.invoke(ChannelsMap.CONTENT_SEARCH, content);
+  },
+
+  deleteRecord: async id => {
+    return await ipcRenderer.invoke(ChannelsMap.DELETE_RECORD, id);
   },
 });

@@ -112,6 +112,19 @@ class DatabaseManager {
       });
     });
   }
+
+  public deleteById(id: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const query = 'DELETE FROM clipboard WHERE id = ?';
+      this.db?.run(query, id, error => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  }
 }
 
 export default DatabaseManager;

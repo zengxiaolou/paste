@@ -8,6 +8,7 @@ declare global {
       onClipboardData: (callback: (data: any) => void) => void;
       requestPaste: (type: string, content: string, id: number) => void;
       searchContent: (content?: string) => ClipData[] | undefined;
+      deleteRecord: (id: number) => boolean;
     };
   }
 }

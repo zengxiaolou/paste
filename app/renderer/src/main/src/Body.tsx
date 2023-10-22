@@ -7,14 +7,18 @@ import { extractMostFrequentBackgroundColor } from './utils/string';
 import { debounce } from './utils/func';
 import { ClipData } from './type';
 import { Context } from './Context';
+import { ContextMenu } from './component/ContextMenu';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
 export const Body = memo(() => {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<ClipData[]>([]);
-  const [activeCard, setActiveCard] = useState<number | null>(null);
-  const { search } = useContext(Context);
+  const [activeCard, setActiveCard] = useState<number | undefined>(undefined);
+  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0 });
+  const [activeId, setActiveId] = useState<number | undefined>(undefined);
+
+  const { search, deletedId } = useContext(Context);
 
   const isFetching = useRef(false);
   const { t } = useTranslation();
@@ -43,6 +47,26 @@ export const Body = memo(() => {
   };
   const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
 
+  const handleContextMenu = (event: any, id: number) => {
+    event.preventDefault();
+    setContextMenu({ visible: true, x: event.pageX, y: event.pageY });
+    setActiveId(id);
+  };
+
+  const renderContextMenu = () => {
+    if (!contextMenu.visible) return null;
+    return (
+      <div style={{ position: 'absolute', top: `${contextMenu.y - 80}px`, left: `${contextMenu.x - 20}px` }}>
+        <ContextMenu id={activeId} />
+      </div>
+    );
+  };
+
+  const handleClick = (index: number) => {
+    setContextMenu({ ...contextMenu, visible: false });
+    setActiveCard(index);
+  };
+
   useEffect(() => {
     fetchData().then();
   }, [fetchData]);
@@ -63,6 +87,32 @@ export const Body = memo(() => {
     return () => clearTimeout(timer);
   }, [search, fetchData]);
 
+  useEffect(() => {
+    const handleBlur = () => {
+      setContextMenu({
+        ...contextMenu,
+        visible: false,
+      });
+    };
+
+    window.addEventListener('blur', handleBlur);
+
+    return () => {
+      window.removeEventListener('blur', handleBlur);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (deletedId) {
+      setData(prevData => prevData && [...prevData.filter(value => value.id !== deletedId)]);
+      setContextMenu({
+        ...contextMenu,
+        visible: false,
+      });
+    }
+  }, [contextMenu, deletedId]);
+
   return (
     <CTabs type="rounded" defaultActiveTab="all" showAddButton editable={true} addButton={<Button>添加</Button>}>
       <TabPane title={t('All')} key="all">
@@ -72,8 +122,9 @@ export const Body = memo(() => {
               key={index}
               isActive={activeCard === index}
               bgColor={extractMostFrequentBackgroundColor(v.content)}
-              onClick={() => setActiveCard(index)}
+              onClick={() => handleClick(index)}
               onDoubleClick={() => window.ipc.requestPaste(v.type, v.content, v.id)}
+              onContextMenu={event => handleContextMenu(event, v.id)}
             >
               <Container>
                 {v.type === 'html' ? (
@@ -89,6 +140,7 @@ export const Body = memo(() => {
               </Container>
             </UCard>
           ))}
+          {renderContextMenu()}
         </BodyContainer>
       </TabPane>
       <TabPane title={t('Collect')} key="collect">

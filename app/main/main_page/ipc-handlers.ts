@@ -38,7 +38,11 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
     clipboardManager.paste(arguments_.type, arguments_.content);
   });
 
-  ipcMain.handle(Channels.CONTENT_SEARCH, async (event, arguments_) => {
-    return await databaseManager.getByContent(arguments_);
+  ipcMain.handle(Channels.CONTENT_SEARCH, async (event, search) => {
+    return await databaseManager.getByContent(search);
+  });
+
+  ipcMain.handle(Channels.DELETE_RECORD, async (event, id: number) => {
+    return await databaseManager.deleteById(id);
   });
 };
