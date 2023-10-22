@@ -16,9 +16,9 @@ export const Body = memo(() => {
   const [data, setData] = useState<ClipData[]>([]);
   const [activeCard, setActiveCard] = useState<number | undefined>(undefined);
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0 });
-  const [activeId, setActiveId] = useState<number | undefined>(undefined);
+  const [activeRecord, setActiveRecord] = useState<ClipData | undefined>(undefined);
 
-  const { search, deletedId } = useContext(Context);
+  const { search, deletedRecord } = useContext(Context);
 
   const isFetching = useRef(false);
   const { t } = useTranslation();
@@ -46,17 +46,17 @@ export const Body = memo(() => {
   };
   const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
 
-  const handleContextMenu = (event: any, id: number) => {
+  const handleContextMenu = (event: any, record: ClipData) => {
     event.preventDefault();
     setContextMenu({ visible: true, x: event.pageX, y: event.pageY });
-    setActiveId(id);
+    setActiveRecord(record);
   };
 
   const renderContextMenu = () => {
     if (!contextMenu.visible) return null;
     return (
       <div style={{ position: 'absolute', top: `${contextMenu.y - 80}px`, left: `${contextMenu.x - 20}px` }}>
-        <ContextMenu id={activeId} />
+        <ContextMenu record={activeRecord} />
       </div>
     );
   };
@@ -104,14 +104,14 @@ export const Body = memo(() => {
   }, []);
 
   useEffect(() => {
-    if (deletedId) {
-      setData(prevData => prevData && [...prevData.filter(value => value.id !== deletedId)]);
+    if (deletedRecord) {
+      setData(prevData => prevData && [...prevData.filter(value => value.id !== deletedRecord.id)]);
       setContextMenu({
         ...contextMenu,
         visible: false,
       });
     }
-  }, [contextMenu, deletedId]);
+  }, [contextMenu, deletedRecord]);
 
   return (
     <CTabs type="rounded" defaultActiveTab="all" showAddButton editable={true} addButton={<Button>添加</Button>}>
@@ -124,7 +124,7 @@ export const Body = memo(() => {
               bgColor={extractMostFrequentBackgroundColor(v.content)}
               onClick={() => handleClick(index)}
               onDoubleClick={() => window.ipc.requestPaste(v.type, v.content, v.id)}
-              onContextMenu={event => handleContextMenu(event, v.id)}
+              onContextMenu={event => handleContextMenu(event, v)}
             >
               <Container>
                 {v.type === 'html' && (

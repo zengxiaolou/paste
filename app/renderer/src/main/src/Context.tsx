@@ -1,4 +1,5 @@
 import React, { createContext, FC, useState } from 'react';
+import { ClipData } from './type';
 
 interface providerProps {
   children: React.ReactNode;
@@ -6,17 +7,17 @@ interface providerProps {
 interface ContextType {
   search: string | undefined;
   setSearch: React.Dispatch<React.SetStateAction<string | undefined>>;
-  deletedId: number | undefined;
-  setDeletedId: React.Dispatch<React.SetStateAction<number | undefined>>;
+  deletedRecord?: ClipData;
+  setDeletedRecord: React.Dispatch<React.SetStateAction<ClipData | undefined>>;
 }
 export const Context = createContext<ContextType>({
   search: '',
   setSearch: () => {},
-  deletedId: undefined,
-  setDeletedId: () => {},
+  deletedRecord: undefined,
+  setDeletedRecord: () => {},
 });
 export const Provider: FC<providerProps> = ({ children }) => {
   const [search, setSearch] = useState<string>();
-  const [deletedId, setDeletedId] = useState<number | undefined>();
-  return <Context.Provider value={{ search, setSearch, deletedId, setDeletedId }}>{children}</Context.Provider>;
+  const [deletedRecord, setDeletedRecord] = useState<ClipData | undefined>();
+  return <Context.Provider value={{ search, setSearch, deletedRecord, setDeletedRecord }}>{children}</Context.Provider>;
 };

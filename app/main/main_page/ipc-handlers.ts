@@ -1,5 +1,6 @@
 import { BrowserWindow, ipcMain, nativeImage } from 'electron';
 import { clipboardManager, databaseManager } from '../singletons';
+import { deleteFile } from '../utils/file';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';
@@ -45,7 +46,11 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
     return await databaseManager.getByContent(search);
   });
 
-  ipcMain.handle(Channels.DELETE_RECORD, async (event, id: number) => {
+  ipcMain.handle(Channels.DELETE_RECORD, async (event, id: number, type: DataTypes) => {
+    if (type === DataTypes.IMAGE) {
+      const row = await databaseManager.getDataById(id);
+      await deleteFile(row.content);
+    }
     return await databaseManager.deleteById(id);
   });
 };

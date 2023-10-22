@@ -1,4 +1,5 @@
 import { ClipData } from './src/type';
+import { DataTypes } from '../../../main/main_page/enum';
 
 declare global {
   interface Window {
@@ -8,7 +9,7 @@ declare global {
       onClipboardData: (callback: (data: any) => void) => void;
       requestPaste: (type: string, content: string, id: number) => void;
       searchContent: (content?: string) => ClipData[] | undefined;
-      deleteRecord: (id: number) => boolean;
+      deleteRecord: (id: number, type: DataTypes) => boolean;
     };
   }
 }

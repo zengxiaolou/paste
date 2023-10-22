@@ -27,7 +27,7 @@ contextBridge.exposeInMainWorld('ipc', {
     return await ipcRenderer.invoke(ChannelsMap.CONTENT_SEARCH, content);
   },
 
-  deleteRecord: async id => {
-    return await ipcRenderer.invoke(ChannelsMap.DELETE_RECORD, id);
+  deleteRecord: async (id, type) => {
+    return await ipcRenderer.invoke(ChannelsMap.DELETE_RECORD, { id, type });
   },
 });

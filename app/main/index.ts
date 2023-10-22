@@ -51,4 +51,4 @@ setInterval(async () => {
     databaseManager.saveToDatabase(clipboardData);
     sendClipboardDataToRenderer(clipboardData);
   }
-}, 100);
+}, 500);

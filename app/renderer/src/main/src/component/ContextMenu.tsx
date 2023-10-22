@@ -1,19 +1,20 @@
 import React, { FC, useContext } from 'react';
 import { Menu } from '@arco-design/web-react';
 import { Context } from '../Context';
+import { ClipData } from '../type';
 
 const Item = Menu.Item;
 
 interface props {
-  id?: number;
+  record?: ClipData;
 }
-export const ContextMenu: FC<props> = ({ id }) => {
-  const { setDeletedId } = useContext(Context);
+export const ContextMenu: FC<props> = ({ record }) => {
+  const { setDeletedRecord } = useContext(Context);
   const handleDelete = async () => {
-    if (id) {
-      const result = window.ipc.deleteRecord(id);
+    if (record) {
+      const result = window.ipc.deleteRecord(record.id, record.type);
       if (result) {
-        setDeletedId(id);
+        setDeletedRecord(record);
       }
     }
   };
