@@ -1,5 +1,5 @@
 import { Button, Card, Space, Tabs, Image } from '@arco-design/web-react';
-import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { formatDateTime } from './utils/time';
@@ -23,17 +23,16 @@ export const Body = memo(() => {
   const isFetching = useRef(false);
   const { t } = useTranslation();
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     if (isFetching.current) return;
     isFetching.current = true;
     const result = await window.ipc.getData(defaultSize, page);
-    if (result) {
+    if (result && result.length > 0) {
       setData(prevData => (prevData ? [...prevData, ...result] : [...result]));
-      setPage(prevPage => prevPage + 1);
+      setPage(page + 1);
     }
     isFetching.current = false;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
@@ -69,7 +68,8 @@ export const Body = memo(() => {
 
   useEffect(() => {
     fetchData().then();
-  }, [fetchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     window.ipc.onClipboardData(handleClipboardDataDebounced);
@@ -85,7 +85,7 @@ export const Body = memo(() => {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [search, fetchData]);
+  }, [search]);
 
   useEffect(() => {
     const handleBlur = () => {
