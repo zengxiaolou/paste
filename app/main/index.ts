@@ -1,8 +1,9 @@
 import { app, BrowserWindow } from 'electron';
 import { create, sendClipboardDataToRenderer } from './main_page/main';
-import { dbManager as databaseManager, clipboardManager } from './singletons';
+import { clipboardManager, databaseManager } from './singletons';
 import { createTray } from './tray';
 import { ClipData } from './main_page/type';
+import { AppInfoFactory } from './platformUtils/app-info-factory';
 
 let mainWindow: BrowserWindow | null;
 
@@ -13,7 +14,7 @@ app
     createTray(mainWindow);
     try {
       const lastClipboardData: ClipData = await databaseManager.getLastRow();
-      clipboardManager.setInitContent(lastClipboardData.type, lastClipboardData.content);
+      lastClipboardData && clipboardManager.setInitContent(lastClipboardData.type, lastClipboardData.content);
       return lastClipboardData;
     } catch (error) {
       console.error('Error initializing clipboard:', error);
@@ -36,10 +37,18 @@ app.on('activate', function () {
   else mainWindow?.show();
 });
 
-setInterval(() => {
+setInterval(async () => {
   const clipboardData = clipboardManager.checkClipboardContent();
   if (clipboardData) {
+    try {
+      const appName = await AppInfoFactory.getActiveApplicationName();
+      clipboardData.icon = await AppInfoFactory.getIconForApplicationName(appName);
+      clipboardData.appName = appName;
+    } catch (error: any) {
+      console.error('Error when fetching application name/application icon:', error);
+    }
+
     databaseManager.saveToDatabase(clipboardData);
     sendClipboardDataToRenderer(clipboardData);
   }
-}, 1000);
+}, 500);

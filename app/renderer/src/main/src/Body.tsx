@@ -127,15 +127,19 @@ export const Body = memo(() => {
               onContextMenu={event => handleContextMenu(event, v.id)}
             >
               <Container>
-                {v.type === 'html' ? (
-                  <Space>
-                    <Html dangerouslySetInnerHTML={{ __html: v?.content }} />
-                  </Space>
-                ) : (
-                  <ImageContainer>
-                    <CenteredImage src={v?.content} loader={true} height={60} />
-                  </ImageContainer>
-                )}
+                <Space>
+                  {v.icon && <Icon src={v?.icon} height={40} />}
+                  {v.type === 'html' ? (
+                    <Space>
+                      <Html dangerouslySetInnerHTML={{ __html: v?.content }} />
+                    </Space>
+                  ) : (
+                    <ImageContainer>
+                      <CenteredImage src={v?.content} loader={true} height={60} />
+                    </ImageContainer>
+                  )}
+                </Space>
+
                 <Space>{v?.created_at && formatDateTime(v?.created_at)}</Space>
               </Container>
             </UCard>
@@ -233,3 +237,5 @@ const CenteredImage = styled(Image)`
   margin: auto;
   display: block;
 `;
+
+const Icon = styled(Image)``;

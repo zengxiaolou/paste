@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain, nativeImage } from 'electron';
-import { clipboardManager, dbManager as databaseManager } from '../singletons';
+import { clipboardManager, databaseManager } from '../singletons';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';
@@ -19,8 +19,11 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
       return row.map((item: ClipData) => {
         if (item.type === DataTypes.IMAGE) {
           const image = nativeImage.createFromPath(item.content);
-          const dataURL = image.toDataURL();
-          return { ...item, content: dataURL };
+          Object.assign(item, { content: image.toDataURL() });
+        }
+        if (item.icon) {
+          const icon = nativeImage.createFromPath(item.icon);
+          Object.assign(item, { icon: icon.toDataURL() });
         }
         return item;
       });

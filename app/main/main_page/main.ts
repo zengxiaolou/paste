@@ -66,8 +66,11 @@ const sendClipboardDataToRenderer = (data: ClipData) => {
   if (win) {
     if (data.type === DataTypes.IMAGE) {
       const image = nativeImage.createFromPath(data.content);
-      const dataURL = image.toDataURL();
-      Object.assign(data, { content: dataURL });
+      Object.assign(data, { content: image.toDataURL() });
+    }
+    if (data.icon) {
+      const icon = nativeImage.createFromPath(data.icon);
+      Object.assign(data, { icon: icon.toDataURL() });
     }
     Object.assign(data, { created_at: new Date().toISOString() });
     win.webContents.send(Channels.CLIPBOARD_DATA, data);

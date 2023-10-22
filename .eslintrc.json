@@ -22,7 +22,7 @@
     "react/jsx-uses-react": "error",
     "max-statements": ["error", 30],
     "max-params": ["error", 4],
-    "node/no-unsupported-features/es-syntax": "off",
+    "node/no-unsupported-features/es-syntax": ["error", { "ignores": ["modules"] }],
     "node/no-unpublished-import": ["error", {"allowModules": ["electron"]}],
     "node/no-missing-import": "off",
     "security/detect-non-literal-fs-filename": "off",
