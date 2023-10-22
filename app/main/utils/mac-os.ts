@@ -1,8 +1,11 @@
 import { exec } from 'node:child_process';
-import { join } from 'node:path';
+import path, { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import fs from 'node:fs';
-import sharp from 'sharp';
+import * as promises_fs from 'node:fs/promises';
+import { PathLike } from 'node:fs';
+import SimplePlist from 'simple-plist';
+import { MAIN_PAGE_DIRECTION } from '../main_page/const';
 
 class MacOSUtils {
   public getActiveApplicationName = (): Promise<string> => {
@@ -25,10 +28,11 @@ class MacOSUtils {
   public async getIconForApplicationName(appName: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const script = `
-            tell application "Finder"
-                get the file of application process "${appName}"
-            end tell
-        `;
+      tell application "Finder"
+          get the file of application process "${appName}"
+      end tell
+    `;
+
       // eslint-disable-next-line security/detect-child-process
       exec(`osascript -e '${script}'`, async (error, stdout) => {
         if (error) {
@@ -38,49 +42,82 @@ class MacOSUtils {
 
         const appBundlePath = stdout.trim().replace('alias Macintosh HD:', '/').replaceAll(':', '/');
         const resourcesPath = join(appBundlePath, '/Contents/Resources/');
-        let icnsFiles: string[];
-        try {
-          icnsFiles = await fs.promises.readdir(resourcesPath);
-          // eslint-disable-next-line node/no-unsupported-features/es-syntax
-        } catch {
-          reject('Failed to read the Resources directory.');
+        const contentsPath = join(appBundlePath, '/Contents/info.plist');
+        const iconName = await this.getICNSNameFromPlist(contentsPath);
+        if (!iconName) {
           return;
         }
-
-        const primaryIcnsFile = icnsFiles.find(file => file.endsWith('.icns'));
-        if (!primaryIcnsFile) {
-          reject('No icns file found for the application.');
+        const originalIconPath = join(resourcesPath, iconName);
+        const iconSetPath = await this.convertIcnsToIconset(originalIconPath, iconName);
+        if (!iconSetPath) {
+          reject('No available icon found for the application.');
           return;
         }
+        const chosenIconPath = await this.findThirdLargestPng(iconSetPath);
 
-        const originalIconPath = join(resourcesPath, primaryIcnsFile);
         const iconFileName = `${appName}.png`;
         const cacheIconPath = join(tmpdir(), iconFileName);
-
-        try {
-          await fs.promises.access(cacheIconPath);
-          resolve(cacheIconPath);
-          return;
-          // eslint-disable-next-line node/no-unsupported-features/es-syntax
-        } catch {
-          // eslint-disable-next-line security/detect-child-process
-          exec(`iconutil -c iconset "${originalIconPath}"`, async (error_, _, stderr) => {
-            if (error_ || stderr) {
-              reject(`Error converting .icns to .iconset: ${stderr}`);
-              return;
-            }
-
-            const pngPath = originalIconPath.replace('.icns', '.iconset/icon_512x512.png');
-            try {
-              await sharp(pngPath).toFile(cacheIconPath);
-              resolve(cacheIconPath);
-            } catch (sharpError) {
-              reject(`Error processing png with sharp: ${sharpError}`);
-            }
-          });
-        }
+        await promises_fs.copyFile(<PathLike>chosenIconPath, cacheIconPath);
+        resolve(cacheIconPath);
       });
     });
+  }
+  private async convertIcnsToIconset(icnsPath: string, iconName: string) {
+    const temporaryDirection = path.join(MAIN_PAGE_DIRECTION, 'temp');
+    const temporaryPath = path.join(temporaryDirection, iconName.replaceAll(' ', ''));
+
+    fs.mkdirSync(temporaryDirection, { recursive: true });
+
+    fs.copyFileSync(icnsPath, temporaryPath);
+    return new Promise((resolve, reject) => {
+      const iconsetPath = temporaryPath.replace('.icns', '.iconset');
+      // eslint-disable-next-line security/detect-child-process
+      exec(`iconutil -c iconset ${temporaryPath}`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error: ${error.message}`);
+          return reject(error);
+        }
+        if (stderr) {
+          console.error(`Stderr: ${stderr}`);
+          return reject(new Error(stderr));
+        }
+        console.log(`Stdout: ${stdout}`);
+        resolve(iconsetPath);
+      });
+    });
+  }
+  private async findThirdLargestPng(iconsetPath: any): Promise<string | undefined> {
+    try {
+      const files = await promises_fs.readdir(iconsetPath);
+      const pngFiles: { file: string; size: number }[] = [];
+
+      for (const file of files) {
+        if (file.endsWith('.png')) {
+          const filePath = path.join(iconsetPath, file);
+          const stats = await promises_fs.stat(filePath);
+          pngFiles.push({ file: filePath, size: stats.size });
+        }
+      }
+
+      pngFiles.sort((a, b) => b.size - a.size);
+
+      const thirdLargestFile = pngFiles[3];
+
+      return thirdLargestFile ? thirdLargestFile.file : undefined;
+    } catch (error) {
+      console.error('Error in findThirdLargestPng:', error);
+      return;
+    }
+  }
+
+  private getICNSNameFromPlist(plistPath: string): string | undefined {
+    const data: any = SimplePlist.readFileSync(plistPath);
+    let icnsName: string | undefined = data.CFBundleIconFile;
+
+    if (icnsName && !icnsName.endsWith('.icns')) {
+      return `${icnsName}.icns`;
+    }
+    return icnsName;
   }
 }
 
