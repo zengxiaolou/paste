@@ -224,12 +224,12 @@ const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 90%;
 `;
 
 const CenteredImage = styled(Image)`
   max-height: 100%;
-  max-width: 100%;
+  max-width: 90%;
   margin: auto;
   display: block;
 `;
