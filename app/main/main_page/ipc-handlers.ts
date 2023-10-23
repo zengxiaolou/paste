@@ -53,4 +53,11 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
     }
     return await databaseManager.deleteById(id);
   });
+
+  ipcMain.handle(Channels.UPDATE_RECORD, async (event, arguments_) => {
+    const data = arguments_.data;
+    if (data?.id) {
+      return await databaseManager.updateById(data.id, data);
+    }
+  });
 };

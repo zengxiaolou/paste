@@ -10,6 +10,7 @@ declare global {
       requestPaste: (type: string, content: string, id: number) => void;
       searchContent: (content?: string) => ClipData[] | undefined;
       deleteRecord: (id: number, type: DataTypes) => boolean;
+      updateRecord: (data: ClipData) => Promise<boolean>;
     };
   }
 }

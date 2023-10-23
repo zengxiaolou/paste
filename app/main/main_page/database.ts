@@ -22,6 +22,7 @@ class DatabaseManager {
       content TEXT,
       tags TEXT,
       type TEXT,
+      collection bool DEFAULT false,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`,
       (error: Error | null) => {
@@ -117,6 +118,19 @@ class DatabaseManager {
     return new Promise((resolve, reject) => {
       const query = 'DELETE FROM clipboard WHERE id = ?';
       this.db?.run(query, id, error => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  }
+
+  public updateById(id: number, data: ClipData): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const query = 'UPDATE clipboard SET tags =?, collection =? WHERE id =?';
+      this.db?.run(query, [data.tags, data.collection, id], error => {
         if (error) {
           reject(error);
         } else {

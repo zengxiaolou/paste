@@ -7,6 +7,7 @@ const ChannelsMap = {
   REQUEST_PASTE: 'request-paste',
   CONTENT_SEARCH: 'content-search',
   DELETE_RECORD: 'delete-record',
+  UPDATE_RECORD: 'update-record',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -29,5 +30,9 @@ contextBridge.exposeInMainWorld('ipc', {
 
   deleteRecord: async (id, type) => {
     return await ipcRenderer.invoke(ChannelsMap.DELETE_RECORD, { id, type });
+  },
+
+  updateRecord: async data => {
+    return await ipcRenderer.invoke(ChannelsMap.UPDATE_RECORD, { data });
   },
 });

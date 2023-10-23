@@ -8,6 +8,7 @@ import { debounce } from './utils/func';
 import { ClipData } from './type';
 import { Context } from './Context';
 import { ContextMenu } from './component/ContextMenu';
+import { Collect } from './component/Collect';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
@@ -139,7 +140,10 @@ export const Body = memo(() => {
                     <CenteredImage src={v?.content} loader={true} height={60} />
                   </ImageContainer>
                 )}
-                <Space>{v?.created_at && formatDateTime(v?.created_at)}</Space>
+                <Space>
+                  <Collect data={v} />
+                  {v?.created_at && formatDateTime(v?.created_at)}
+                </Space>
               </Container>
             </UCard>
           ))}
@@ -216,7 +220,7 @@ const Container = styled.div`
 const Html = styled.div`
   height: 60px;
   max-height: 60px;
-  max-width: 900px;
+  max-width: 800px;
   overflow: hidden;
   align-content: center;
 `;

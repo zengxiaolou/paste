@@ -6,4 +6,5 @@ export enum Channels {
   DATA_ERROR = 'data-error',
   CONTENT_SEARCH = 'content-search',
   DELETE_RECORD = 'delete-record',
+  UPDATE_RECORD = 'update-record',
 }

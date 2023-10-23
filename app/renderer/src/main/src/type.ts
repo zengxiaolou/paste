@@ -9,5 +9,6 @@ export interface ClipData {
   appName?: string;
   from?: string;
   tags?: string;
+  collection?: boolean;
   created_at?: Date;
 }
