@@ -5,6 +5,7 @@ import { createTray } from './components/tray';
 import { ClipData } from './main_page/type';
 
 let mainWindow: BrowserWindow | null;
+const gotTheLock = app.requestSingleInstanceLock();
 
 app
   .whenReady()
@@ -37,3 +38,14 @@ app.on('activate', function () {
   if (mainWindow === null) create();
   else mainWindow?.show();
 });
+
+if (gotTheLock) {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+} else {
+  app.quit();
+}
