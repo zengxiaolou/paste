@@ -1,10 +1,8 @@
+import { AppInfoFactory } from '../platformUtils/app-info-factory';
+import { sendClipboardDataToRenderer } from '../main_page/main';
 import { clipboardManager, databaseManager } from './singletons';
-import { AppInfoFactory } from './platformUtils/app-info-factory';
-import { sendClipboardDataToRenderer } from './main_page/main';
 class IntervalManager {
   private clipboardIntervalID: ReturnType<typeof setInterval> | undefined;
-  // 如果未来有其他的interval，可以像上面一样为它们声明私有属性
-
   startClipboardInterval() {
     if (!this.clipboardIntervalID) {
       this.clipboardIntervalID = setInterval(async () => {
@@ -31,8 +29,6 @@ class IntervalManager {
       this.clipboardIntervalID = undefined;
     }
   }
-
-  // 如果未来有其他的interval，可以为它们创建类似的start和stop方法
 }
 
 export default IntervalManager;

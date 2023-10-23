@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { app, BrowserWindow, Tray, Menu } from 'electron';
-import { MAIN_DIRECTORY } from './const';
+import { MAIN_DIRECTORY } from '../const';
 import i18n from './i18n';
 import { intervalManager } from './singletons';
 

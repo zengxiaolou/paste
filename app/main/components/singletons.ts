@@ -1,5 +1,5 @@
-import DatabaseManager from './main_page/database';
-import ClipboardManager from './main_page/clip';
+import DatabaseManager from '../main_page/database';
+import ClipboardManager from '../main_page/clip';
 import IntervalManager from './interval-manager';
 
 const databaseManager = new DatabaseManager();

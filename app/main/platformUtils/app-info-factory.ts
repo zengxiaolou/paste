@@ -1,6 +1,6 @@
-import MacOSUtils from '../utils/mac-os';
-import WindowsUtils from '../utils/windows';
-import LinuxUtils from '../utils/linux';
+import MacOSUtils from './mac-os';
+import WindowsUtils from './windows';
+import LinuxUtils from './linux';
 
 interface IPlatformUtils {
   getActiveApplicationName(): Promise<string>;

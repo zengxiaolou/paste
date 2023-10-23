@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain, nativeImage } from 'electron';
-import { clipboardManager, databaseManager } from '../singletons';
+import { clipboardManager, databaseManager } from '../components/singletons';
 import { deleteFile } from '../utils/file';
 import { ClipData } from './type';
 import { Channels } from './channels';

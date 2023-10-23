@@ -53,7 +53,7 @@ class MacOSUtils {
           reject('No available icon found for the application.');
           return;
         }
-        const chosenIconPath = await this.findThirdLargestPng(iconSetPath);
+        const chosenIconPath = await this.findDesiredPng(iconSetPath);
 
         const iconFileName = `${appName}.png`;
         const cacheIconPath = join(tmpdir(), iconFileName);
@@ -86,26 +86,19 @@ class MacOSUtils {
       });
     });
   }
-  private async findThirdLargestPng(iconsetPath: any): Promise<string | undefined> {
+  private async findDesiredPng(iconsetPath: any): Promise<string | undefined> {
     try {
       const files = await promises_fs.readdir(iconsetPath);
-      const pngFiles: { file: string; size: number }[] = [];
-
-      for (const file of files) {
-        if (file.endsWith('.png')) {
-          const filePath = path.join(iconsetPath, file);
-          const stats = await promises_fs.stat(filePath);
-          pngFiles.push({ file: filePath, size: stats.size });
+      const preferredSizes = ['256x256', '128x128', '64x64', '32x32'];
+      for (const preferredSize of preferredSizes) {
+        const desiredFile = files.find(file => file.includes(preferredSize) && file.endsWith('.png'));
+        if (desiredFile) {
+          return path.join(iconsetPath, desiredFile);
         }
       }
-
-      pngFiles.sort((a, b) => b.size - a.size);
-
-      const thirdLargestFile = pngFiles[3];
-
-      return thirdLargestFile ? thirdLargestFile.file : undefined;
+      return undefined;
     } catch (error) {
-      console.error('Error in findThirdLargestPng:', error);
+      console.error('Error in findDesiredPng:', error);
       return;
     }
   }
