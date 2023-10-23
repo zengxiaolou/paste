@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import { create } from './main_page/main';
-import { clipboardManager, databaseManager, intervalManager } from './components/singletons';
+import { clipboardManager, databaseManager, intervalManager, menuBuilder } from './components/singletons';
 import { createTray } from './components/tray';
 import { ClipData } from './main_page/type';
 
@@ -11,6 +11,7 @@ app
   .then(async () => {
     mainWindow = create();
     await createTray(mainWindow);
+    menuBuilder.buildMenu();
     intervalManager.startClipboardInterval();
     try {
       const lastClipboardData: ClipData = await databaseManager.getLastRow();

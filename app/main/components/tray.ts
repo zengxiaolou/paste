@@ -46,7 +46,7 @@ const updateContextMenu = (tray: Tray, isMonitoring: boolean) => {
     { type: 'separator' },
     { label: i18n.t('Preferences...'), click: () => {} },
     { type: 'separator' },
-    { label: i18n.t('quit'), click: () => app.quit() },
+    { label: i18n.t('Quit'), click: () => app.quit() },
   ]);
   tray.setContextMenu(contextMenu);
 };

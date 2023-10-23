@@ -1,17 +1,18 @@
 import path from 'node:path';
 import { BrowserWindow, nativeImage, screen } from 'electron';
 import isDev from 'electron-is-dev';
+import { stateManager } from '../components/singletons';
 import { registerIpcHandler } from './ipc-handlers';
 import { ClipData } from './type';
 import { DataTypes } from './enum';
 import { Channels } from './channels';
 import { MAIN_PAGE_DIRECTION } from './const';
 
+let win = stateManager.getMainWindow();
 const init = () => {
   registerIpcHandler(win);
 };
 
-let win: BrowserWindow | undefined;
 init();
 
 /**
@@ -57,7 +58,7 @@ function create() {
   }
   win.webContents.openDevTools();
   win.on('closed', () => {
-    win = undefined;
+    stateManager.setMainWindow();
   });
   return win;
 }
