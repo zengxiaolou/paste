@@ -1,4 +1,4 @@
-import { Button, Card, Space, Tabs, Image } from '@arco-design/web-react';
+import { Button, Card, Space, Tabs, Image, BackTop } from '@arco-design/web-react';
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -117,7 +117,7 @@ export const Body = memo(() => {
   return (
     <CTabs type="rounded" defaultActiveTab="all" showAddButton editable={true} addButton={<Button>添加</Button>}>
       <TabPane title={t('All')} key="all">
-        <BodyContainer onScroll={handleScroll}>
+        <BodyContainer onScroll={handleScroll} id="top">
           {data?.map((v: ClipData, index: number) => (
             <UCard
               key={index}
@@ -148,6 +148,11 @@ export const Body = memo(() => {
             </UCard>
           ))}
           {renderContextMenu()}
+          <BackTop
+            visibleHeight={40}
+            style={{ position: 'absolute' }}
+            target={() => document.getElementById('top') || document.body}
+          />
         </BodyContainer>
       </TabPane>
       <TabPane title={t('Collect')} key="collect">
