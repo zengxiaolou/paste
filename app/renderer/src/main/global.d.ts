@@ -1,15 +1,15 @@
-import { ClipData } from './src/type';
-import { DataTypes } from '../../../main/main_page/enum';
+import { ClipData, ClipboardDataQuery } from './src/type';
+import { DataTypes } from './src/enum';
 
 declare global {
   interface Window {
     ipc: {
       toggleAlwaysOnTop: () => void;
-      getData: (size: number, page: number) => ClipData[] | undefined;
+      getData: (query: ClipboardDataQuery) => Promise<ClipData[] | undefined>;
       onClipboardData: (callback: (data: any) => void) => void;
-      requestPaste: (type: string, content: string, id: number) => void;
-      searchContent: (content?: string) => ClipData[] | undefined;
-      deleteRecord: (id: number, type: DataTypes) => boolean;
+      requestPaste: (type: string, content: string, id: number) => Promise<Boolean>;
+      searchContent: (content?: string) => Promise<ClipData[] | undefined>;
+      deleteRecord: (id: number, type: DataTypes) => Promise<Boolean>;
       updateRecord: (data: ClipData) => Promise<boolean>;
     };
   }

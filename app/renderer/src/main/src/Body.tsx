@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { formatDateTime } from './utils/time';
 import { extractMostFrequentBackgroundColor } from './utils/string';
 import { debounce } from './utils/func';
-import { ClipData } from './type';
+import { ClipboardDataQuery, ClipData } from './type';
 import { Context } from './Context';
 import { ContextMenu } from './component/ContextMenu';
 import { Collect } from './component/Collect';
@@ -13,8 +13,8 @@ import { Collect } from './component/Collect';
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
 export const Body = memo(() => {
-  const [page, setPage] = useState(1);
   const [data, setData] = useState<ClipData[]>([]);
+  const [query, setQuery] = useState<ClipboardDataQuery>({ page: 1, size: defaultSize });
   const [activeCard, setActiveCard] = useState<number | undefined>(undefined);
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0 });
   const [activeRecord, setActiveRecord] = useState<ClipData | undefined>(undefined);
@@ -24,21 +24,24 @@ export const Body = memo(() => {
   const isFetching = useRef(false);
   const { t } = useTranslation();
 
-  const fetchData = async () => {
+  const getData = async (queryData: ClipboardDataQuery) => {
     if (isFetching.current) return;
     isFetching.current = true;
-    const result = await window.ipc.getData(defaultSize, page);
-    if (result && result.length > 0) {
-      setData(prevData => (prevData ? [...prevData, ...result] : [...result]));
-      setPage(page + 1);
+    const res = await window.ipc.getData(queryData);
+    if (res) {
+      if (queryData.page && queryData.page > 1) {
+        setData(prevData => (prevData ? [...prevData, ...res] : [...res]));
+      } else {
+        setData(res);
+      }
+      isFetching.current = false;
     }
-    isFetching.current = false;
   };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
     if (target.scrollHeight - target.scrollTop === target.clientHeight) {
-      fetchData().then();
+      query?.page && setQuery({ ...query, page: query?.page + 1 });
     }
   };
 
@@ -68,25 +71,21 @@ export const Body = memo(() => {
   };
 
   useEffect(() => {
-    fetchData().then();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    getData(query).then();
+  }, [query.page, query.content]);
+
+  useEffect(() => {
+    if (search) {
+      setQuery({ content: search });
+    } else {
+      setQuery({ page: 1, size: defaultSize });
+    }
+  }, [search]);
 
   useEffect(() => {
     window.ipc.onClipboardData(handleClipboardDataDebounced);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (search) {
-        const result = await window.ipc.searchContent(search);
-        setData(result || []);
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [search]);
 
   useEffect(() => {
     const handleBlur = () => {

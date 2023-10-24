@@ -3,7 +3,7 @@ import { sendClipboardDataToRenderer } from '../main_page/main';
 import { clipboardManager, databaseManager } from './singletons';
 class IntervalManager {
   private clipboardIntervalID: ReturnType<typeof setInterval> | undefined;
-  startClipboardInterval() {
+  async startClipboardInterval() {
     if (!this.clipboardIntervalID) {
       this.clipboardIntervalID = setInterval(async () => {
         const clipboardData = clipboardManager.checkClipboardContent();

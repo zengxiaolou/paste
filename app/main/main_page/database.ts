@@ -1,7 +1,8 @@
 import { join } from 'node:path';
 import sqlite3 from 'sqlite3';
 import { app } from 'electron';
-import { ClipData } from './type';
+import { ClipboardDataQuery, ClipData } from './type';
+import { DataTypes } from './enum';
 
 class DatabaseManager {
   private db: sqlite3.Database | undefined = undefined;
@@ -83,13 +84,51 @@ class DatabaseManager {
     });
   }
 
-  public getRowsByPage(size: number, page: number): Promise<ClipData[]> {
-    const offset = size * (page - 1);
+  // eslint-disable-next-line complexity
+  public getRowsByPage(parameters: ClipboardDataQuery): Promise<ClipData[]> {
+    let query = 'SELECT * FROM clipboard';
+    const queryParameters: (string | number | boolean | Date)[] = [];
+    const conditions = [];
+
+    if (parameters?.tags) {
+      conditions.push('tags LIKE ?');
+      queryParameters.push('%' + parameters.tags + '%');
+    }
+    if (parameters?.type) {
+      conditions.push('type =?');
+      queryParameters.push(parameters.type);
+    }
+    if (parameters?.collection) {
+      conditions.push('collection =?');
+      queryParameters.push(parameters.collection);
+    }
+    if (parameters?.type !== DataTypes.IMAGE && parameters?.content) {
+      conditions.push('content LIKE ?');
+      queryParameters.push('%' + parameters.content + '%');
+    }
+    if (parameters?.appName) {
+      conditions.push('app_name =?');
+      queryParameters.push(parameters?.appName);
+    }
+    if (parameters?.createdAt) {
+      const formattedDate = new Date(parameters.createdAt).toISOString().split('T')[0];
+      conditions.push('DATE(created_at) = DATE(?)');
+      queryParameters.push(formattedDate);
+    }
+
+    if (conditions.length > 0) {
+      query += ' WHERE ' + conditions.join(' AND ');
+    }
+
+    if (parameters?.size && parameters?.size > 0 && parameters?.page) {
+      const offset = parameters.size * (parameters.page - 1);
+      query += ' ORDER BY id DESC LIMIT ? OFFSET ?';
+      queryParameters.push(parameters.size, offset);
+    }
 
     return new Promise((resolve, reject) => {
       this.db?.serialize(() => {
-        const query = `SELECT * FROM clipboard ORDER BY id DESC LIMIT ? OFFSET ?`;
-        this.db?.all(query, [size, offset], (error, rows: ClipData[]) => {
+        this.db?.all(query, queryParameters, (error, rows: ClipData[]) => {
           if (error) {
             reject(error);
           } else {
@@ -131,6 +170,19 @@ class DatabaseManager {
     return new Promise((resolve, reject) => {
       const query = 'UPDATE clipboard SET tags =?, collection =? WHERE id =?';
       this.db?.run(query, [data.tags, data.collection, id], error => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  }
+
+  public deleteByCreatedAt(created_at: Date): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const query = 'DELETE FROM clipboard WHERE created_at <?';
+      this.db?.run(query, created_at, error => {
         if (error) {
           reject(error);
         } else {

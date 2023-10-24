@@ -13,9 +13,9 @@ export const ContextMenu: FC<props> = ({ record }) => {
   const handleDelete = async () => {
     if (record) {
       const result = window.ipc.deleteRecord(record.id, record.type);
-      if (result) {
-        setDeletedRecord(record);
-      }
+      // if (result) {
+      //   setDeletedRecord(record);
+      // }
     }
   };
   return (

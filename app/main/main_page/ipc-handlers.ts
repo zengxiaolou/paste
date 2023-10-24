@@ -16,7 +16,7 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
 
   ipcMain.handle(Channels.GET_DATA, async (event, arguments_): Promise<ClipData[] | undefined> => {
     try {
-      const row: ClipData[] = await databaseManager.getRowsByPage(arguments_.size, arguments_.page);
+      const row: ClipData[] = await databaseManager.getRowsByPage(arguments_.query);
       return row.map((item: ClipData) => {
         if (item.type === DataTypes.IMAGE) {
           const image = nativeImage.createFromPath(item.content);
