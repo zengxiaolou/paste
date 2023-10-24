@@ -1,21 +1,18 @@
-import { Button, Card, Space, Tabs, Image, BackTop } from '@arco-design/web-react';
+import { Button, Tabs, BackTop } from '@arco-design/web-react';
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { formatDateTime } from './utils/time';
-import { extractMostFrequentBackgroundColor } from './utils/string';
 import { debounce } from './utils/func';
-import { ClipboardDataQuery, ClipData } from './type';
+import { ClipboardDataQuery, ClipData } from './types/type';
 import { Context } from './Context';
 import { ContextMenu } from './component/ContextMenu';
-import { Collect } from './component/Collect';
+import { ContentCard } from './component/ContentCard';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
 export const Body = memo(() => {
   const [data, setData] = useState<ClipData[]>([]);
   const [query, setQuery] = useState<ClipboardDataQuery>({ page: 1, size: defaultSize });
-  const [activeCard, setActiveCard] = useState<number | undefined>(undefined);
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0 });
   const [activeRecord, setActiveRecord] = useState<ClipData | undefined>(undefined);
 
@@ -50,12 +47,6 @@ export const Body = memo(() => {
   };
   const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
 
-  const handleContextMenu = (event: any, record: ClipData) => {
-    event.preventDefault();
-    setContextMenu({ visible: true, x: event.pageX, y: event.pageY });
-    setActiveRecord(record);
-  };
-
   const renderContextMenu = () => {
     if (!contextMenu.visible) return null;
     return (
@@ -63,11 +54,6 @@ export const Body = memo(() => {
         <ContextMenu record={activeRecord} />
       </div>
     );
-  };
-
-  const handleClick = (index: number) => {
-    setContextMenu({ ...contextMenu, visible: false });
-    setActiveCard(index);
   };
 
   useEffect(() => {
@@ -118,33 +104,12 @@ export const Body = memo(() => {
       <TabPane title={t('All')} key="all">
         <BodyContainer onScroll={handleScroll} id="top">
           {data?.map((v: ClipData, index: number) => (
-            <UCard
-              key={index}
-              isActive={activeCard === index}
-              bgColor={extractMostFrequentBackgroundColor(v.content)}
-              onClick={() => handleClick(index)}
-              onDoubleClick={() => window.ipc.requestPaste(v.type, v.content, v.id)}
-              onContextMenu={event => handleContextMenu(event, v)}
-            >
-              <Container>
-                {v.type === 'html' && (
-                  <Space>
-                    {v.icon && <Icon src={v?.icon} height={40} />}
-                    <Html dangerouslySetInnerHTML={{ __html: v?.content }} />
-                  </Space>
-                )}
-                {v.type === 'image' && v.icon && <Icon src={v?.icon} height={40} />}
-                {v.type === 'image' && (
-                  <ImageContainer>
-                    <CenteredImage src={v?.content} loader={true} height={60} />
-                  </ImageContainer>
-                )}
-                <Space>
-                  <Collect data={v} />
-                  {v?.created_at && formatDateTime(v?.created_at)}
-                </Space>
-              </Container>
-            </UCard>
+            <ContentCard
+              index={index}
+              data={v}
+              onContext={setActiveRecord}
+              onContextMenu={(visible, x, y) => setContextMenu({ visible: visible, x: x, y: y })}
+            />
           ))}
           {renderContextMenu()}
           <BackTop
@@ -203,46 +168,3 @@ const BodyContainer = styled.div`
     display: none;
   }
 `;
-
-const UCard = styled(Card)<{ isActive?: boolean; bgColor?: string }>`
-  border-radius: 15px;
-  margin-bottom: 8px;
-  margin-right: 8px;
-  .arco-card-body {
-    padding: 8px 16px;
-  }
-  align-content: center;
-  border: ${props => (props.isActive ? '1px solid #007AFF' : 'none')};
-  background-color: ${props => props.bgColor || 'defaultBgColor'};
-`;
-
-const Container = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const Html = styled.div`
-  height: 60px;
-  max-height: 60px;
-  max-width: 800px;
-  overflow: hidden;
-  align-content: center;
-`;
-
-const ImageContainer = styled.div`
-  height: 70px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-`;
-
-const CenteredImage = styled(Image)`
-  max-height: 100%;
-  max-width: 90%;
-  margin: auto;
-  display: block;
-`;
-
-const Icon = styled(Image)``;

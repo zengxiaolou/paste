@@ -13,7 +13,7 @@ app
     mainWindow = create();
     await createTray(mainWindow);
     menuBuilder.buildMenu();
-    intervalManager.startClipboardInterval();
+    await intervalManager.startClipboardInterval();
     try {
       const lastClipboardData: ClipData = await databaseManager.getLastRow();
       lastClipboardData && clipboardManager.setInitContent(lastClipboardData.type, lastClipboardData.content);

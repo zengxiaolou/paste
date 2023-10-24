@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react';
 import { Menu } from '@arco-design/web-react';
 import { Context } from '../Context';
-import { ClipData } from '../type';
+import { ClipData } from '../types/type';
 
 const Item = Menu.Item;
 
