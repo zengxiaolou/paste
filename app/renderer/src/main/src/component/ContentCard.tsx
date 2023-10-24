@@ -1,10 +1,11 @@
 import { extractMostFrequentBackgroundColor } from '../utils/string';
-import { Card, Image, Space } from '@arco-design/web-react';
+import { Card, Image, Notification, Space } from '@arco-design/web-react';
 import { Collect } from './Collect';
 import { formatDateTime } from '../utils/time';
 import React, { FC, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { ClipData } from '../types/type';
+import { useTranslation } from 'react-i18next';
 
 interface props {
   index: number;
@@ -17,6 +18,8 @@ interface props {
 
 export const ContentCard: FC<props> = ({ index, data, onContext, onContextMenu, onClick, activeCard }) => {
   const { content, type, id, icon, created_at } = data;
+  const { t } = useTranslation();
+
   const handleClick = (index: number) => {
     onContextMenu(false, null, null);
     onClick(index);
@@ -28,13 +31,19 @@ export const ContentCard: FC<props> = ({ index, data, onContext, onContextMenu, 
     onContext(record);
   };
 
+  const handleDoubleClick = async (type: string, content: string, id: number) => {
+    const res = await window.ipc.requestPaste(type, content, id);
+    console.log('🤮 ~ file:ContentCard method:handleDoubleClick line:36 -----', res);
+    res && Notification.success({ content: t('Copy success') });
+  };
+
   return (
     <UCard
       key={index}
       isActive={activeCard === index}
       bgColor={extractMostFrequentBackgroundColor(content)}
       onClick={() => handleClick(index)}
-      onDoubleClick={() => window.ipc.requestPaste(type, content, id)}
+      onDoubleClick={() => handleDoubleClick(type, content, id)}
       onContextMenu={(event: MouseEvent<HTMLDivElement>) => handleContextMenu(event, data)}
     >
       <Container>
@@ -80,6 +89,7 @@ const Html = styled.div`
   height: 60px;
   max-height: 60px;
   max-width: 800px;
+  width: 100%;
   overflow: hidden;
   align-content: center;
 `;

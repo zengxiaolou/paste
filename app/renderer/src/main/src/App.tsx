@@ -25,8 +25,8 @@ function App() {
 }
 
 const Container = styled('Layout')`
-  background-color: rgba(41, 41, 42);
-  backdrop-filter: blur(100px);
+  background-color: rgb(41, 41, 42);
+  //backdrop-filter: blur(100px);
   overflow: hidden;
   position: relative;
   height: 100vh;

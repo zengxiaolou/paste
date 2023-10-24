@@ -57,6 +57,9 @@ export const Body = memo(() => {
   const tabs = createTabs(t);
 
   const getData = async (queryData: ClipboardDataQuery) => {
+    if (query.page === 1) {
+      setData([]);
+    }
     if (isFetching.current) return;
     isFetching.current = true;
     setLoading(true);
@@ -118,6 +121,7 @@ export const Body = memo(() => {
 
   useEffect(() => {
     getData(query).then();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
   useEffect(() => {
@@ -164,9 +168,10 @@ export const Body = memo(() => {
       {tabs.map(item => (
         <TabPane title={t(item.title)} key={item.key}>
           <BodyContainer onScroll={handleScroll} id="top">
-            <Spin loading={loading} block dot size={20}>
+            <Spin loading={loading} block dot size={16} style={{ height: '100%' }}>
               {data?.map((v: ClipData, index: number) => (
                 <ContentCard
+                  key={index}
                   index={index}
                   data={v}
                   onContext={setActiveRecord}
@@ -176,11 +181,7 @@ export const Body = memo(() => {
                 />
               ))}
               {renderContextMenu()}
-              <BackTop
-                visibleHeight={40}
-                style={{ position: 'absolute' }}
-                target={() => document.getElementById('top') || document.body}
-              />
+              <UBackTop visibleHeight={40} target={() => document.getElementById('top') || document.body} />
             </Spin>
           </BodyContainer>
         </TabPane>
@@ -217,5 +218,14 @@ const BodyContainer = styled.div`
   &::-webkit-scrollbar-corner,
   &::-webkit-resizer {
     display: none;
+  }
+`;
+
+const UBackTop = styled(BackTop)`
+  position: fixed;
+  bottom: 10px;
+  right: 30px;
+  .arco-backtop-button {
+    background-color: #2b2c2d;
   }
 `;
