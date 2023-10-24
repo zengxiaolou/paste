@@ -4,7 +4,6 @@ export interface ClipData {
   id?: number;
   type: DataTypes;
   content: string;
-
   icon?: string;
   appName?: string;
   from?: string;

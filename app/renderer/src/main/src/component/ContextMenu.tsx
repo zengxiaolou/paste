@@ -11,11 +11,12 @@ interface props {
 export const ContextMenu: FC<props> = ({ record }) => {
   const { setDeletedRecord } = useContext(Context);
   const handleDelete = async () => {
+    console.log('🤮 ~ file:ContextMenu method:handleDelete line:14 -----', record);
     if (record) {
-      const result = window.ipc.deleteRecord(record.id, record.type);
-      // if (result) {
-      //   setDeletedRecord(record);
-      // }
+      const result = await window.ipc.deleteRecord(record.id, record.type);
+      if (result) {
+        setDeletedRecord(record);
+      }
     }
   };
   return (

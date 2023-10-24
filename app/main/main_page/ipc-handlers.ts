@@ -42,16 +42,12 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
     clipboardManager.paste(arguments_.type, arguments_.content);
   });
 
-  ipcMain.handle(Channels.CONTENT_SEARCH, async (event, search) => {
-    return await databaseManager.getByContent(search);
-  });
-
-  ipcMain.handle(Channels.DELETE_RECORD, async (event, id: number, type: DataTypes) => {
-    if (type === DataTypes.IMAGE) {
-      const row = await databaseManager.getDataById(id);
+  ipcMain.handle(Channels.DELETE_RECORD, async (event, arguments_) => {
+    if (arguments_.type === DataTypes.IMAGE) {
+      const row = await databaseManager.getDataById(arguments_.id);
       await deleteFile(row.content);
     }
-    return await databaseManager.deleteById(id);
+    return await databaseManager.deleteById(arguments_.id);
   });
 
   ipcMain.handle(Channels.UPDATE_RECORD, async (event, arguments_) => {

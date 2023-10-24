@@ -2,24 +2,24 @@ import { extractMostFrequentBackgroundColor } from '../utils/string';
 import { Card, Image, Space } from '@arco-design/web-react';
 import { Collect } from './Collect';
 import { formatDateTime } from '../utils/time';
-import React, { FC, useState, MouseEvent } from 'react';
+import React, { FC, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { ClipData } from '../types/type';
 
 interface props {
   index: number;
   data: ClipData;
-
   onContext: (value: ClipData) => void;
   onContextMenu: (visible: boolean, x: any, y: any) => void;
+  onClick: (value: number) => void;
+  activeCard?: number;
 }
 
-export const ContentCard: FC<props> = ({ index, data, onContext, onContextMenu }) => {
-  const [activeCard, setActiveCard] = useState<number | undefined>(undefined);
+export const ContentCard: FC<props> = ({ index, data, onContext, onContextMenu, onClick, activeCard }) => {
   const { content, type, id, icon, created_at } = data;
   const handleClick = (index: number) => {
     onContextMenu(false, null, null);
-    setActiveCard(index);
+    onClick(index);
   };
 
   const handleContextMenu = (event: MouseEvent<HTMLDivElement>, record: ClipData) => {

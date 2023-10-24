@@ -138,20 +138,6 @@ class DatabaseManager {
       });
     });
   }
-  public getByContent(content: string): Promise<ClipData[]> {
-    return new Promise((resolve, reject) => {
-      this.db?.serialize(() => {
-        const query = `SELECT * FROM clipboard WHERE content like ? and type =? order by created_at desc `;
-        this.db?.all(query, [`%${content}%`, 'html'], (error, rows: ClipData[]) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(rows);
-          }
-        });
-      });
-    });
-  }
 
   public deleteById(id: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
