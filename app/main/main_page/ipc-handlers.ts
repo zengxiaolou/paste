@@ -1,6 +1,7 @@
 import { BrowserWindow, ipcMain, nativeImage } from 'electron';
 import { clipboardManager, databaseManager } from '../components/singletons';
 import { deleteFile } from '../utils/file';
+import { stateManager } from '../components/singletons';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';
@@ -39,7 +40,9 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
       const imageData = await databaseManager.getDataById(arguments_.id);
       arguments_.content = imageData.content;
     }
-    clipboardManager.paste(arguments_.type, arguments_.content);
+    const result = clipboardManager.paste(arguments_.type, arguments_.content);
+    result && stateManager?.getMainWindow()?.hide();
+    return result;
   });
 
   ipcMain.handle(Channels.DELETE_RECORD, async (event, arguments_) => {

@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, globalShortcut } from 'electron';
 import { create } from './main_page/main';
 import { clipboardManager, databaseManager, intervalManager, menuBuilder } from './components/singletons';
 import { createTray } from './components/tray';
@@ -14,6 +14,15 @@ app
     await createTray(mainWindow);
     menuBuilder.buildMenu();
     await intervalManager.startClipboardInterval();
+
+    globalShortcut.register('Command+Shift+X', () => {
+      if (mainWindow?.isVisible()) {
+        mainWindow.hide();
+      } else {
+        mainWindow?.showInactive();
+      }
+    });
+
     try {
       const lastClipboardData: ClipData = await databaseManager.getLastRow();
       lastClipboardData && clipboardManager.setInitContent(lastClipboardData.type, lastClipboardData.content);

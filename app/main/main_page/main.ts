@@ -57,6 +57,7 @@ function create() {
       });
   }
   win.webContents.openDevTools();
+  stateManager.setMainWindow(win);
   win.on('closed', () => {
     stateManager.setMainWindow();
   });

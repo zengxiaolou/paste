@@ -69,7 +69,7 @@ class ClipboardManager {
     return imagePath;
   }
 
-  paste(type: string, content: string) {
+  paste(type: string, content: string): boolean {
     if (type === DataTypes.HTML) {
       const dom = new JSDOM(content);
       const text = dom.window.document.body.textContent || '';
@@ -97,6 +97,7 @@ class ClipboardManager {
     } else {
       exec('xdotool key ctrl+v');
     }
+    return true;
   }
 }
 

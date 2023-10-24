@@ -45,7 +45,7 @@ export const Body = memo(() => {
   const [query, setQuery] = useState<ClipboardDataQuery>({ page: 1, size: defaultSize });
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0 });
   const [activeRecord, setActiveRecord] = useState<ClipData | undefined>(undefined);
-  const [activeCard, setActiveCard] = useState<number | undefined>(undefined);
+  const [activeCard, setActiveCard] = useState<number>(-1);
   const [activeTab, setActiveTab] = useState<string | undefined>('all');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -162,6 +162,23 @@ export const Body = memo(() => {
       });
     }
   }, [contextMenu, deletedRecord]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'n') {
+        setActiveCard(prevIndex => (prevIndex + 1) % data.length);
+        event.preventDefault();
+      }
+      if (event.ctrlKey && event.key === 'p') {
+        setActiveCard(prevIndex => (prevIndex - 1 + data.length) % data.length);
+        event.preventDefault();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [data.length]);
 
   return (
     <CTabs type="rounded" defaultActiveTab="all" activeTab={activeTab} onChange={handleChangeTab}>
