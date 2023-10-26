@@ -23,10 +23,34 @@
     yarn start:main // Start main process
     yarn start:renderer // Start rendering process
   ```
+### Build
+  ``` shell
+    yarn dist
+  ```
 
 ## Application Screenshots
 
 ![](docs/screenshot.png)
 
+## Features for the Next Version
+
+- Support for basic functions in Windows and Linux
+- Improved menu
+- Added right-click menu.
+
 ## Changelog
-None for now
+#### v0.0.1 (2023-10-27)
+"This is the first version, which is very rough, but the basic functionalities that a clipboard should have are already in place (MacOS).
+I will strive to support the basic functionalities for Linux and Windows by November.
+The currently implemented features are:
+
+- Clipboard monitoring and saving to the database
+- i18n (internationalization) support
+- Retrieving icons of the source of copied content
+- Double-clicking to copy clipboard content
+- Text search function
+- Content categorization
+- Shortcut key activation
+- Some menu functions
+- Favorites feature."
+
