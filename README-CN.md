@@ -24,6 +24,10 @@
     yarn start:main //启动主进程
     yarn start:renderer //启动渲染进程
   ```
+### 打包
+  ``` shell
+    yarn dist
+  ```
 
 ## 应用截图
 

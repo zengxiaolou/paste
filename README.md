@@ -23,6 +23,10 @@
     yarn start:main // Start main process
     yarn start:renderer // Start rendering process
   ```
+### Build
+  ``` shell
+    yarn dist
+  ```
 
 ## Application Screenshots
 
