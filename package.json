@@ -1,14 +1,17 @@
 {
   "name": "Electron_Clipboard_Manager",
-  "verson": "1.0.0",
+  "version": "1.0.0",
   "description": "electron clip manager",
-  "main": "app/main/index.ts",
+  "main": "app/build/index.js",
   "scripts": {
-    "build:main": "tsc -p app/main/tsconfig.json",
+    "build:main": "tsc -p app/main/tsconfig.json && babel app/dist --out-dir app/build && rm -rf app/dist",
+    "build:renderer": "cd app/renderer/src/main && yarn build",
     "start": "concurrently 'yarn run start:render' 'wait-on http://127.0.0.1:3061 && yarn run build:main && yarn run start:main'",
-    "start:main": "electron app/dist/index.js",
+    "start:main": "electron app/build/index.js",
     "start:render": "cd app/renderer/src/main && yarn start",
-    "watch:main": "nodemon"
+    "watch:main": "nodemon",
+    "dist": "rm -rf build && yarn build:main && yarn build:renderer &&  electron-builder",
+    "babel": "babel app/dist --out-dir app/build"
   },
   "author": "ruler",
   "license": "MIT",
@@ -25,6 +28,9 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
     "@types/i18next": "^13.0.0",
     "@types/jsdom": "^21.1.4",
     "@types/node": "^20.8.7",
@@ -34,6 +40,7 @@
     "@typescript-eslint/parser": "5.62.0",
     "concurrently": "^8.2.1",
     "electron": "27.0.0",
+    "electron-builder": "^24.6.4",
     "electron-reloader": "^1.2.3",
     "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
@@ -62,11 +69,25 @@
     "typescript": "^5.2.2",
     "wait-on": "^7.0.1"
   },
-  "win": {
-    "icon": "assets/icon.ico",
-    "target": [
-      "squirrel",
-      "nsis"
-    ]
+  "build": {
+    "appId": "com.ruler.ecm",
+    "productName": "Electron Clipboard Manager",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "app/build/**/*",
+      "app/renderer/src/main/build/**/*",
+      "assets/**/*"
+    ],
+    "mac": {
+      "icon": "assets/icon.icns"
+    },
+    "win": {
+      "icon": "assets/icon.ico"
+    },
+    "linux": {
+      "icon": "assets/icon.png"
+    }
   }
 }

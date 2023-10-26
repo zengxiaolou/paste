@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import * as promises_fs from 'node:fs/promises';
 import { PathLike } from 'node:fs';
 import SimplePlist from 'simple-plist';
-import { MAIN_PAGE_DIRECTION } from '../main_page/const';
+import { app } from 'electron';
 
 class MacOSUtils {
   public getActiveApplicationName = (): Promise<string> => {
@@ -63,8 +63,10 @@ class MacOSUtils {
     });
   }
   private async convertIcnsToIconset(icnsPath: string, iconName: string) {
-    const temporaryDirection = path.join(MAIN_PAGE_DIRECTION, 'temp');
+    const temporaryDirection = path.join(app.getPath('userData'), 'temp');
+    const transformDirection = temporaryDirection.replaceAll(' ', '\\ ');
     const temporaryPath = path.join(temporaryDirection, iconName.replaceAll(' ', ''));
+    const TransformPath = path.join(transformDirection, iconName.replaceAll(' ', ''));
 
     fs.mkdirSync(temporaryDirection, { recursive: true });
 
@@ -72,7 +74,7 @@ class MacOSUtils {
     return new Promise((resolve, reject) => {
       const iconsetPath = temporaryPath.replace('.icns', '.iconset');
       // eslint-disable-next-line security/detect-child-process
-      exec(`iconutil -c iconset ${temporaryPath}`, (error, stdout, stderr) => {
+      exec(`iconutil -c iconset ${TransformPath}`, (error, stdout, stderr) => {
         if (error) {
           console.error(`Error: ${error.message}`);
           return reject(error);

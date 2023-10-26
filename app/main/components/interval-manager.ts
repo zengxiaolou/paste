@@ -1,4 +1,4 @@
-import { AppInfoFactory } from '../platformUtils/app-info-factory';
+import { AppInfoFactory } from '../platform-utils/app-info-factory';
 import { sendClipboardDataToRenderer } from '../main_page/main';
 import { clipboardManager, databaseManager } from './singletons';
 class IntervalManager {

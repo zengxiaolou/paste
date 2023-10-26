@@ -2,11 +2,10 @@ import crypto from 'node:crypto';
 import { exec } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { clipboard, nativeImage, NativeImage } from 'electron';
+import { app, clipboard, nativeImage, NativeImage } from 'electron';
 import { JSDOM } from 'jsdom';
 import { ClipData } from './type';
 import { DataTypes } from './enum';
-import { MAIN_PAGE_DIRECTION } from './const';
 
 class ClipboardManager {
   private lastHtmlContent: string | undefined = undefined;
@@ -15,7 +14,7 @@ class ClipboardManager {
   private readonly imageDir: string;
 
   constructor() {
-    this.imageDir = path.join(MAIN_PAGE_DIRECTION, 'images');
+    this.imageDir = path.join(app.getPath('userData'), 'images');
 
     if (!fs.existsSync(this.imageDir)) {
       fs.mkdirSync(this.imageDir);

@@ -11,6 +11,6 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "nodenext"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "*.d.ts", "src/**/.js"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "*.d.ts", "src/**/*.js"],
   "exclude": ["node_modules"]
 }
