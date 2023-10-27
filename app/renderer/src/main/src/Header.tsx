@@ -16,13 +16,9 @@ export const Header = () => {
   const { search, setSearch } = React.useContext(Context);
 
   const { t } = useTranslation();
-  const handleFixed = () => {
-    if (window.ipc) {
-      window.ipc.toggleAlwaysOnTop();
-      setFixed(!fixed);
-    } else {
-      console.error('ipc object is not defined on window');
-    }
+  const handleFixed = async () => {
+    const res = await window.ipc.toggleAlwaysOnTop();
+    res && setFixed(!fixed);
   };
   return (
     <Wrapper>

@@ -6,13 +6,15 @@ import { stateManager } from '../components/singletons';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';
-export const registerIpcHandler = (win: BrowserWindow | undefined) => {
-  ipcMain.on(Channels.TOGGLE_ALWAYS_ON_TOP, event => {
+export const registerIpcHandler = () => {
+  ipcMain.handle(Channels.TOGGLE_ALWAYS_ON_TOP, async () => {
+    const win = stateManager.getMainWindow();
     if (win) {
       const isTopmost = win.isAlwaysOnTop();
       win.setAlwaysOnTop(!isTopmost);
-      event.returnValue = !isTopmost;
+      return !isTopmost;
     }
+    return false;
   });
 
   ipcMain.handle(Channels.GET_DATA, async (event, arguments_): Promise<ClipData[] | undefined> => {
@@ -70,9 +72,9 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
           },
         })
       );
-      const win = BrowserWindow.fromWebContents(event.sender);
-      if (win) {
-        menu.popup({ window: win });
+      const window = BrowserWindow.fromWebContents(event.sender);
+      if (window) {
+        menu.popup({ window });
       }
     });
   });
