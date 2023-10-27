@@ -194,7 +194,7 @@ export const Body = memo(() => {
 });
 
 const CTabs = styled(Tabs)`
-  margin: 16px;
+  margin: 8px 16px;
   height: 100%;
   top: 60px;
 `;

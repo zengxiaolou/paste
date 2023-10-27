@@ -10,7 +10,7 @@ const ChannelsMap = {
 };
 
 contextBridge.exposeInMainWorld('ipc', {
-  toggleAlwaysOnTop: () => ipcRenderer.send(ChannelsMap.ON_TOP),
+  toggleAlwaysOnTop: async () => ipcRenderer.invoke(ChannelsMap.ON_TOP),
   getData: async query => {
     return await ipcRenderer.invoke(ChannelsMap.GET_DATA, { query });
   },

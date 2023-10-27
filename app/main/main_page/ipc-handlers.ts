@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem } from 'electron';
+import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem, dialog } from 'electron';
 import i18n from 'i18next';
 import { clipboardManager, databaseManager } from '../components/singletons';
 import { deleteFile } from '../utils/file';
@@ -12,7 +12,7 @@ export const registerIpcHandler = () => {
     if (win) {
       const isTopmost = win.isAlwaysOnTop();
       win.setAlwaysOnTop(!isTopmost);
-      return !isTopmost;
+      return true;
     }
     return false;
   });

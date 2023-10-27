@@ -31,8 +31,8 @@ function create() {
     y: 0,
     width: windowWidth,
     height: windowHeight,
-    transparent: true,
-    frame: false,
+    backgroundColor: '#292A2A10',
+    // frame: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -40,7 +40,7 @@ function create() {
         MAIN_PAGE_DIRECTION,
         isDev ? '../../renderer/src/main/public/preload.js' : '../../renderer/src/main/build/preload.js'
       ),
-      devTools: isDev,
+      devTools: true,
     },
     icon: path.join(MAIN_PAGE_DIRECTION, '../../../../assets/icon.ico'),
   });

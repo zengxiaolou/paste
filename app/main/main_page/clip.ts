@@ -10,7 +10,7 @@ import { DataTypes } from './enum';
 class ClipboardManager {
   private lastHtmlContent: string | undefined = undefined;
   private lastImageHash: string | undefined = undefined;
-  private pasteContent: ClipData | undefined;
+  private pasteContentQueue: ClipData[] = [];
   private readonly imageDir: string;
 
   constructor() {
@@ -20,42 +20,51 @@ class ClipboardManager {
       fs.mkdirSync(this.imageDir);
     }
   }
-
   setInitContent(type: DataTypes, content: string) {
     if (type === 'html') {
-      this.lastHtmlContent = content;
+      this.pasteContentQueue.push({ type, content: content });
     } else {
       fs.readFile(content, (error: Error | null, data: any) => {
         if (error) {
           console.log('Error reading file:', error);
         } else {
-          this.lastImageHash = crypto.createHash('md5').update(data).digest('hex');
+          this.pasteContentQueue.push({ type, content: crypto.createHash('md5').update(data).digest('hex') });
         }
       });
     }
   }
-
   checkClipboardContent(): ClipData | undefined {
     const htmlContent = clipboard.readHTML();
     const imageContent = clipboard.readImage();
     const imageBuffer = imageContent.toPNG();
     const currentImageHash = crypto.createHash('md5').update(imageBuffer).digest('hex');
-    if (this.pasteContent?.type === DataTypes.HTML && htmlContent === this.pasteContent?.content) {
-      return undefined;
-    }
-    if (this.pasteContent?.type === DataTypes.IMAGE && currentImageHash === this.pasteContent?.content) {
-      return undefined;
+
+    let newContent: ClipData | undefined;
+
+    if (htmlContent) {
+      newContent = { type: DataTypes.HTML, content: htmlContent };
+    } else if (!imageContent.isEmpty()) {
+      const imagePath = this.saveImageToDisk(imageContent);
+      newContent = { type: DataTypes.IMAGE, content: imagePath };
     }
 
-    if (htmlContent && htmlContent !== this.lastHtmlContent) {
-      this.lastHtmlContent = htmlContent;
-      this.lastImageHash = '';
-      return { type: DataTypes.HTML, content: htmlContent };
-    } else if (!imageContent.isEmpty() && currentImageHash !== this.lastImageHash) {
-      this.lastImageHash = currentImageHash;
-      this.lastHtmlContent = '';
-      const imagePath = this.saveImageToDisk(imageContent);
-      return { type: DataTypes.IMAGE, content: imagePath };
+    if (newContent) {
+      const isDuplicate = this.pasteContentQueue.some(item => {
+        if (item.type === DataTypes.HTML && item.content === newContent?.content) {
+          return true;
+        }
+        if (item.type === DataTypes.IMAGE && item.content === currentImageHash) {
+          return true;
+        }
+      });
+
+      if (!isDuplicate) {
+        this.pasteContentQueue.push(newContent);
+        if (this.pasteContentQueue.length > 10) {
+          this.pasteContentQueue.shift();
+        }
+        return newContent;
+      }
     }
 
     return undefined;
@@ -72,16 +81,19 @@ class ClipboardManager {
     if (type === DataTypes.HTML) {
       const dom = new JSDOM(content);
       const text = dom.window.document.body.textContent || '';
-      this.pasteContent = { type, content: text };
+      this.pasteContentQueue.push({ type, content: text });
+      if (this.pasteContentQueue.length > 10) {
+        this.pasteContentQueue.shift();
+      }
       clipboard.writeText(text);
     } else if (type === DataTypes.IMAGE) {
-      this.pasteContent = { type, content };
       fs.readFile(content, (error: Error | null, data: any) => {
         if (error) {
           console.log('Error reading file:', error);
         } else {
-          if (this.pasteContent?.content) {
-            this.pasteContent.content = crypto.createHash('md5').update(data).digest('hex');
+          this.pasteContentQueue.push({ type, content: crypto.createHash('md5').update(data).digest('hex') });
+          if (this.pasteContentQueue.length > 10) {
+            this.pasteContentQueue.shift();
           }
         }
       });
