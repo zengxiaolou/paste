@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem } from 'electron';
+import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem, dialog } from 'electron';
 import i18n from 'i18next';
 import { clipboardManager, databaseManager } from '../components/singletons';
 import { deleteFile } from '../utils/file';
@@ -43,7 +43,8 @@ export const registerIpcHandler = () => {
       arguments_.content = imageData.content;
     }
     const result = clipboardManager.paste(arguments_.type, arguments_.content);
-    result && stateManager?.getMainWindow()?.hide();
+    await dialog.showMessageBox({ type: 'info', title: '通知', message: '复制成功' });
+    // result && stateManager?.getMainWindow()?.hide();
     return result;
   });
 
