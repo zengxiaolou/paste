@@ -4,7 +4,7 @@ import { DataTypes } from './src/types/enum';
 declare global {
   interface Window {
     ipc: {
-      toggleAlwaysOnTop: () => void;
+      toggleAlwaysOnTop: () => Promise<boolean>;
       getData: (query: ClipboardDataQuery) => Promise<ClipData[] | undefined>;
       onClipboardData: (callback: (data: any) => void) => void;
       requestPaste: (type: string, content: string, id: number) => Promise<Boolean>;

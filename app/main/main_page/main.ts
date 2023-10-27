@@ -10,7 +10,7 @@ import { MAIN_PAGE_DIRECTION } from './const';
 
 let win = stateManager.getMainWindow();
 const init = () => {
-  registerIpcHandler(win);
+  registerIpcHandler();
 };
 
 init();
@@ -24,10 +24,10 @@ function create() {
 
   const windowWidth = Math.floor(screenWidth / 3);
   const windowHeight = Math.floor(screenHeight * 0.9);
-  // const xPosition = screenWidth - windowWidth - 24;
+  const xPosition = screenWidth - windowWidth - 24;
 
   win = new BrowserWindow({
-    x: 0,
+    x: isDev ? 0 : xPosition,
     y: 0,
     width: windowWidth,
     height: windowHeight,

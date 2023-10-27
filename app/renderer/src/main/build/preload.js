@@ -5,7 +5,6 @@ const ChannelsMap = {
   GET_DATA: 'get-data',
   CLIPBOARD_DATA: 'clipboard-data',
   REQUEST_PASTE: 'request-paste',
-  DELETE_RECORD: 'delete-record',
   UPDATE_RECORD: 'update-record',
   SHOW_CONTEXT_MENU: 'show-context-menu',
 };
@@ -24,12 +23,8 @@ contextBridge.exposeInMainWorld('ipc', {
     return await ipcRenderer.invoke(ChannelsMap.REQUEST_PASTE, { type, content, id });
   },
 
-  deleteRecord: async (id, type) => {
-    return await ipcRenderer.invoke(ChannelsMap.DELETE_RECORD, { id, type });
-  },
-
   updateRecord: async data => {
     return await ipcRenderer.invoke(ChannelsMap.UPDATE_RECORD, { data });
   },
-  showContextMenu: () => ipcRenderer.invoke(ChannelsMap.SHOW_CONTEXT_MENU),
+  showContextMenu: async data => await ipcRenderer.invoke(ChannelsMap.SHOW_CONTEXT_MENU, data),
 });
