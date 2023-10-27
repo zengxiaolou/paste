@@ -38,7 +38,7 @@ export const Header = () => {
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 16px;
+  padding: 8px 16px 0 16px;
 `;
 
 const Settings = styled(IconSettings)`
@@ -55,7 +55,7 @@ const Fixed = styled(IconPushpin)<FixedProps>`
 
 const Search = styled(Input.Search)`
   margin-left: 16px;
-  width: 90vw;
+  width: calc(100vw - 120px);
   .arco-input-group > .arco-input-inner-wrapper {
     border-radius: 15px;
   }

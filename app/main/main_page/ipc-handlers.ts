@@ -12,7 +12,7 @@ export const registerIpcHandler = () => {
     if (win) {
       const isTopmost = win.isAlwaysOnTop();
       win.setAlwaysOnTop(!isTopmost);
-      return !isTopmost;
+      return true;
     }
     return false;
   });
