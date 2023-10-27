@@ -1,11 +1,11 @@
-import { BrowserWindow, ipcMain, nativeImage } from 'electron';
+import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem } from 'electron';
+import i18n from 'i18next';
 import { clipboardManager, databaseManager } from '../components/singletons';
 import { deleteFile } from '../utils/file';
 import { stateManager } from '../components/singletons';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';
-
 export const registerIpcHandler = (win: BrowserWindow | undefined) => {
   ipcMain.on(Channels.TOGGLE_ALWAYS_ON_TOP, event => {
     if (win) {
@@ -45,18 +45,35 @@ export const registerIpcHandler = (win: BrowserWindow | undefined) => {
     return result;
   });
 
-  ipcMain.handle(Channels.DELETE_RECORD, async (event, arguments_) => {
-    if (arguments_.type === DataTypes.IMAGE) {
-      const row = await databaseManager.getDataById(arguments_.id);
-      await deleteFile(row.content);
-    }
-    return await databaseManager.deleteById(arguments_.id);
-  });
-
   ipcMain.handle(Channels.UPDATE_RECORD, async (event, arguments_) => {
     const data = arguments_.data;
     if (data?.id) {
       return await databaseManager.updateById(data.id, data);
     }
+  });
+
+  ipcMain.handle(Channels.SHOW_CONTEXT_MENU, (event, arguments_) => {
+    return new Promise(resolve => {
+      const menu = new Menu();
+      menu.append(
+        new MenuItem({
+          label: i18n.t('delete'),
+          id: 'delete',
+          click: async () => {
+            let status;
+            if (arguments_.type === DataTypes.IMAGE) {
+              const row = await databaseManager.getDataById(arguments_.id);
+              await deleteFile(row.content);
+            }
+            status = await databaseManager.deleteById(arguments_.id);
+            resolve(status);
+          },
+        })
+      );
+      const win = BrowserWindow.fromWebContents(event.sender);
+      if (win) {
+        menu.popup({ window: win });
+      }
+    });
   });
 };

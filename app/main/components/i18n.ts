@@ -32,6 +32,7 @@ i18n.use(I18NexFsBackend).init({
         Documentation: 'Documentation',
         'Community Discussions': 'Community Discussions',
         'Search Issues': 'Search Issues',
+        Delete: 'Delete',
       },
     },
     zh: {
@@ -60,6 +61,9 @@ i18n.use(I18NexFsBackend).init({
         Help: '帮助',
         'Learn More': '了解更多',
         Documentation: '文档',
+        'Community Discussions': '社区讨论',
+        'Search Issues': '搜索问题',
+        Delete: '删除',
       },
     },
   },

@@ -36,8 +36,11 @@ function create() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(MAIN_PAGE_DIRECTION, '../../renderer/src/main/build/preload.js'),
-      devTools: true,
+      preload: path.join(
+        MAIN_PAGE_DIRECTION,
+        isDev ? '../../renderer/src/main/public/preload.js' : '../../renderer/src/main/build/preload.js'
+      ),
+      devTools: isDev,
     },
     icon: path.join(MAIN_PAGE_DIRECTION, '../../../../assets/icon.ico'),
   });

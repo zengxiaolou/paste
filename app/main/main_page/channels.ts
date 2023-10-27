@@ -4,6 +4,6 @@ export enum Channels {
   REQUEST_PASTE = 'request-paste',
   CLIPBOARD_DATA = 'clipboard-data',
   DATA_ERROR = 'data-error',
-  DELETE_RECORD = 'delete-record',
   UPDATE_RECORD = 'update-record',
+  SHOW_CONTEXT_MENU = 'show-context-menu',
 }

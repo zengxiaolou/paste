@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { debounce } from './utils/func';
 import { ClipboardDataQuery, ClipData } from './types/type';
 import { Context } from './Context';
-import { ContextMenu } from './component/ContextMenu';
 import { ContentCard } from './component/ContentCard';
 import { DataTypes } from './types/enum';
 
@@ -44,7 +43,6 @@ export const Body = memo(() => {
   const [data, setData] = useState<ClipData[]>([]);
   const [query, setQuery] = useState<ClipboardDataQuery>({ page: 1, size: defaultSize });
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0 });
-  const [activeRecord, setActiveRecord] = useState<ClipData | undefined>(undefined);
   const [activeCard, setActiveCard] = useState<number>(-1);
   const [activeTab, setActiveTab] = useState<string | undefined>('all');
   const [loading, setLoading] = useState<boolean>(false);
@@ -55,7 +53,6 @@ export const Body = memo(() => {
   const { t } = useTranslation();
 
   const tabs = createTabs(t);
-
   const getData = async (queryData: ClipboardDataQuery) => {
     if (query.page === 1) {
       setData([]);
@@ -86,15 +83,6 @@ export const Body = memo(() => {
     data && setData((prevData: any) => (prevData ? [data, ...prevData] : [data]));
   };
   const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
-
-  const renderContextMenu = () => {
-    if (!contextMenu.visible) return null;
-    return (
-      <div style={{ position: 'absolute', top: `${contextMenu.y - 80}px`, left: `${contextMenu.x - 20}px` }}>
-        <ContextMenu record={activeRecord} />
-      </div>
-    );
-  };
 
   const handleChangeTab = (tab: string) => {
     switch (tab) {
@@ -191,13 +179,11 @@ export const Body = memo(() => {
                   key={index}
                   index={index}
                   data={v}
-                  onContext={setActiveRecord}
                   onClick={setActiveCard}
                   activeCard={activeCard}
-                  onContextMenu={(visible, x, y) => setContextMenu({ visible: visible, x: x, y: y })}
+                  onDelete={() => setData(prevData => prevData.filter(value => value.id !== v.id))}
                 />
               ))}
-              {renderContextMenu()}
               <UBackTop visibleHeight={40} target={() => document.getElementById('top') || document.body} />
             </Spin>
           </BodyContainer>

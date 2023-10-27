@@ -8,8 +8,8 @@ declare global {
       getData: (query: ClipboardDataQuery) => Promise<ClipData[] | undefined>;
       onClipboardData: (callback: (data: any) => void) => void;
       requestPaste: (type: string, content: string, id: number) => Promise<Boolean>;
-      deleteRecord: (id: number, type: DataTypes) => Promise<Boolean>;
       updateRecord: (data: ClipData) => Promise<boolean>;
+      showContextMenu: (data: ClipData) => Promise<boolean>;
     };
   }
 }
