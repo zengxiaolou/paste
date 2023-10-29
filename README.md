@@ -11,13 +11,12 @@
 
 ### Initialization
   ```shell
-    install yarn // Run in the project root directory
-    cd app/renderer/src/main/
-    install yarn // Initialization of rendering process
+    yarn init:all // Run in the project root directory
   ```
 ### Running
   ``` shell
-    yarn start  // Start main process & rendering process
+    yarn start:mac  // Start main process & rendering process on macOS
+    yarn start:win  // Start main process & rendering process on windows
   ```
   ```shell
     yarn start:main // Start main process

@@ -1,5 +1,4 @@
 import MacOSUtils from './mac-os';
-import WindowsUtils from './windows';
 import LinuxUtils from './linux';
 
 interface IPlatformUtils {
@@ -23,9 +22,9 @@ export const AppInfoFactory = {
       case 'darwin': {
         return new MacOSUtils();
       }
-      case 'win32': {
-        return new WindowsUtils();
-      }
+      // case 'win32': {
+      //   return new WindowsUtils();
+      // }
       case 'linux': {
         return new LinuxUtils();
       }

@@ -12,13 +12,12 @@
 
 ### 初始化
   ```shell
-    install yarn // 项目更目录下运行
-    cd app/renderer/scr/main/
-    install yarn // 渲染进程初始化
+    yarn init:all // 安装主进程和渲染进程的依赖
   ```
 ### 运行
   ``` shell
-    yarn start  // 启动主进程&渲染进程
+    yarn start:mac  // 在macOS中启动主进程&渲染进程
+    yarn start:win  // 在windows中启动主进程&渲染进程
   ```
   ```shell
     yarn start:main //启动主进程
