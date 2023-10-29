@@ -12,7 +12,7 @@
     "start:render:win": "cd app/renderer && yarn start:win",
     "start:render:mac": "cd app/renderer && yarn start:mac",
     "watch:main": "nodemon",
-    "dist": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder --linux deb",
+    "dist": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder --mac --win --linux",
     "babel": "babel app/dist --out-dir app/build",
     "init:all": "yarn install && cd app/renderer && yarn install"
   },
