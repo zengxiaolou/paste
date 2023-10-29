@@ -1,18 +1,53 @@
 import activeWin from 'active-win'
+import iconExtractor from 'icon-extractor';
+import  {app} from 'electron'
+import fs from 'fs'
 
 class WindowsUtils {
    public  getActiveApplicationName = async (): Promise<any> => {
      const activeWindow = await activeWin();
      if (activeWindow) {
-       console.log(`Active app name: ${activeWindow.owner.name}`);
+       return activeWindow.owner.name
      } else {
        console.log('No active window found');
+       return '';
      }
   };
 
-  public getIconForApplicationName = (appName: string): Promise<string> => {
+  public getIconForApplicationName = async (appName?: string): Promise<string> => {
     return new Promise((resolve, reject) => {
-      resolve(appName)
+      (async () => {
+        try {
+          const win = await activeWin();
+          if (win) {
+            iconExtractor.emitter.on('icon', function(data: any){
+              const base64Data = data.Base64ImageData.replace(/^data:image\/png;base64,/, "");
+              const imgPath = `${app.getPath('userData')}/${appName}.png`;
+              fs.writeFile(imgPath, base64Data, 'base64', function(err) {
+                if(err) {
+                  console.error('Error saving icon:', err);
+                  reject(err);
+                } else {
+                  console.log('Icon saved as', imgPath);
+                  resolve(imgPath);
+                }
+              });
+            });
+            iconExtractor.emitter.on('error', function(error: any){
+              console.error('Error fetching icon:', error);
+              reject(error);
+            });
+            iconExtractor.getIcon(appName, win.owner.path);
+          } else {
+            const error = new Error('No active window found');
+            console.error(error);
+            reject(error);
+          }
+        } catch (error) {
+          console.error('Error fetching icon:', error);
+          reject(error);
+        }
+      })();
     });
   };
 }
