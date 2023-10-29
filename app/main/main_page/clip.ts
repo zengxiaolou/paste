@@ -8,8 +8,6 @@ import { ClipData } from './type';
 import { DataTypes } from './enum';
 
 class ClipboardManager {
-  private lastHtmlContent: string | undefined = undefined;
-  private lastImageHash: string | undefined = undefined;
   private pasteContentQueue: ClipData[] = [];
   private readonly imageDir: string;
 
@@ -46,6 +44,11 @@ class ClipboardManager {
     } else if (!imageContent.isEmpty()) {
       const imagePath = this.saveImageToDisk(imageContent);
       newContent = { type: DataTypes.IMAGE, content: imagePath };
+    }else {
+      const textContent = clipboard.readText()
+      if (textContent) {
+        newContent = { type: DataTypes.HTML, content: textContent };
+      }
     }
 
     if (newContent) {

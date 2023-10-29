@@ -12,6 +12,7 @@ class IntervalManager {
             const appName = await AppInfoFactory.getActiveApplicationName();
             clipboardData.icon = await AppInfoFactory.getIconForApplicationName(appName);
             clipboardData.appName = appName;
+            console.log(clipboardData.icon)
           } catch (error: any) {
             console.error('Error when fetching application name/application icon:', error);
           }
