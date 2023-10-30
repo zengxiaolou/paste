@@ -15,6 +15,7 @@ class WindowsUtils {
   };
 
   public getIconForApplicationName = async (appName?: string): Promise<string> => {
+    // eslint-disable-next-line unicorn/prefer-module
     const iconExtractor = require('icon-extractor');
     return new Promise((resolve, reject) => {
       (async () => {
