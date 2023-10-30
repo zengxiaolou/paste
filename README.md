@@ -33,11 +33,20 @@
 
 ## Features for the Next Version
 
-- Support for basic functions in Windows and Linux
-- Improved menu
-- Added right-click menu.
+- Enhancement of menu/settings interface functionality development
+- Optimization of repetitive logic judgment
+- Improvement of delete/favorite functionality (issue arising from new content lacking id)
+- Bug fix for image copying
 
 ## Changelog
+
+#### v0.0.2 (2023-10-30)
+- Support for icon retrieval on Windows, basic copy-paste functionality completed on Linux
+- Context menu utilizes Electron system menu
+- Code detection added
+- Modified repetitive detection logic to a 10-item queue
+- Bug fix for pin-to-top failure
+
 #### v0.0.1 (2023-10-27)
 "This is the first version, which is very rough, but the basic functionalities that a clipboard should have are already in place (MacOS).
 I will strive to support the basic functionalities for Linux and Windows by November.
