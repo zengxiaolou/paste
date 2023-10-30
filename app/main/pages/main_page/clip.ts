@@ -18,20 +18,20 @@ class ClipboardManager {
       fs.mkdirSync(this.imageDir);
     }
   }
-  setInitContent(type: DataTypes, content: string) {
+  setInitContent(id:number, type: DataTypes, content: string) {
     if (type === 'html') {
-      this.pasteContentQueue.push({ type, content: content });
+      this.pasteContentQueue.push({id,  type, content: content });
     } else {
       fs.readFile(content, (error: Error | null, data: any) => {
         if (error) {
           console.log('Error reading file:', error);
         } else {
-          this.pasteContentQueue.push({ type, content: crypto.createHash('md5').update(data).digest('hex') });
+          this.pasteContentQueue.push({id,  type, content: crypto.createHash('md5').update(data).digest('hex') });
         }
       });
     }
   }
-  checkClipboardContent(): ClipData | undefined {
+  checkClipboardContent(): { data: ClipData | undefined, isDuplicate: boolean } {
     const htmlContent = clipboard.readHTML();
     const imageContent = clipboard.readImage();
     const imageBuffer = imageContent.toPNG();
@@ -42,37 +42,47 @@ class ClipboardManager {
     if (htmlContent) {
       newContent = { type: DataTypes.HTML, content: htmlContent };
     } else if (imageContent.isEmpty()) {
-      const textContent = clipboard.readText()
+      const textContent = clipboard.readText();
       if (textContent) {
         newContent = { type: DataTypes.HTML, content: textContent };
       }
-    }else {
+    } else {
       const imagePath = this.saveImageToDisk(imageContent);
       newContent = { type: DataTypes.IMAGE, content: imagePath };
     }
 
-    if (newContent) {
-      const isDuplicate = this.pasteContentQueue.some(item => {
-        if (item.type === DataTypes.HTML && item.content === newContent?.content) {
-          return true;
-        }
-        if (item.type === DataTypes.IMAGE && item.content === currentImageHash) {
-          return true;
-        }
-      });
+    let duplicateContent: ClipData | undefined;
 
-      if (!isDuplicate) {
-        // eslint-disable-next-line node/no-unsupported-features/es-syntax
-        this.pasteContentQueue.push(newContent.type === DataTypes.HTML ? newContent : {...newContent, content: currentImageHash });
-        if (this.pasteContentQueue.length > 10) {
-          this.pasteContentQueue.shift();
-        }
-        return newContent;
+    this.pasteContentQueue.some(item => {
+      if (item.type === DataTypes.HTML && item.content === newContent?.content) {
+        duplicateContent = item;
+        return true;
       }
+      if (item.type === DataTypes.IMAGE && item.content === currentImageHash) {
+        // eslint-disable-next-line node/no-unsupported-features/es-syntax
+        duplicateContent = {...item, content: currentImageHash };
+        return true;
+      }
+    });
+
+    if (duplicateContent) {
+      if ( duplicateContent.content === this.pasteContentQueue.at(-1)?.content ) {
+        return {data: undefined, isDuplicate: true}
+      }
+      return { data: duplicateContent, isDuplicate: true };
+    } else if (newContent) {
+      // eslint-disable-next-line node/no-unsupported-features/es-syntax
+      this.pasteContentQueue.push(newContent.type === DataTypes.HTML ? newContent : {...newContent, content: currentImageHash });
+      if (this.pasteContentQueue.length > 30) {
+        this.pasteContentQueue.shift();
+      }
+      return { data: newContent, isDuplicate: false };
     }
 
-    return undefined;
+    return { data: undefined, isDuplicate: false };
   }
+
+
 
   private saveImageToDisk(image: NativeImage): string {
     const timestamp = new Date().toISOString().replaceAll(/[.:-]/g, '');
@@ -81,11 +91,11 @@ class ClipboardManager {
     return imagePath;
   }
 
-  paste(type: string, content: string): boolean {
+  paste(id: number, type: DataTypes, content: string): boolean {
     if (type === DataTypes.HTML) {
       const dom = new JSDOM(content);
       const text = dom.window.document.body.textContent || '';
-      this.pasteContentQueue.push({ type, content: text });
+      this.pasteContentQueue.push({id, type, content: text });
       if (this.pasteContentQueue.length > 10) {
         this.pasteContentQueue.shift();
       }
@@ -95,7 +105,7 @@ class ClipboardManager {
         if (error) {
           console.log('Error reading file:', error);
         } else {
-          this.pasteContentQueue.push({ type, content: crypto.createHash('md5').update(data).digest('hex') });
+          this.pasteContentQueue.push({id, type, content: crypto.createHash('md5').update(data).digest('hex') });
           if (this.pasteContentQueue.length > 10) {
             this.pasteContentQueue.shift();
           }
