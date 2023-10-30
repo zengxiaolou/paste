@@ -126,7 +126,7 @@ class DatabaseManager {
 
     if (parameters?.size && parameters?.size > 0 && parameters?.page) {
       const offset = parameters.size * (parameters.page - 1);
-      query += ' ORDER BY id DESC LIMIT ? OFFSET ?';
+      query += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
       queryParameters.push(parameters.size, offset);
     }
 
@@ -168,6 +168,29 @@ class DatabaseManager {
       });
     });
   }
+
+  public updateCreatedAtById(id: number, createdAt: Date): Promise<ClipData | Error> {
+    return new Promise((resolve, reject) => {
+      const updateQuery = 'UPDATE clipboard SET created_at = ? WHERE id = ?';
+      this.db?.run(updateQuery, [createdAt.toISOString(), id], error => {
+        if (error) {
+          reject(error);
+        } else {
+          const selectQuery = 'SELECT * FROM clipboard WHERE id = ?';
+          this.db?.get(selectQuery, [id], (error, row: ClipData) => {
+            if (error) {
+              reject(error);
+            } else if (row) {
+              resolve(row);
+            } else {
+              reject(new Error('No record found with id ' + id));
+            }
+          });
+        }
+      });
+    });
+  }
+
 
   public deleteByCreatedAt(created_at: Date): Promise<boolean> {
     return new Promise((resolve, reject) => {

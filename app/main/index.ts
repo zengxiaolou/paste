@@ -25,7 +25,8 @@ app
 
     try {
       const lastClipboardData: ClipData = await databaseManager.getLastRow();
-      lastClipboardData && clipboardManager.setInitContent(lastClipboardData.type, lastClipboardData.content);
+      const {id, type, content} =  lastClipboardData
+      lastClipboardData && clipboardManager.setInitContent(id as number, type, content);
       return lastClipboardData;
     } catch (error) {
       console.error('Error initializing clipboard:', error);
