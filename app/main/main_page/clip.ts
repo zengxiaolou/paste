@@ -1,11 +1,11 @@
 import crypto from 'node:crypto';
-import { exec } from 'node:child_process';
+import {exec} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { app, clipboard, nativeImage, NativeImage } from 'electron';
-import { JSDOM } from 'jsdom';
-import { ClipData } from './type';
-import { DataTypes } from './enum';
+import {app, clipboard, nativeImage, NativeImage} from 'electron';
+import {JSDOM} from 'jsdom';
+import {ClipData} from './type';
+import {DataTypes} from './enum';
 
 class ClipboardManager {
   private pasteContentQueue: ClipData[] = [];
@@ -41,14 +41,14 @@ class ClipboardManager {
 
     if (htmlContent) {
       newContent = { type: DataTypes.HTML, content: htmlContent };
-    } else if (!imageContent.isEmpty()) {
-      const imagePath = this.saveImageToDisk(imageContent);
-      newContent = { type: DataTypes.IMAGE, content: imagePath };
-    }else {
+    } else if (imageContent.isEmpty()) {
       const textContent = clipboard.readText()
       if (textContent) {
         newContent = { type: DataTypes.HTML, content: textContent };
       }
+    }else {
+      const imagePath = this.saveImageToDisk(imageContent);
+      newContent = { type: DataTypes.IMAGE, content: imagePath };
     }
 
     if (newContent) {
@@ -62,7 +62,8 @@ class ClipboardManager {
       });
 
       if (!isDuplicate) {
-        this.pasteContentQueue.push(newContent);
+        // eslint-disable-next-line node/no-unsupported-features/es-syntax
+        this.pasteContentQueue.push(newContent.type === DataTypes.HTML ? newContent : {...newContent, content: currentImageHash });
         if (this.pasteContentQueue.length > 10) {
           this.pasteContentQueue.shift();
         }

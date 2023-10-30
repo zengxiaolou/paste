@@ -83,7 +83,6 @@ class MacOSUtils {
           console.error(`Stderr: ${stderr}`);
           return reject(new Error(stderr));
         }
-        console.log(`Stdout: ${stdout}`);
         resolve(iconsetPath);
       });
     });
