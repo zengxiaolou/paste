@@ -13,7 +13,6 @@ class LinuxUtils {
           reject(error);
         } else {
           const result = stdout.trim().split('=')[1].split(',')[0].trim();
-          console.log(result);
           resolve(result.replaceAll('"', ''));
         }
       });
@@ -22,7 +21,6 @@ class LinuxUtils {
 
   public async getIconForApplicationName(appName: string): Promise<string> {
     const binPath = await this.getBinPathForAppName(appName)
-    console.log(binPath)
     return new Promise((resolve, reject) => {
       const possibleIconPaths = [
         path.join(binPath, '../icon.png'),
@@ -48,7 +46,6 @@ class LinuxUtils {
         }
 
         const pid = stdout.trim().split('\n')[0];  // Get the first PID, if there are multiple
-        console.log(pid)
         const exeLinkPath = `/proc/${pid}/exe`;
 
         fs.readlink(exeLinkPath, (error_: any, linkString) => {
