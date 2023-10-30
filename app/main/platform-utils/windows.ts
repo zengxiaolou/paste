@@ -15,7 +15,6 @@ class WindowsUtils {
   };
 
   public getIconForApplicationName = async (appName?: string): Promise<string> => {
-    // eslint-disable-next-line unicorn/prefer-module
     const iconExtractor = require('icon-extractor');
     return new Promise((resolve, reject) => {
       (async () => {
@@ -30,6 +29,7 @@ class WindowsUtils {
                   console.error('Error saving icon:', error);
                   reject(error);
                 } else {
+                  console.log('Icon saved as', imgPath);
                   resolve(imgPath);
                 }
               });
