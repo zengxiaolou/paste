@@ -36,21 +36,25 @@ class DatabaseManager {
     );
   }
 
-  public saveToDatabase(clipData: ClipData) {
+  public saveToDatabase(clipData: ClipData): Promise<ClipData | Error> {
     const { icon, appName, content, tags, type } = clipData;
     const now = new Date().toISOString();
     const query = `
-      INSERT INTO clipboard
-      (icon, app_name, content, tags, type, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `;
+    INSERT INTO clipboard
+    (icon, app_name, content, tags, type, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
 
-    this.db?.run(query, [icon, appName, content, tags, type, now], (error: Error | null) => {
-      if (error) {
-        console.error('Error inserting data:', error.message);
-      } else {
-        console.log('Data inserted successfully');
-      }
+    return new Promise((resolve, reject) => {
+      this.db?.run(query, [icon, appName, content, tags, type, now], function (error: Error | null) {
+        if (error) {
+          console.error('Error inserting data:', error.message);
+          reject(error);
+        } else {
+          Object.assign( clipData, { id: this.lastID });
+          resolve(clipData);
+        }
+      });
     });
   }
 

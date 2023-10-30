@@ -17,7 +17,7 @@ class IntervalManager {
             console.error('Error when fetching application name/application icon:', error);
           }
 
-          databaseManager.saveToDatabase(clipboardData);
+          await databaseManager.saveToDatabase(clipboardData);
           sendClipboardDataToRenderer(clipboardData);
         }
       }, 500);
