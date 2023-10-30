@@ -1,7 +1,7 @@
+import fs from 'node:fs'
 import activeWin from 'active-win'
-import iconExtractor from 'icon-extractor';
+
 import  {app} from 'electron'
-import fs from 'fs'
 
 class WindowsUtils {
    public  getActiveApplicationName = async (): Promise<any> => {
@@ -15,6 +15,7 @@ class WindowsUtils {
   };
 
   public getIconForApplicationName = async (appName?: string): Promise<string> => {
+    const iconExtractor = require('icon-extractor');
     return new Promise((resolve, reject) => {
       (async () => {
         try {
@@ -23,10 +24,10 @@ class WindowsUtils {
             iconExtractor.emitter.on('icon', function(data: any){
               const base64Data = data.Base64ImageData.replace(/^data:image\/png;base64,/, "");
               const imgPath = `${app.getPath('userData')}/${appName}.png`;
-              fs.writeFile(imgPath, base64Data, 'base64', function(err) {
-                if(err) {
-                  console.error('Error saving icon:', err);
-                  reject(err);
+              fs.writeFile(imgPath, base64Data, 'base64', function(error) {
+                if(error) {
+                  console.error('Error saving icon:', error);
+                  reject(error);
                 } else {
                   console.log('Icon saved as', imgPath);
                   resolve(imgPath);
