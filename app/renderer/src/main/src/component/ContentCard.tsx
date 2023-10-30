@@ -102,7 +102,7 @@ const ImageContainer = styled.div`
 
 const CenteredImage = styled(Image)`
   max-height: 100%;
-  max-width: 90%;
+  max-width: 85%;
   margin: auto;
   display: block;
 `;
