@@ -1,8 +1,8 @@
 import { app, BrowserWindow, globalShortcut } from 'electron';
-import { create } from './main_page/main';
+import { create } from './pages/main_page/main';
 import { clipboardManager, databaseManager, intervalManager, menuBuilder } from './components/singletons';
 import { createTray } from './components/tray';
-import { ClipData } from './main_page/type';
+import { ClipData } from './pages/main_page/type';
 
 let mainWindow: BrowserWindow | null;
 const gotTheLock = app.requestSingleInstanceLock();

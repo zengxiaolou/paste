@@ -5,16 +5,16 @@
   "main": "app/build/index.js",
   "scripts": {
     "build:main": "tsc -p app/main/tsconfig.json && babel app/dist --out-dir app/build && rimraf app/dist",
-    "build:renderer": "cd app/renderer/src/main && yarn build",
+    "build:renderer": "cd app/renderer/main && yarn build",
     "start:win": "concurrently \"yarn run start:render:win\" \"wait-on http://127.0.0.1:3061 && yarn run build:main && yarn run start:main\"",
     "start:mac": "concurrently \"yarn run start:render:mac\" \"wait-on http://127.0.0.1:3061 && yarn run build:main && yarn run start:main\"",
     "start:main": "electron app/build/index.js",
-    "start:render:win": "cd app/renderer/src/main && yarn start:win",
-    "start:render:mac": "cd app/renderer/src/main && yarn start:mac",
+    "start:render:win": "cd app/renderer && yarn start:win",
+    "start:render:mac": "cd app/renderer && yarn start:mac",
     "watch:main": "nodemon",
     "dist": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder",
     "babel": "babel app/dist --out-dir app/build",
-    "init:all": "yarn install && cd app/renderer/src/main && yarn install"
+    "init:all": "yarn install && cd app/renderer && yarn install"
   },
   "author": "ruler",
   "license": "MIT",
@@ -101,7 +101,7 @@
     },
     "files": [
       "app/build/**/*",
-      "app/renderer/src/main/build/**/*",
+      "app/renderer/build/**/*",
       "assets/**/*"
     ],
     "mac": {

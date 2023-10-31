@@ -1,5 +1,5 @@
 import React, { createContext, FC, useState } from 'react';
-import { ClipData } from './types/type';
+import { ClipData } from '../../types/type';
 
 interface providerProps {
   children: React.ReactNode;

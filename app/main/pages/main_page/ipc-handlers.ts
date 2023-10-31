@@ -1,8 +1,8 @@
 import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem, dialog } from 'electron';
 import i18n from 'i18next';
-import { clipboardManager, databaseManager } from '../components/singletons';
-import { deleteFile } from '../utils/file';
-import { stateManager } from '../components/singletons';
+import { clipboardManager, databaseManager } from '../../components/singletons';
+import { deleteFile } from '../../utils/file';
+import { stateManager } from '../../components/singletons';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';

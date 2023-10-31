@@ -8,7 +8,7 @@ import { Footer } from './Footer';
 import { Provider } from './Context';
 const { Header: AHeader, Content } = Layout;
 
-function App() {
+function ClipBoard() {
   return (
     <Provider>
       <Container>
@@ -39,4 +39,4 @@ const FixedHeader = styled(AHeader)`
   height: 30px;
 `;
 
-export default App;
+export default ClipBoard;

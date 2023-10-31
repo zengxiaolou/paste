@@ -2,11 +2,11 @@ import { BackTop, Spin, Tabs } from '@arco-design/web-react';
 import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { debounce } from './utils/func';
-import { ClipboardDataQuery, ClipData } from './types/type';
+import { debounce } from '../../utils/func';
+import { ClipboardDataQuery, ClipData } from '../../types/type';
 import { Context } from './Context';
 import { ContentCard } from './component/ContentCard';
-import { DataTypes } from './types/enum';
+import { DataTypes } from '../../types/enum';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;

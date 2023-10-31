@@ -1,7 +1,8 @@
 import path from 'node:path';
+import * as url from "node:url";
 import { BrowserWindow, nativeImage, screen } from 'electron';
 import isDev from 'electron-is-dev';
-import { stateManager } from '../components/singletons';
+import { stateManager } from '../../components/singletons';
 import { registerIpcHandler } from './ipc-handlers';
 import { ClipData } from './type';
 import { DataTypes } from './enum';
@@ -38,11 +39,11 @@ function create() {
       contextIsolation: true,
       preload: path.join(
         MAIN_PAGE_DIRECTION,
-        isDev ? '../../renderer/src/main/public/preload.js' : '../../renderer/src/main/build/preload.js'
+        isDev ? '../../../renderer/public/preload.js' : '../../../renderer/build/preload.js'
       ),
       devTools: true,
     },
-    icon: path.join(MAIN_PAGE_DIRECTION, '../../../../assets/icon.ico'),
+    icon: path.join(MAIN_PAGE_DIRECTION, '../../../../../assets/icon.ico'),
   });
   if (isDev) {
     win
@@ -52,12 +53,12 @@ function create() {
         console.error(error);
       });
   } else {
-    win
-      .loadFile(path.resolve(MAIN_PAGE_DIRECTION, '../../renderer/src/main/build/index.html'))
-      .then(() => console.log('create success'))
-      .catch(error => {
-        console.error(error);
-      });
+    win.loadURL(url.format({
+      pathname: path.join(MAIN_PAGE_DIRECTION, '../../../renderer/build/index.html'),
+      protocol: 'file:',
+      slashes: true,
+      hash: '/'
+    }))
   }
   win.webContents.openDevTools();
   stateManager.setMainWindow(win);
