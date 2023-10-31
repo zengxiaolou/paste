@@ -18,6 +18,7 @@ i18n.use(initReactI18next).init({
         'Collect failed': 'Collect failed',
         'Cancel Collect': 'Cancel Collect',
         'Copy success': 'Copy success',
+        'Detail': 'Detail',
       },
     },
     zh: {
@@ -35,6 +36,7 @@ i18n.use(initReactI18next).init({
         'Collect failed': '收藏失败',
         'Cancel Collect': '取消收藏',
         'Copy success': '复制成功',
+        'Detail': '详细信息',
       },
     },
   },

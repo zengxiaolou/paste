@@ -42,7 +42,7 @@ export const registerIpcHandler = () => {
       const imageData = await databaseManager.getDataById(arguments_.id);
       arguments_.content = imageData.content;
     }
-    const result = clipboardManager.paste(arguments_.type, arguments_.content);
+    const result = clipboardManager.paste(arguments_.id,arguments_.type, arguments_.content);
     result && stateManager?.getMainWindow()?.hide();
     return result;
   });

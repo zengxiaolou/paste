@@ -1,28 +1,26 @@
-export const extractMostFrequentBackgroundColor = (content: string): string | undefined => {
+export const extractOutermostBackgroundColor = (content: string): string | undefined => {
   const hexRegex = /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/;
+  const rgbRegex = /^rgb\(\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\s*\)$/;
+  const rgbaRegex = /^rgba\(\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(0|1|0?\.\d+)\s*\)$/;
 
   if (hexRegex.test(content)) {
     return content;
   }
 
-  const bgColorRegex = /background-color:\s*(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3});/g;
-  let match;
-  const colorCounts: { [color: string]: number } = {};
-
-  while ((match = bgColorRegex.exec(content)) !== null) {
-    const color = match[1];
-    colorCounts[color] = (colorCounts[color] || 0) + 1;
+  if (rgbRegex.test(content)) {
+    return content;
   }
 
-  let mostFrequentColor;
-  let maxCount = 0;
-
-  for (const color in colorCounts) {
-    if (colorCounts[color] > maxCount) {
-      maxCount = colorCounts[color];
-      mostFrequentColor = color;
-    }
+  if (rgbaRegex.test(content)) {
+    return content;
   }
 
-  return mostFrequentColor;
+  const bgColorRegex = /background-color:\s*(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|rgb\(\s*\d{1,3},\s*\d{1,3},\s*\d{1,3}\s*\)|rgba\(\s*\d{1,3},\s*\d{1,3},\s*\d{1,3},\s*(0|1|0?\.\d+)\s*\));/;
+  const match = bgColorRegex.exec(content);
+
+  if (match) {
+    return match[1]; // 返回最先匹配到的颜色
+  }
+
+  return undefined;
 };

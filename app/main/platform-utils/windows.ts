@@ -30,7 +30,6 @@ class WindowsUtils {
                   console.error('Error saving icon:', error);
                   reject(error);
                 } else {
-                  console.log('Icon saved as', imgPath);
                   resolve(imgPath);
                 }
               });

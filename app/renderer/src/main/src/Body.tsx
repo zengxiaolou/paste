@@ -80,7 +80,7 @@ export const Body = memo(() => {
   };
 
   const handleClipboardData = (data: ClipData) => {
-    data && setData((prevData: any) => (prevData ? [data, ...prevData] : [data]));
+    data && setData((prevData: any) => (prevData ? [data, ...prevData.filter((item: ClipData) => item?.id !== data?.id)] : [data]));
   };
   const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
 
