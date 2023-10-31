@@ -1,11 +1,12 @@
-import { extractMostFrequentBackgroundColor } from '../utils/string';
-import { Card, Image, Notification, Space } from '@arco-design/web-react';
-import { Collect } from './Collect';
-import { formatDateTime } from '../utils/time';
-import React, { FC } from 'react';
+import {extractOutermostBackgroundColor} from '../utils/string';
+import {Card, Image, Notification, Popover, Space} from '@arco-design/web-react';
+import {Collect} from './Collect';
+import {formatDateTime} from '../utils/time';
+import React, {FC} from 'react';
 import styled from 'styled-components';
-import { ClipData } from '../types/type';
-import { useTranslation } from 'react-i18next';
+import {ClipData} from '../types/type';
+import {useTranslation} from 'react-i18next';
+import {DataTypes} from "../types/enum";
 
 interface props {
   index: number;
@@ -35,10 +36,11 @@ export const ContentCard: FC<props> = ({ index, data, onClick, activeCard, onDel
   };
 
   return (
+    <UPopover disabled={type === DataTypes.IMAGE} title={t('Detail')} content={<div dangerouslySetInnerHTML={{ __html: content }} />} trigger="hover">
     <UCard
       key={index}
       isActive={activeCard === index}
-      bgColor={extractMostFrequentBackgroundColor(content)}
+      bgColor={extractOutermostBackgroundColor(content)}
       onClick={() => handleClick(index)}
       onDoubleClick={() => handleDoubleClick(type, content, id)}
       onContextMenu={event => handleContextMenu(event, data)}
@@ -47,7 +49,7 @@ export const ContentCard: FC<props> = ({ index, data, onClick, activeCard, onDel
         {type === 'html' && (
           <Space>
             {icon && <Icon src={icon} height={40} />}
-            <Html dangerouslySetInnerHTML={{ __html: content }} />
+              <Html dangerouslySetInnerHTML={{ __html: content }} />
           </Space>
         )}
         {type === 'image' && icon && <Icon src={icon} height={40} />}
@@ -56,12 +58,13 @@ export const ContentCard: FC<props> = ({ index, data, onClick, activeCard, onDel
             <CenteredImage src={content} loader={true} height={60} />
           </ImageContainer>
         )}
-        <Space>
+        <Space style={{color: 'gray'}}>
           <Collect data={data} />
           {created_at && formatDateTime(created_at)}
         </Space>
       </Container>
     </UCard>
+    </UPopover>
   );
 };
 
@@ -108,3 +111,13 @@ const CenteredImage = styled(Image)`
 `;
 
 const Icon = styled(Image)``;
+
+const UPopover = styled(Popover)`
+  .arco-popover-content {
+    background-color: rgba(128, 128, 128, 0.3);
+    backdrop-filter: blur(10px);
+    overflow: auto;
+    width: 600px;
+    border-radius: 15px;
+  }
+`
