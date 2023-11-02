@@ -41,7 +41,7 @@ function create() {
         MAIN_PAGE_DIRECTION,
         isDev ? '../../../renderer/public/preload.js' : '../../../renderer/build/preload.js'
       ),
-      devTools: true,
+      devTools: isDev,
     },
     icon: path.join(MAIN_PAGE_DIRECTION, '../../../../../assets/icon.ico'),
   });

@@ -1,5 +1,4 @@
 import { ClipData, ClipboardDataQuery } from './src/types/type';
-import { DataTypes } from './src/types/enum';
 
 declare global {
   interface Window {

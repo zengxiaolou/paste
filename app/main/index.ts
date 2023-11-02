@@ -1,8 +1,9 @@
 import { app, BrowserWindow, globalShortcut } from 'electron';
 import { create } from './pages/main_page/main';
-import { clipboardManager, databaseManager, intervalManager, menuBuilder } from './components/singletons';
+import { clipboardManager, databaseManager, intervalManager, menuBuilder, stateManager } from './components/singletons';
 import { createTray } from './components/tray';
 import { ClipData } from './pages/main_page/type';
+import { create as createSetting } from './pages/setting/main';
 
 let mainWindow: BrowserWindow | null;
 const gotTheLock = app.requestSingleInstanceLock();
@@ -11,6 +12,7 @@ app
   .whenReady()
   .then(async () => {
     mainWindow = create();
+    createSetting();
     await createTray(mainWindow);
     menuBuilder.buildMenu();
     await intervalManager.startClipboardInterval();
@@ -25,7 +27,7 @@ app
 
     try {
       const lastClipboardData: ClipData = await databaseManager.getLastRow();
-      const {id, type, content} =  lastClipboardData
+      const { id, type, content } = lastClipboardData;
       lastClipboardData && clipboardManager.setInitContent(id as number, type, content);
       return lastClipboardData;
     } catch (error) {
