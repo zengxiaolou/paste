@@ -24,4 +24,8 @@ export const registerIpcHandler = () => {
   ipcMain.on(Channels.CHANGE_SOUND, (event, flag) => {
     store.set('sound', flag);
   });
+
+  ipcMain.on(Channels.QUIT, () => {
+    app.quit();
+  });
 };

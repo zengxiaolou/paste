@@ -3,4 +3,5 @@ export enum Channels {
   GET_STORE_VALUE = 'get-store-value',
   CHANGE_LOGIN = 'change-login',
   CHANGE_SOUND = 'change-sound',
+  QUIT = 'quit',
 }

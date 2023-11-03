@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Wrapper } from '../../../component/Wrapper';
-import { Button, Checkbox } from '@arco-design/web-react';
+import { Checkbox } from '@arco-design/web-react';
 import { Item, Label } from './CItem';
 import i18n from '../../../i18n/index';
 import useLanguage from '../../../hooks/useLanguage';
@@ -65,9 +65,9 @@ export const General = () => {
       </Item>
       <Item>
         <Label>{t('Quit')}:</Label>
-        <Button size="small" style={{ borderRadius: 8, marginLeft: 4 }}>
+        <button style={{ borderRadius: 8, marginLeft: 4, cursor: 'pointer' }} onClick={() => window.ipc.quit()}>
           {t('Quite ECM')}
-        </Button>
+        </button>
       </Item>
     </Wrapper>
   );
