@@ -11,7 +11,8 @@ declare global {
       showContextMenu: (data: ClipData) => Promise<boolean>;
       onLanguageChange: (callback: (language: string) => void) => void;
       changeLanguage: (language: string) => void;
-      getStoreValue: (key: string) => Promise<string>;
+      getStoreValue: (key: string) => Promise<string | boolean | number>;
+      changeLogin: (login: boolean) => void;
     };
   }
 }

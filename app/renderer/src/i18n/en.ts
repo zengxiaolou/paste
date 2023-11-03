@@ -14,7 +14,9 @@ export const en = {
   'Copy success': 'Copy success',
   Detail: 'Detail',
   Launch: 'Launch',
+  'Start at Login': 'Start at Login',
   Sound: 'Sound',
+  'Enable Sound Effect': 'Enable Sound Effect',
   'Quite ECM': 'Quite ECM',
   General: 'General',
   Shortcuts: 'Shortcuts',
@@ -22,4 +24,8 @@ export const en = {
   Labs: 'Labs',
   About: 'About',
   'shortcuts setting': 'Customize shortcuts so that you can operate with ecm more quickly.',
+  'Simplified Chinese': 'Simplified Chinese',
+  English: 'English',
+  system: 'System',
+  'Quit ECM': 'Quit ECM',
 };

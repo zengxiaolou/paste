@@ -14,6 +14,8 @@ export const zh = {
   'Copy success': '复制成功',
   Detail: '详细信息',
   Launch: '启动',
+  'Start at Login': '登录启动',
+  'Enable Sound Effect': '启用声音',
   Sound: '声音',
   'Quite ECM': '退出ECM',
   General: '通用',
@@ -22,4 +24,8 @@ export const zh = {
   Labs: '实验室',
   About: '关于',
   'shortcuts setting': '自定义快捷方式，以便更快地操作ecm。',
+  'Simplified Chinese': '简体中文',
+  English: '英语',
+  system: '系统',
+  'Quit ECM': '退出 ECM',
 };

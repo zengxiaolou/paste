@@ -24,6 +24,12 @@ app
 
     setShortcuts();
 
+    store.onDidChange('language', () => {
+      const language = store.get('language');
+      i18n.changeLanguage(language as string);
+      menuBuilder.buildMenu();
+    });
+
     await setInitContent();
   })
   // eslint-disable-next-line unicorn/prefer-top-level-await
@@ -61,9 +67,6 @@ const setLanguage = async () => {
     store.set('language', language);
   }
   await i18n.changeLanguage(language as string);
-  store.onDidChange('language', () => {
-    menuBuilder.buildMenu();
-  });
 };
 
 const setShortcuts = () => {
@@ -86,3 +89,7 @@ const setInitContent = async () => {
     throw error;
   }
 };
+
+// const setLoginSettings = async () => {
+//
+// }

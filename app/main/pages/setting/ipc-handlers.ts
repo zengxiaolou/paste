@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { store } from '../../components/singletons';
 import { Channels } from './channels';
 
@@ -11,5 +11,14 @@ export const registerIpcHandler = () => {
   });
   ipcMain.handle(Channels.GET_STORE_VALUE, (event, key) => {
     return store.get(key);
+  });
+
+  ipcMain.on(Channels.CHANGE_LOGIN, (event, login) => {
+    console.log('🤮 ~ file:ipc-handlers method: line:17 -----', login);
+    store.set('login', login);
+    app.setLoginItemSettings({
+      openAtLogin: login,
+      openAsHidden: login,
+    });
   });
 };

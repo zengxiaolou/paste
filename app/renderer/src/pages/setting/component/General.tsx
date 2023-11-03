@@ -1,40 +1,61 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Wrapper } from '../../../component/Wrapper';
 import { Button, Checkbox } from '@arco-design/web-react';
 import { Item, Label } from './CItem';
 import i18n from '../../../i18n/index';
 import useLanguage from '../../../hooks/useLanguage';
+import { useTranslation } from 'react-i18next';
+import useLogin from '../../../hooks/useLogin';
 
 export const General = () => {
-  const [language, setLanguage] = useState<string | undefined>(useLanguage());
+  const [language, setLanguage] = useState<string | undefined>();
+  const [login, setLogin] = useState<boolean>();
+
+  const { t } = useTranslation();
+  const lng = useLanguage();
+  const loginFlag = useLogin();
+
+  useEffect(() => {
+    setLanguage(lng);
+    setLogin(loginFlag);
+  }, [lng, loginFlag]);
+
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
-    i18n.changeLanguage(selected);
+    i18n.changeLanguage(selected).then();
     window.ipc.changeLanguage(selected);
     setLanguage(selected);
+  };
+
+  const handleLoginChange = (value: boolean) => {
+    setLogin(value);
+    window.ipc.changeLogin(value);
   };
 
   return (
     <Wrapper>
       <Item>
-        <Label>Launch:</Label>
-        <Checkbox>Start at Login</Checkbox>
+        <Label>{t('Launch')}:</Label>
+        <Checkbox checked={login} onChange={handleLoginChange}>
+          {t('Start at Login')}
+        </Checkbox>
       </Item>
       <Item>
-        <Label>Sound:</Label>
-        <Checkbox>Enable Sound Effect</Checkbox>
+        <Label>{t('Sound')}:</Label>
+        <Checkbox>{t('Enable Sound Effect')}</Checkbox>
       </Item>
       <Item>
-        <Label>Language:</Label>
+        <Label>{t('Language')}:</Label>
         <select style={{ borderRadius: 8, marginLeft: 4 }} value={language} onChange={handleLanguageChange}>
-          <option value="zh">Simplified Chinese</option>
-          <option value="en">English</option>
+          <option value="system">{t('system')}</option>
+          <option value="zh">{t('Simplified Chinese')}</option>
+          <option value="en">{t('English')}</option>
         </select>
       </Item>
       <Item>
-        <Label>Quit:</Label>
+        <Label>{t('Quit')}:</Label>
         <Button size="small" style={{ borderRadius: 8, marginLeft: 4 }}>
-          Quite ECM
+          {t('Quite ECM')}
         </Button>
       </Item>
     </Wrapper>

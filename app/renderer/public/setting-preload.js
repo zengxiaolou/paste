@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 const ChannelsMap = {
   LANGUAGE_CHANGED: 'language-changed',
   GET_STORE_VALUE: 'get-store-value',
+  CHANGE_LOGIN: 'change-login',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -10,4 +11,5 @@ contextBridge.exposeInMainWorld('ipc', {
   getStoreValue: async key => {
     return await ipcRenderer.invoke(ChannelsMap.GET_STORE_VALUE, key);
   },
+  changeLogin: login => ipcRenderer.send(ChannelsMap.CHANGE_LOGIN, login),
 });
