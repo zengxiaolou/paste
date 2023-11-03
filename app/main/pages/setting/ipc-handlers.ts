@@ -9,4 +9,7 @@ export const registerIpcHandler = () => {
       window.webContents.send(Channels.LANGUAGE_CHANGE, language);
     }
   });
+  ipcMain.handle(Channels.GET_STORE_VALUE, (event, key) => {
+    return store.get(key);
+  });
 };

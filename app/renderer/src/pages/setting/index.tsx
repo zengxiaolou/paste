@@ -4,9 +4,13 @@ import { Body } from './Body';
 import styled from 'styled-components';
 import { Divider } from '@arco-design/web-react';
 import { TabKey } from './const';
+import useLanguage from '../../hooks/useLanguage';
 
 export const Settings = () => {
   const [currentTab, setCurrentTab] = useState<TabKey>('general');
+
+  useLanguage();
+
   return (
     <Wrapper>
       <Header onSelect={setCurrentTab} />

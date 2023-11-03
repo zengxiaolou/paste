@@ -22,7 +22,7 @@ const createTabs = (t: any) => {
       key: 'collect',
     },
     {
-      title: t('ToDay'),
+      title: t('Today'),
       key: 'today',
     },
     {
@@ -80,7 +80,10 @@ export const Body = memo(() => {
   };
 
   const handleClipboardData = (data: ClipData) => {
-    data && setData((prevData: any) => (prevData ? [data, ...prevData.filter((item: ClipData) => item?.id !== data?.id)] : [data]));
+    data &&
+      setData((prevData: any) =>
+        prevData ? [data, ...prevData.filter((item: ClipData) => item?.id !== data?.id)] : [data]
+      );
   };
   const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
 

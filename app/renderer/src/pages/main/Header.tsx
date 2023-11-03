@@ -6,25 +6,27 @@ import { useTranslation } from 'react-i18next';
 import { Context } from './Context';
 
 interface FixedProps {
-  isFixed: boolean;
+  is_fixed: number;
   onClick: () => void;
 }
 
 export const Header = () => {
-  const [fixed, setFixed] = React.useState(false);
+  const [fixed, setFixed] = React.useState(0);
 
   const { search, setSearch } = React.useContext(Context);
 
   const { t } = useTranslation();
   const handleFixed = async () => {
     const res = await window.ipc.toggleAlwaysOnTop();
-    res && setFixed(!fixed);
+
+    res && fixed === 0 && setFixed(1);
+    res && fixed === 1 && setFixed(0);
   };
   return (
     <Wrapper>
       <Space style={{ width: '80%' }}>
         <Popover content={fixed ? t('Remove from top') : t('On Top')}>
-          <Fixed isFixed={fixed} onClick={handleFixed} />
+          <Fixed is_fixed={fixed} onClick={handleFixed} />
         </Popover>
         <Search placeholder={t('Type to Search ')} value={search} onChange={setSearch} allowClear />
       </Space>
@@ -48,7 +50,7 @@ const Settings = styled(IconSettings)`
 `;
 
 const Fixed = styled(IconPushpin)<FixedProps>`
-  color: ${props => (props.isFixed ? 'red' : '#a5a6a6')};
+  color: ${props => (props.is_fixed === 1 ? 'red' : '#a5a6a6')};
   cursor: pointer;
   font-size: 20px;
 `;

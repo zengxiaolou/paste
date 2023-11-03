@@ -12,8 +12,8 @@ i18n.use(I18NexFsBackend).init({
       translation: zh,
     },
   },
-  lng: 'zh',
-  fallbackLng: 'zh',
+  lng: 'en',
+  fallbackLng: 'en',
   interpolation: {
     escapeValue: false,
   },

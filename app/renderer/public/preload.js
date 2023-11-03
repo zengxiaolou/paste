@@ -8,6 +8,7 @@ const ChannelsMap = {
   UPDATE_RECORD: 'update-record',
   SHOW_CONTEXT_MENU: 'show-context-menu',
   LANGUAGE_CHANGED: 'language-changed',
+  GET_STORE_VALUE: 'get-store-value',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -31,5 +32,9 @@ contextBridge.exposeInMainWorld('ipc', {
 
   onLanguageChange: callback => {
     ipcRenderer.on(ChannelsMap.LANGUAGE_CHANGED, (event, language) => callback(language));
+  },
+
+  getStoreValue: async key => {
+    return await ipcRenderer.invoke(ChannelsMap.GET_STORE_VALUE, key);
   },
 });

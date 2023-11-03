@@ -6,13 +6,15 @@ import { Body } from './Body';
 import { Layout } from '@arco-design/web-react';
 import { Footer } from './Footer';
 import { Provider } from './Context';
-import i18n from '../../i18n';
+import i18n from '../../i18n/index';
+import useLanguage from '../../hooks/useLanguage';
 const { Header: AHeader, Content } = Layout;
 
 function ClipBoard() {
+  useLanguage();
   useEffect(() => {
     window.ipc.onLanguageChange((language: string) => i18n.changeLanguage(language));
-  });
+  }, []);
 
   return (
     <Provider>

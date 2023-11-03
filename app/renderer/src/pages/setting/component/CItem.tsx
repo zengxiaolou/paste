@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const Item = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   text-align: right;
 `;
 
