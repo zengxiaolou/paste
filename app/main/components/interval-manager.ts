@@ -1,6 +1,6 @@
 import { AppInfoFactory } from '../platform-utils/app-info-factory';
-import { sendClipboardDataToRenderer } from '../main_page/main';
-import {ClipData} from "../main_page/type";
+import { sendClipboardDataToRenderer } from '../pages/main_page/main';
+import {ClipData} from "../pages/main_page/type";
 import { clipboardManager, databaseManager } from './singletons';
 class IntervalManager {
   private clipboardIntervalID: ReturnType<typeof setInterval> | undefined;

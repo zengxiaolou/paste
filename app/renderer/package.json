@@ -1,0 +1,62 @@
+{
+  "name": "main",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@arco-design/web-react": "^2.53.2",
+    "i18next": "^23.5.1",
+    "i18next-browser-languagedetector": "^7.1.0",
+    "moment-timezone": "^0.5.43",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^13.3.1",
+    "react-router-dom": "^6.17.0",
+    "styled-components": "^6.1.0",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start:win": "set BROWSER=none &&  set PORT=3061 && react-app-rewired  start ",
+    "start:mac": "BROWSER=none PORT=3061 react-app-rewired  start ",
+    "build": "rimraf build &&  react-app-rewired build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/i18next": "^13.0.0",
+    "@types/react": "^18.2.25",
+    "@types/react-dom": "^18.2.11",
+    "babel-plugin-styled-components": "^2.1.4",
+    "customize-cra": "^1.0.0",
+    "eslint-plugin-electron": "^7.0.0",
+    "react-app-rewired": "^2.2.1",
+    "react-scripts": "^5.0.1",
+    "stylelint": "^15.10.3",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-order": "^6.0.3",
+    "stylelint-processor-styled-components": "^1.10.0",
+    "stylelint-scss": "^5.2.1",
+    "typescript": "^5.2.2"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist", // 输出目录
+    "rootDir": "./src", // 源代码目录
+    "module": "esnext",
+    "target": "ES6",
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "nodenext",
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx", "*.d.ts",
+    "src/**/*.js"
+  ],
+  "exclude": ["node_modules"]
+}
