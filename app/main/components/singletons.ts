@@ -1,4 +1,5 @@
 import Store from 'electron-store';
+import playSound from 'play-sound';
 import DatabaseManager from '../pages/main_page/database';
 import ClipboardManager from '../pages/main_page/clip';
 import StateManager from '../store';
@@ -12,4 +13,6 @@ const stateManager = new StateManager();
 const menuBuilder = new MenuBuilder();
 const store = new Store();
 
-export { databaseManager, clipboardManager, intervalManager, menuBuilder, stateManager, store };
+const player = playSound();
+
+export { databaseManager, clipboardManager, intervalManager, menuBuilder, stateManager, store, player };

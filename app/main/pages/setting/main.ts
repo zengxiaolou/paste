@@ -1,4 +1,5 @@
 import path from 'node:path';
+import url from 'node:url';
 import { BrowserWindow, screen } from 'electron';
 import isDev from 'electron-is-dev';
 import i18n from '../../i18n/i18n';
@@ -40,6 +41,15 @@ const create = () => {
   });
   if (isDev) {
     win.loadURL('http://localhost:3061/settings');
+  } else {
+    win.loadURL(
+      url.format({
+        pathname: path.join(MAIN_PAGE_DIRECTION, '../../../renderer/build/index.html'),
+        protocol: 'file:',
+        slashes: true,
+        hash: '/settings',
+      })
+    );
   }
 
   win.webContents.openDevTools();

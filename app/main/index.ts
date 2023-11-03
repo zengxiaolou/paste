@@ -89,7 +89,3 @@ const setInitContent = async () => {
     throw error;
   }
 };
-
-// const setLoginSettings = async () => {
-//
-// }
