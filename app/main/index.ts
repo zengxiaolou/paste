@@ -1,6 +1,6 @@
 import { app, BrowserWindow, globalShortcut } from 'electron';
 import { create } from './pages/main_page/main';
-import { clipboardManager, databaseManager, intervalManager, menuBuilder, stateManager } from './components/singletons';
+import { clipboardManager, databaseManager, intervalManager, menuBuilder, store } from './components/singletons';
 import { createTray } from './components/tray';
 import { ClipData } from './pages/main_page/type';
 import { create as createSetting } from './pages/setting/main';
@@ -15,8 +15,10 @@ app
     createSetting();
     await createTray(mainWindow);
     menuBuilder.buildMenu();
+    store.onDidChange('language', () => {
+      menuBuilder.buildMenu();
+    });
     await intervalManager.startClipboardInterval();
-
     globalShortcut.register('Command+Shift+X', () => {
       if (mainWindow?.isVisible()) {
         mainWindow.hide();

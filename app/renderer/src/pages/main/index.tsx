@@ -1,14 +1,19 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Header } from './Header';
 import '@arco-design/web-react/dist/css/arco.css';
 import { Body } from './Body';
 import { Layout } from '@arco-design/web-react';
 import { Footer } from './Footer';
 import { Provider } from './Context';
+import i18n from '../../i18n';
 const { Header: AHeader, Content } = Layout;
 
 function ClipBoard() {
+  useEffect(() => {
+    window.ipc.onLanguageChange((language: string) => i18n.changeLanguage(language));
+  });
+
   return (
     <Provider>
       <Container>

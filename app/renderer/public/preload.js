@@ -7,6 +7,7 @@ const ChannelsMap = {
   REQUEST_PASTE: 'request-paste',
   UPDATE_RECORD: 'update-record',
   SHOW_CONTEXT_MENU: 'show-context-menu',
+  LANGUAGE_CHANGED: 'language-changed',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -27,4 +28,8 @@ contextBridge.exposeInMainWorld('ipc', {
     return await ipcRenderer.invoke(ChannelsMap.UPDATE_RECORD, { data });
   },
   showContextMenu: async data => await ipcRenderer.invoke(ChannelsMap.SHOW_CONTEXT_MENU, data),
+
+  onLanguageChange: callback => {
+    ipcRenderer.on(ChannelsMap.LANGUAGE_CHANGED, (event, language) => callback(language));
+  },
 });

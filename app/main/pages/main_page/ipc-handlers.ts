@@ -1,6 +1,6 @@
-import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem, dialog } from 'electron';
-import i18n from 'i18next';
-import { clipboardManager, databaseManager } from '../../components/singletons';
+import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem } from 'electron';
+import i18n from '../../i18n/i18n';
+import { clipboardManager, databaseManager, store } from '../../components/singletons';
 import { deleteFile } from '../../utils/file';
 import { stateManager } from '../../components/singletons';
 import { ClipData } from './type';
@@ -42,7 +42,7 @@ export const registerIpcHandler = () => {
       const imageData = await databaseManager.getDataById(arguments_.id);
       arguments_.content = imageData.content;
     }
-    const result = clipboardManager.paste(arguments_.id,arguments_.type, arguments_.content);
+    const result = clipboardManager.paste(arguments_.id, arguments_.type, arguments_.content);
     result && stateManager?.getMainWindow()?.hide();
     return result;
   });
@@ -57,9 +57,10 @@ export const registerIpcHandler = () => {
   ipcMain.handle(Channels.SHOW_CONTEXT_MENU, (event, arguments_) => {
     return new Promise(resolve => {
       const menu = new Menu();
+      const language = store.get('language') as string;
       menu.append(
         new MenuItem({
-          label: i18n.t('delete'),
+          label: i18n.t('Delete', { lng: language }),
           id: 'delete',
           click: async () => {
             let status;

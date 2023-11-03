@@ -14,7 +14,7 @@
     "lib": ["es2021", "dom"],
     "typeRoots": ["./types", "./node_modules/@types"],
   },
-  "include": ["./**/*.ts", "./../*.icns"],
+  "include": ["./**/*.ts", "./../*.icns", "./**/*.json"],
   "exclude": [
     "node_modules"
   ]

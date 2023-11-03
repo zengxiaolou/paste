@@ -1,9 +1,19 @@
+import path from 'node:path';
 import { BrowserWindow, screen } from 'electron';
 import isDev from 'electron-is-dev';
-import i18n from '../../components/i18n';
+import i18n from '../../i18n/i18n';
 import { stateManager } from '../../components/singletons';
+import { MAIN_PAGE_DIRECTION } from './const';
+import { registerIpcHandler } from './ipc-handlers';
 
 let win = stateManager.getSettingWindow();
+
+const init = () => {
+  registerIpcHandler();
+};
+
+init();
+
 const create = () => {
   const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
 
@@ -22,6 +32,10 @@ const create = () => {
     show: isDev,
     webPreferences: {
       devTools: isDev,
+      preload: path.join(
+        MAIN_PAGE_DIRECTION,
+        isDev ? '../../../renderer/public/setting-preload.js' : '../../../renderer/build/setting-preload.js'
+      ),
     },
   });
   if (isDev) {

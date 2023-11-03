@@ -8,6 +8,7 @@ export const General = () => {
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
     i18n.changeLanguage(selected);
+    window.ipc.changeLanguage(selected);
   };
 
   return (
@@ -23,7 +24,7 @@ export const General = () => {
       <Item>
         <Label>Language:</Label>
         <select style={{ borderRadius: 8, marginLeft: 4 }} onChange={handleLanguageChange}>
-          <option value="cn">Simplified Chinese</option>
+          <option value="zh">Simplified Chinese</option>
           <option value="en">English</option>
         </select>
       </Item>

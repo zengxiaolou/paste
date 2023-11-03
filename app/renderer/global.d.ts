@@ -9,6 +9,8 @@ declare global {
       requestPaste: (type: string, content: string, id: number) => Promise<Boolean>;
       updateRecord: (data: ClipData) => Promise<boolean>;
       showContextMenu: (data: ClipData) => Promise<boolean>;
+      onLanguageChange: (callback: (language: string) => void) => void;
+      changeLanguage: (language: string) => void;
     };
   }
 }
