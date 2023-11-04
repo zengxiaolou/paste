@@ -28,4 +28,9 @@ export const en = {
   English: 'English',
   system: 'System',
   'Quit ECM': 'Quit ECM',
+  'Activate ECM': 'Activate ECM',
+  'Select Previous List': 'Select Previous List',
+  'Select Next List': 'Select Next List',
+  'Quick Paste': 'Quick Paste',
+  'Record Shortcut': 'Record Shortcut',
 };

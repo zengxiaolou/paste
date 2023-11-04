@@ -1,5 +1,5 @@
 import path from 'node:path';
-import * as url from "node:url";
+import * as url from 'node:url';
 import { BrowserWindow, nativeImage, screen } from 'electron';
 import isDev from 'electron-is-dev';
 import { stateManager } from '../../components/singletons';
@@ -35,8 +35,10 @@ function create() {
     backgroundColor: '#292A2A10',
     // frame: false,
     webPreferences: {
+      javascript: true,
       nodeIntegration: false,
       contextIsolation: true,
+      webSecurity: false,
       preload: path.join(
         MAIN_PAGE_DIRECTION,
         isDev ? '../../../renderer/public/preload.js' : '../../../renderer/build/preload.js'
@@ -53,12 +55,15 @@ function create() {
         console.error(error);
       });
   } else {
-    win.loadURL(url.format({
-      pathname: path.join(MAIN_PAGE_DIRECTION, '../../../renderer/build/index.html'),
-      protocol: 'file:',
-      slashes: true,
-      hash: '/'
-    }))
+    win.loadURL(
+      url.format({
+        pathname: path.join(MAIN_PAGE_DIRECTION, '../../../renderer/build/index.html'),
+        protocol: 'file:',
+        slashes: true,
+        hash: '/',
+      })
+    );
+    // win.loadFile(path.join(MAIN_PAGE_DIRECTION, '../../../renderer/build/index.html'));
   }
   win.webContents.openDevTools();
   stateManager.setMainWindow(win);
