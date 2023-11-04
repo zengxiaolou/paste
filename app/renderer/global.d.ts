@@ -13,6 +13,8 @@ declare global {
       changeLanguage: (language: string) => void;
       getStoreValue: (key: string) => Promise<string | boolean | number>;
       changeLogin: (login: boolean) => void;
+      changeSound: (flag: boolean) => void;
+      quit: () => void;
     };
   }
 }

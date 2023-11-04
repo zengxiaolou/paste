@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Wrapper } from '../../../component/Wrapper';
-import { Button, Checkbox } from '@arco-design/web-react';
+import { Checkbox } from '@arco-design/web-react';
 import { Item, Label } from './CItem';
 import i18n from '../../../i18n/index';
 import useLanguage from '../../../hooks/useLanguage';
 import { useTranslation } from 'react-i18next';
 import useLogin from '../../../hooks/useLogin';
+import useSound from '../../../hooks/useSound';
 
 export const General = () => {
   const [language, setLanguage] = useState<string | undefined>();
   const [login, setLogin] = useState<boolean>();
+  const [sound, setSound] = useState<boolean>();
 
   const { t } = useTranslation();
   const lng = useLanguage();
   const loginFlag = useLogin();
+  const soundFlag = useSound();
 
   useEffect(() => {
     setLanguage(lng);
     setLogin(loginFlag);
-  }, [lng, loginFlag]);
+    setSound(soundFlag);
+  }, [lng, loginFlag, soundFlag]);
 
   const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
@@ -32,6 +36,11 @@ export const General = () => {
     window.ipc.changeLogin(value);
   };
 
+  const handleSoundChange = (value: boolean) => {
+    setSound(value);
+    window.ipc.changeSound(value);
+  };
+
   return (
     <Wrapper>
       <Item>
@@ -42,7 +51,9 @@ export const General = () => {
       </Item>
       <Item>
         <Label>{t('Sound')}:</Label>
-        <Checkbox>{t('Enable Sound Effect')}</Checkbox>
+        <Checkbox checked={sound} onChange={handleSoundChange}>
+          {t('Enable Sound Effect')}
+        </Checkbox>
       </Item>
       <Item>
         <Label>{t('Language')}:</Label>
@@ -54,9 +65,9 @@ export const General = () => {
       </Item>
       <Item>
         <Label>{t('Quit')}:</Label>
-        <Button size="small" style={{ borderRadius: 8, marginLeft: 4 }}>
+        <button style={{ borderRadius: 8, marginLeft: 4, cursor: 'pointer' }} onClick={() => window.ipc.quit()}>
           {t('Quite ECM')}
-        </Button>
+        </button>
       </Item>
     </Wrapper>
   );

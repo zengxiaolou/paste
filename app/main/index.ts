@@ -1,5 +1,5 @@
 import { app, BrowserWindow, globalShortcut } from 'electron';
-import i18n from './i18n/i18n';
+import i18n from './i18n';
 import { create } from './pages/main_page/main';
 import { clipboardManager, databaseManager, intervalManager, menuBuilder, store } from './components/singletons';
 import { createTray } from './components/tray';
@@ -89,7 +89,3 @@ const setInitContent = async () => {
     throw error;
   }
 };
-
-// const setLoginSettings = async () => {
-//
-// }

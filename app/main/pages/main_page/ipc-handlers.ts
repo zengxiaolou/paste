@@ -1,5 +1,5 @@
 import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem } from 'electron';
-import i18n from '../../i18n/i18n';
+import i18n from '../../i18n';
 import { clipboardManager, databaseManager, store } from '../../components/singletons';
 import { deleteFile } from '../../utils/file';
 import { stateManager } from '../../components/singletons';

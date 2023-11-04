@@ -1,5 +1,5 @@
 import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions } from 'electron';
-import i18n from '../i18n/i18n';
+import i18n from '../i18n';
 import { stateManager } from './singletons';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {

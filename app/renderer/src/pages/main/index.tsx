@@ -15,7 +15,6 @@ function ClipBoard() {
   useEffect(() => {
     window.ipc.onLanguageChange((language: string) => i18n.changeLanguage(language));
   }, []);
-
   return (
     <Provider>
       <Container>

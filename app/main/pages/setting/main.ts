@@ -1,9 +1,10 @@
 import path from 'node:path';
+import url from 'node:url';
 import { BrowserWindow, screen } from 'electron';
 import isDev from 'electron-is-dev';
-import i18n from '../../i18n/i18n';
+import i18n from '../../i18n';
 import { stateManager } from '../../components/singletons';
-import { MAIN_PAGE_DIRECTION } from './const';
+import { SETTING_PAGE_DIRECTION } from './const';
 import { registerIpcHandler } from './ipc-handlers';
 
 let win = stateManager.getSettingWindow();
@@ -33,13 +34,22 @@ const create = () => {
     webPreferences: {
       devTools: isDev,
       preload: path.join(
-        MAIN_PAGE_DIRECTION,
+        SETTING_PAGE_DIRECTION,
         isDev ? '../../../renderer/public/setting-preload.js' : '../../../renderer/build/setting-preload.js'
       ),
     },
   });
   if (isDev) {
-    win.loadURL('http://localhost:3061/settings');
+    win.loadURL('http://localhost:3061/#/settings');
+  } else {
+    win.loadURL(
+      url.format({
+        pathname: path.join(SETTING_PAGE_DIRECTION, '../../../renderer/build/index.html'),
+        protocol: 'file:',
+        slashes: true,
+        hash: '/settings',
+      })
+    );
   }
 
   win.webContents.openDevTools();

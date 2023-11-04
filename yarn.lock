@@ -4182,6 +4182,13 @@ fill-range@^7.0.1:
   dependencies:
     to-regex-range "^5.0.1"
 
+find-exec@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/find-exec/-/find-exec-1.0.3.tgz#c4b18f795968f1730060776fc52f829b977ad29e"
+  integrity sha512-gnG38zW90mS8hm5smNcrBnakPEt+cGJoiMkJwCU0IYnEb0H2NQk0NIljhNW+48oniCriFek/PH6QXbwsJo/qug==
+  dependencies:
+    shell-quote "^1.8.1"
+
 find-up@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-3.0.0.tgz#49169f1d7993430646da61ecc5ae355c21c97b73"
@@ -6835,6 +6842,13 @@ pkg-up@^3.1.0:
   integrity sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA==
   dependencies:
     find-up "^3.0.0"
+
+play-sound@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/play-sound/-/play-sound-1.1.6.tgz#e62ed9daf8506aba959e8fd267c49d9b979d89fa"
+  integrity sha512-09eO4QiXNFXJffJaOW5P6x6F5RLihpLUkXttvUZeWml0fU6x6Zp7AjG9zaeMpgH2ZNvq4GR1ytB22ddYcqJIZA==
+  dependencies:
+    find-exec "1.0.3"
 
 plist@^3.0.4, plist@^3.0.5:
   version "3.1.0"

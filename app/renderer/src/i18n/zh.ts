@@ -28,4 +28,9 @@ export const zh = {
   English: '英语',
   system: '系统',
   'Quit ECM': '退出 ECM',
+  'Activate ECM': '激活 ECM',
+  'Select Previous List': '选择上一个列表',
+  'Select Next List': '选择下一个列表',
+  'Quick Paste': '快速粘贴',
+  'Record Shortcut': '记录快捷键',
 };

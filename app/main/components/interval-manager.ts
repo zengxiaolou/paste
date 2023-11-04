@@ -1,14 +1,16 @@
+import path from 'node:path';
 import { AppInfoFactory } from '../platform-utils/app-info-factory';
 import { sendClipboardDataToRenderer } from '../pages/main_page/main';
-import {ClipData} from "../pages/main_page/type";
-import { clipboardManager, databaseManager } from './singletons';
+import { ClipData } from '../pages/main_page/type';
+import { clipboardManager, databaseManager, player, store } from './singletons';
+import { COMPONENT__DIRECTORY } from './const';
 class IntervalManager {
   private clipboardIntervalID: ReturnType<typeof setInterval> | undefined;
   async startClipboardInterval() {
     if (!this.clipboardIntervalID) {
       this.clipboardIntervalID = setInterval(async () => {
-        const {data, isDuplicate} = clipboardManager.checkClipboardContent();
-        await this.handleDataToDB(data,  isDuplicate)
+        const { data, isDuplicate } = clipboardManager.checkClipboardContent();
+        await this.handleDataToDB(data, isDuplicate);
       }, 500);
     }
   }
@@ -19,9 +21,12 @@ class IntervalManager {
       this.clipboardIntervalID = undefined;
     }
   }
-  private  handleDataToDB = async (data: ClipData |undefined, isDuplicate : boolean): Promise<ClipData | Error | undefined> => {
+  private handleDataToDB = async (
+    data: ClipData | undefined,
+    isDuplicate: boolean
+  ): Promise<ClipData | Error | undefined> => {
     if (data) {
-      if (!isDuplicate ) {
+      if (!isDuplicate) {
         try {
           const appName = await AppInfoFactory.getActiveApplicationName();
           data.icon = await AppInfoFactory.getIconForApplicationName(appName);
@@ -31,15 +36,18 @@ class IntervalManager {
         }
         await databaseManager.saveToDatabase(data);
         sendClipboardDataToRenderer(data);
-      }else if (isDuplicate && data?.id)  {
-        const date = new Date()
-        const newData =  await databaseManager.updateCreatedAtById(data?.id, date);
+        if (store.get('sound')) {
+          player.play(path.join(COMPONENT__DIRECTORY, '../../../assets/paste.mp3'));
+        }
+      } else if (isDuplicate && data?.id) {
+        const date = new Date();
+        const newData = await databaseManager.updateCreatedAtById(data?.id, date);
         sendClipboardDataToRenderer(newData as ClipData);
       }
-    }else {
-      return undefined
+    } else {
+      return undefined;
     }
-  }
+  };
 }
 
 export default IntervalManager;

@@ -14,11 +14,18 @@ export const registerIpcHandler = () => {
   });
 
   ipcMain.on(Channels.CHANGE_LOGIN, (event, login) => {
-    console.log('🤮 ~ file:ipc-handlers method: line:17 -----', login);
     store.set('login', login);
     app.setLoginItemSettings({
       openAtLogin: login,
       openAsHidden: login,
     });
+  });
+
+  ipcMain.on(Channels.CHANGE_SOUND, (event, flag) => {
+    store.set('sound', flag);
+  });
+
+  ipcMain.on(Channels.QUIT, () => {
+    app.quit();
   });
 };
