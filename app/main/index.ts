@@ -6,7 +6,7 @@ import { ClipData } from './pages/main_page/type';
 import { create as createSetting } from './pages/setting/main';
 import { setLanguage } from './utils/language';
 import { activeShortcut } from './utils/shortcut';
-import { ShortcutAction } from './types/enum';
+import { Platform, ShortcutAction, StoreKey } from './types/enum';
 
 let mainWindow: BrowserWindow | null;
 const gotTheLock = app.requestSingleInstanceLock();
@@ -17,15 +17,13 @@ app
   .then(async () => {
     mainWindow = create();
     createSetting();
-
     await createTray(mainWindow);
-
     await setLanguage();
     activeShortcut(ShortcutAction.ADD);
 
     await intervalManager.startClipboardInterval();
 
-    store.onDidChange('language', () => {
+    store.onDidChange(StoreKey.GENERAL_LANGUAGE, () => {
       setLanguage();
     });
 
@@ -37,7 +35,7 @@ app
   });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform !== Platform.MAC) {
     globalShortcut.unregisterAll();
     app.quit();
   }

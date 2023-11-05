@@ -1,13 +1,13 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { store } from '../../components/singletons';
 import { activeShortcut } from '../../utils/shortcut';
-import { ShortcutAction } from '../../types/enum';
+import { ShortcutAction, StoreKey } from '../../types/enum';
 import { Channels } from './channels';
 
 export const registerIpcHandler = () => {
   ipcMain.on(Channels.LANGUAGE_CHANGE, (event, language) => {
     for (const window of BrowserWindow.getAllWindows()) {
-      store.set('language', language);
+      store.set(StoreKey.GENERAL_LANGUAGE, language);
       window.webContents.send(Channels.LANGUAGE_CHANGE, language);
     }
   });
@@ -16,7 +16,7 @@ export const registerIpcHandler = () => {
   });
 
   ipcMain.on(Channels.CHANGE_LOGIN, (event, login) => {
-    store.set('login', login);
+    store.set(StoreKey.GENERAL_LOGIN, login);
     app.setLoginItemSettings({
       openAtLogin: login,
       openAsHidden: login,
@@ -24,7 +24,7 @@ export const registerIpcHandler = () => {
   });
 
   ipcMain.on(Channels.CHANGE_SOUND, (event, flag) => {
-    store.set('sound', flag);
+    store.set(StoreKey.GENERAL_SOUND, flag);
   });
 
   ipcMain.on(Channels.QUIT, () => {
@@ -35,7 +35,7 @@ export const registerIpcHandler = () => {
     const { key, action, shortcuts } = arguments_;
     const old = store.get(key);
     action === ShortcutAction.ADD ? store.set(key, shortcuts) : store.delete(key);
-    if (key === 'shortcut:active') {
+    if (key === StoreKey.SHORTCUT_ACTION) {
       activeShortcut(action, shortcuts, old);
     } else {
       for (const window of BrowserWindow.getAllWindows()) {
@@ -43,5 +43,9 @@ export const registerIpcHandler = () => {
       }
     }
     return true;
+  });
+
+  ipcMain.handle(Channels.GET_STORE_VALUES, (event, key) => {
+    return store.getByPrefix(key);
   });
 };

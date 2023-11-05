@@ -34,4 +34,5 @@ export const zh = {
   'Quick Paste': '快速粘贴',
   'Record Shortcut': '记录快捷键',
   'The shortcut key is occupied': '快捷键已被占用',
+  'shortcut paste operation error message': '快捷粘贴操作必须只使用 Ctrl、Alt 或 Cmd 中的一个',
 };

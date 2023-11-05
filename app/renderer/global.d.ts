@@ -13,6 +13,7 @@ declare global {
       onLanguageChange: (callback: (language: string) => void) => void;
       changeLanguage: (language: string) => void;
       getStoreValue: (key: string) => Promise<string | boolean | number>;
+      getStoreValues: (prefix: string) => Promise<Record<string, string | boolean | number>>;
       changeLogin: (login: boolean) => void;
       changeSound: (flag: boolean) => void;
       quit: () => void;

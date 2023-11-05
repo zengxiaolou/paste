@@ -1,5 +1,5 @@
 import Store from 'electron-store';
-import { LanguageEnum, RemoveItem } from '../types/enum';
+import { LanguageEnum, RemoveItem, StoreKey } from '../types/enum';
 
 class StoreManager {
   private static instance: StoreManager;
@@ -11,29 +11,29 @@ class StoreManager {
   }
 
   private initDefaults() {
-    if (!this.store.has('login')) {
-      this.store.set('login', true);
+    if (!this.store.has(StoreKey.GENERAL_LOGIN)) {
+      this.store.set(StoreKey.GENERAL_LOGIN, true);
     }
-    if (!this.store.has('sound')) {
-      this.store.set('sound', true);
+    if (!this.store.has(StoreKey.GENERAL_SOUND)) {
+      this.store.set(StoreKey.GENERAL_SOUND, true);
     }
-    if (!this.store.has('language')) {
-      this.store.set('language', LanguageEnum.en);
+    if (!this.store.has(StoreKey.GENERAL_LANGUAGE)) {
+      this.store.set(StoreKey.GENERAL_LANGUAGE, LanguageEnum.SYSTEM);
     }
-    if (!this.store.has('shortcut:active')) {
-      this.store.set('shortcut:active', 'Command+Shift+X');
+    if (!this.store.has(StoreKey.SHORTCUT_ACTION)) {
+      this.store.set(StoreKey.SHORTCUT_ACTION, 'Command+Shift+X');
     }
-    if (!this.store.has('shortcut:previous')) {
-      this.store.set('shortcut:previous', 'Command+Shift+[');
+    if (!this.store.has(StoreKey.SHORTCUT_PREVIOUS)) {
+      this.store.set(StoreKey.SHORTCUT_PREVIOUS, 'Command+Shift+[');
     }
-    if (!this.store.has('shortcut:next')) {
-      this.store.set('shortcut:next', 'Command+Shift+]');
+    if (!this.store.has(StoreKey.SHORTCUT_NEXT)) {
+      this.store.set(StoreKey.SHORTCUT_NEXT, 'Command+Shift+]');
     }
-    if (!this.store.has('shortcut:paste')) {
-      this.store.set('shortcut:paste', 'Command');
+    if (!this.store.has(StoreKey.SHORTCUT_PASTE)) {
+      this.store.set(StoreKey.SHORTCUT_PASTE, 'Command+Shift+V');
     }
-    if (!this.store.has('advanced:remove')) {
-      this.store.set('advanced:remove', RemoveItem.oneMonth);
+    if (!this.store.has(StoreKey.ADVANCED_REMOVE)) {
+      this.store.set(StoreKey.ADVANCED_REMOVE, RemoveItem.oneDay);
     }
   }
 
@@ -58,6 +58,26 @@ class StoreManager {
 
   public onDidChange(key: string, callback: (newValue: any, oldValue: any) => void): void {
     this.store.onDidChange(key, callback);
+  }
+
+  public getByPrefix(prefix: string): any {
+    const allSettings = this.store.store;
+    const filteredSettings: any = {};
+    console.log('🤮 ~ file:store method:getByPrefix line:66 -----', allSettings);
+
+    for (const key in allSettings) {
+      if (Object.hasOwnProperty.call(allSettings, key) && key.startsWith(prefix)) {
+        // eslint-disable-next-line security/detect-object-injection
+        filteredSettings[key] = allSettings[key];
+      }
+    }
+    console.log('🤮 ~ file:store method:getByPrefix line:73 -----', filteredSettings);
+
+    return filteredSettings;
+  }
+
+  public deleteAll(): void {
+    return this.store.clear();
   }
 }
 

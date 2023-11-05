@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Wrapper } from '../../../component/Wrapper';
 import { Input, Message, Space } from '@arco-design/web-react';
 import { useTranslation } from 'react-i18next';
 import { Item, Label } from './CItem';
 import styled from 'styled-components';
 import { IconClose } from '@arco-design/web-react/icon';
-import { ShortcutAction } from '../../../types/enum';
+import { ShortcutAction, StoreKey } from '../../../types/enum';
+import { useStorePrefix } from '../../../hooks/useStorePrefix';
 
 export const Shortcuts = () => {
   const [active, setActive] = useState<string | undefined>();
@@ -14,6 +15,11 @@ export const Shortcuts = () => {
   const [pasteValue, setPasteValue] = useState<string | undefined>();
   const [allShortcuts, setAllShortcuts] = useState<string[]>([]);
   const { t } = useTranslation();
+  const initialValues = useStorePrefix('shortcut');
+
+  useEffect(() => {
+    active !== initialValues.shortcutActive && setActive(initialValues.shortcutActive);
+  }, [initialValues]);
 
   const shortcuts = [
     {
@@ -21,28 +27,28 @@ export const Shortcuts = () => {
       placeholder: t('Record Shortcut'),
       value: active,
       method: setActive,
-      key: 'shortcut:active',
+      key: StoreKey.SHORTCUT_ACTION,
     },
     {
       label: t('Select Previous List'),
       placeholder: t('Record Shortcut'),
       value: prevValue,
       method: setPrevValue,
-      key: 'shortcut:previous',
+      key: StoreKey.SHORTCUT_PREVIOUS,
     },
     {
       label: t('Select Next List'),
       placeholder: t('Record Shortcut'),
       value: nextValue,
       method: setNextValue,
-      key: 'shortcut:next',
+      key: StoreKey.SHORTCUT_NEXT,
     },
     {
       label: t('Quick Paste'),
       placeholder: t('Record Shortcut'),
       value: pasteValue,
       method: setPasteValue,
-      key: 'shortcut:paste',
+      key: StoreKey.SHORTCUT_PASTE,
     },
   ];
 
@@ -84,7 +90,7 @@ export const Shortcuts = () => {
         keys.push(e.key.toUpperCase());
       }
 
-      const isPasteAction = key === 'shortcut:paste';
+      const isPasteAction = key === StoreKey.SHORTCUT_PASTE;
       const validModifierCombination = isValidCombination(keys.join('+'), key);
 
       if (validModifierCombination) {
@@ -94,10 +100,10 @@ export const Shortcuts = () => {
           setAllShortcuts([...allShortcuts, cur]);
           await window.ipc.changeShortcuts(key, ShortcutAction.ADD, cur);
         } else {
-          Message.error('快捷键已被占用');
+          Message.error(t('The shortcut key is occupied'));
         }
       } else if (isPasteAction) {
-        Message.error('快捷粘贴操作必须只使用 Ctrl、Alt 或 Cmd 中的一个');
+        Message.error(t('shortcut paste operation error message'));
       }
     }
   };
