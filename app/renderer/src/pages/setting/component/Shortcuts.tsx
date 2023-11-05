@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Wrapper } from '../../../component/Wrapper';
 import { Input, Message, Space } from '@arco-design/web-react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,12 @@ import { IconClose } from '@arco-design/web-react/icon';
 import { ShortcutAction, StoreKey } from '../../../types/enum';
 import { useStorePrefix } from '../../../hooks/useStorePrefix';
 
+const keyToIcon: Record<string, string> = {
+  Ctrl: '⌃',
+  Command: '⌘',
+  Shift: '⇧',
+  Alt: '⌥',
+};
 export const Shortcuts = () => {
   const [active, setActive] = useState<string | undefined>();
   const [prevValue, setPrevValue] = useState<string | undefined>();
@@ -17,36 +23,32 @@ export const Shortcuts = () => {
   const { t } = useTranslation();
   const initialValues = useStorePrefix('shortcut');
 
-  useEffect(() => {
-    active !== initialValues.shortcutActive && setActive(initialValues.shortcutActive);
-  }, [initialValues]);
-
   const shortcuts = [
     {
       label: t('Activate ECM'),
       placeholder: t('Record Shortcut'),
-      value: active,
+      value: active || initialValues.shortcutAction,
       method: setActive,
       key: StoreKey.SHORTCUT_ACTION,
     },
     {
       label: t('Select Previous List'),
       placeholder: t('Record Shortcut'),
-      value: prevValue,
+      value: prevValue || initialValues.shortcutPrevious,
       method: setPrevValue,
       key: StoreKey.SHORTCUT_PREVIOUS,
     },
     {
       label: t('Select Next List'),
       placeholder: t('Record Shortcut'),
-      value: nextValue,
+      value: nextValue || initialValues.shortcutNext,
       method: setNextValue,
       key: StoreKey.SHORTCUT_NEXT,
     },
     {
       label: t('Quick Paste'),
       placeholder: t('Record Shortcut'),
-      value: pasteValue,
+      value: pasteValue || initialValues.shortcutPaste,
       method: setPasteValue,
       key: StoreKey.SHORTCUT_PASTE,
     },
@@ -121,7 +123,13 @@ export const Shortcuts = () => {
         <Item key={key}>
           <ULabel>{item.label}:</ULabel>
           <UInput
-            value={item.value}
+            value={
+              item.value &&
+              item.value
+                .split('+')
+                .map((boardKey: string) => keyToIcon[boardKey] || boardKey)
+                .join('')
+            }
             onKeyDown={event => handleKeyDown(event, item.key, item.method)}
             placeholder={t('Record Shortcut')}
             suffix={

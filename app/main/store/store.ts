@@ -63,7 +63,6 @@ class StoreManager {
   public getByPrefix(prefix: string): any {
     const allSettings = this.store.store;
     const filteredSettings: any = {};
-    console.log('🤮 ~ file:store method:getByPrefix line:66 -----', allSettings);
 
     for (const key in allSettings) {
       if (Object.hasOwnProperty.call(allSettings, key) && key.startsWith(prefix)) {
@@ -71,8 +70,6 @@ class StoreManager {
         filteredSettings[key] = allSettings[key];
       }
     }
-    console.log('🤮 ~ file:store method:getByPrefix line:73 -----', filteredSettings);
-
     return filteredSettings;
   }
 
