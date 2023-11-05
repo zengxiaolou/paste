@@ -33,4 +33,5 @@ export const zh = {
   'Select Next List': '选择下一个列表',
   'Quick Paste': '快速粘贴',
   'Record Shortcut': '记录快捷键',
+  'The shortcut key is occupied': '快捷键已被占用',
 };

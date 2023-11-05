@@ -4,4 +4,6 @@ export enum Channels {
   CHANGE_LOGIN = 'change-login',
   CHANGE_SOUND = 'change-sound',
   QUIT = 'quit',
+  CHANGE_SHORTCUTS = 'change-shortcuts',
+  SHORTCUT_CHANGE = 'shortcut-change',
 }

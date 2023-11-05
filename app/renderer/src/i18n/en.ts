@@ -33,4 +33,5 @@ export const en = {
   'Select Next List': 'Select Next List',
   'Quick Paste': 'Quick Paste',
   'Record Shortcut': 'Record Shortcut',
+  'The shortcut key is occupied': 'The shortcut key is occupied',
 };

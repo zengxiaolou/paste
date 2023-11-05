@@ -1,10 +1,12 @@
 import { app, BrowserWindow, globalShortcut } from 'electron';
-import i18n from './i18n';
 import { create } from './pages/main_page/main';
-import { clipboardManager, databaseManager, intervalManager, menuBuilder, store } from './components/singletons';
+import { clipboardManager, databaseManager, intervalManager, store } from './components/singletons';
 import { createTray } from './components/tray';
 import { ClipData } from './pages/main_page/type';
 import { create as createSetting } from './pages/setting/main';
+import { setLanguage } from './utils/language';
+import { activeShortcut } from './utils/shortcut';
+import { ShortcutAction } from './types/enum';
 
 let mainWindow: BrowserWindow | null;
 const gotTheLock = app.requestSingleInstanceLock();
@@ -19,15 +21,12 @@ app
     await createTray(mainWindow);
 
     await setLanguage();
+    activeShortcut(ShortcutAction.ADD);
 
     await intervalManager.startClipboardInterval();
 
-    setShortcuts();
-
     store.onDidChange('language', () => {
-      const language = store.get('language');
-      i18n.changeLanguage(language as string);
-      menuBuilder.buildMenu();
+      setLanguage();
     });
 
     await setInitContent();
@@ -39,6 +38,7 @@ app
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    globalShortcut.unregisterAll();
     app.quit();
   }
 });
@@ -58,26 +58,6 @@ if (gotTheLock) {
 } else {
   app.quit();
 }
-
-const setLanguage = async () => {
-  menuBuilder.buildMenu();
-  let language = store.get('language');
-  if (!language) {
-    language = app.getLocale() || 'en';
-    store.set('language', language);
-  }
-  await i18n.changeLanguage(language as string);
-};
-
-const setShortcuts = () => {
-  globalShortcut.register('Command+Shift+X', () => {
-    if (mainWindow?.isVisible()) {
-      mainWindow.hide();
-    } else {
-      mainWindow?.showInactive();
-    }
-  });
-};
 
 const setInitContent = async () => {
   try {

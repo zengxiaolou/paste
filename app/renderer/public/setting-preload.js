@@ -6,6 +6,7 @@ const ChannelsMap = {
   CHANGE_LOGIN: 'change-login',
   CHANGE_SOUND: 'change-sound',
   QUIT: 'quit',
+  CHANGE_SHORTCUTS: 'change-shortcuts',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -15,5 +16,8 @@ contextBridge.exposeInMainWorld('ipc', {
   },
   changeLogin: login => ipcRenderer.send(ChannelsMap.CHANGE_LOGIN, login),
   changeSound: flag => ipcRenderer.send(ChannelsMap.CHANGE_SOUND, flag),
+  changeShortcuts: async (key, action, shortcuts) => {
+    return await ipcRenderer.invoke(ChannelsMap.CHANGE_SHORTCUTS, { key, action, shortcuts });
+  },
   quit: () => ipcRenderer.send(ChannelsMap.QUIT),
 });

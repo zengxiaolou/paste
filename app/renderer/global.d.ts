@@ -1,4 +1,5 @@
 import { ClipData, ClipboardDataQuery } from './src/types/type';
+import { ShortcutAction } from './src/types/enum';
 
 declare global {
   interface Window {
@@ -15,6 +16,8 @@ declare global {
       changeLogin: (login: boolean) => void;
       changeSound: (flag: boolean) => void;
       quit: () => void;
+      changeShortcuts: (key: string, action: ShortcutAction, shortcut?: string) => Promise<boolean>;
+      onShortcutChanged: (callback: (data: string) => void) => void;
     };
   }
 }
