@@ -1,4 +1,5 @@
 import { ClipData, ClipboardDataQuery } from './src/types/type';
+import { ShortcutAction } from './src/types/enum';
 
 declare global {
   interface Window {
@@ -12,9 +13,12 @@ declare global {
       onLanguageChange: (callback: (language: string) => void) => void;
       changeLanguage: (language: string) => void;
       getStoreValue: (key: string) => Promise<string | boolean | number>;
+      getStoreValues: (prefix: string) => Promise<Record<string, string | boolean | number>>;
       changeLogin: (login: boolean) => void;
       changeSound: (flag: boolean) => void;
       quit: () => void;
+      changeShortcuts: (key: string, action: ShortcutAction, shortcut?: string) => Promise<boolean>;
+      onShortcutChanged: (callback: (data: string) => void) => void;
     };
   }
 }

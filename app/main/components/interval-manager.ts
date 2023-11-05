@@ -2,6 +2,7 @@ import path from 'node:path';
 import { AppInfoFactory } from '../platform-utils/app-info-factory';
 import { sendClipboardDataToRenderer } from '../pages/main_page/main';
 import { ClipData } from '../pages/main_page/type';
+import { StoreKey } from '../types/enum';
 import { clipboardManager, databaseManager, player, store } from './singletons';
 import { COMPONENT__DIRECTORY } from './const';
 class IntervalManager {
@@ -36,7 +37,7 @@ class IntervalManager {
         }
         await databaseManager.saveToDatabase(data);
         sendClipboardDataToRenderer(data);
-        if (store.get('sound')) {
+        if (store.get(StoreKey.GENERAL_SOUND)) {
           player.play(path.join(COMPONENT__DIRECTORY, '../../../assets/paste.mp3'));
         }
       } else if (isDuplicate && data?.id) {

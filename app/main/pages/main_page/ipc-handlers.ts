@@ -6,6 +6,7 @@ import { stateManager } from '../../components/singletons';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';
+import { StoreKey } from '../../types/enum';
 export const registerIpcHandler = () => {
   ipcMain.handle(Channels.TOGGLE_ALWAYS_ON_TOP, async () => {
     const win = stateManager.getMainWindow();
@@ -57,7 +58,7 @@ export const registerIpcHandler = () => {
   ipcMain.handle(Channels.SHOW_CONTEXT_MENU, (event, arguments_) => {
     return new Promise(resolve => {
       const menu = new Menu();
-      const language = store.get('language') as string;
+      const language = store.get(StoreKey.GENERAL_LANGUAGE) as string;
       menu.append(
         new MenuItem({
           label: i18n.t('Delete', { lng: language }),

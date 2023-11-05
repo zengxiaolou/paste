@@ -33,4 +33,6 @@ export const en = {
   'Select Next List': 'Select Next List',
   'Quick Paste': 'Quick Paste',
   'Record Shortcut': 'Record Shortcut',
+  'The shortcut key is occupied': 'The shortcut key is occupied',
+  'shortcut paste operation error message': 'The shortcut paste operation must use only one of Ctrl, Alt or Cmd',
 };

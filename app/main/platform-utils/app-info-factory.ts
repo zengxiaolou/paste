@@ -1,6 +1,7 @@
 import MacOSUtils from './mac-os';
 import LinuxUtils from './linux';
-import WindowsUtils from "./windows";
+import WindowsUtils from './windows';
+import { Platform } from '../types/enum';
 
 interface IPlatformUtils {
   getActiveApplicationName(): Promise<string>;
@@ -20,13 +21,13 @@ export const AppInfoFactory = {
 
   getUtilsInstance(): IPlatformUtils {
     switch (process.platform) {
-      case 'darwin': {
+      case Platform.MAC: {
         return new MacOSUtils();
       }
-      case 'win32': {
+      case Platform.WINDOW: {
         return new WindowsUtils();
       }
-      case 'linux': {
+      case Platform.LINUX: {
         return new LinuxUtils();
       }
       default: {

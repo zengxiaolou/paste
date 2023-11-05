@@ -1,13 +1,9 @@
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import React, { FC, useEffect, useState } from 'react';
-import { ReactComponent as IconGeneral } from '../../assets/general.svg';
-import { ReactComponent as IconAbout } from '../../assets/about.svg';
-import { ReactComponent as IconShortcut } from '../../assets/shortcut.svg';
-import { ReactComponent as IconAdvance } from '../../assets/advance.svg';
-import { ReactComponent as IconLabs } from '../../assets/labs.svg';
 import { Button } from '@arco-design/web-react';
 import { TabKey } from './const';
+import { IconAbout, IconAdvance, IconGeneral, IconLabs, IconShortcut } from '../../icon/index';
 
 const handleTabs = (t: any) => {
   return [
@@ -46,7 +42,7 @@ interface props {
 export const Header: FC<props> = ({ onSelect }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>('general');
-  const [isFocused, setIsFocused] = useState(true); // 新增状态
+  const [isFocused, setIsFocused] = useState<number>(1);
   const tabs = handleTabs(t);
   const handleSetTabs = (v: TabKey) => {
     setActiveTab(v);
@@ -55,10 +51,10 @@ export const Header: FC<props> = ({ onSelect }) => {
 
   useEffect(() => {
     const handleFocus = () => {
-      setIsFocused(true);
+      setIsFocused(1);
     };
     const handleBlur = () => {
-      setIsFocused(false);
+      setIsFocused(0);
     };
     window.addEventListener('focus', handleFocus);
     window.addEventListener('blur', handleBlur);
@@ -69,7 +65,7 @@ export const Header: FC<props> = ({ onSelect }) => {
   }, []);
 
   return (
-    <Wrapper isFocused={isFocused}>
+    <Wrapper is_focused={isFocused}>
       {tabs.map((v, key) => (
         <IconWrapper key={key} active={activeTab === v.key} onClick={() => handleSetTabs(v.key as TabKey)}>
           <Button style={{ marginBottom: 4 }} icon={<v.icon />} />
@@ -103,9 +99,9 @@ const IconWrapper = styled.button<{ active: boolean }>`
   }
 `;
 
-const Wrapper = styled.div<{ isFocused: boolean }>`
+const Wrapper = styled.div<{ is_focused: number }>`
   display: flex;
   padding: 16px 0;
   justify-content: center;
-  background-color: ${({ isFocused }) => (isFocused ? '#383839' : '#2a2b2c')};
+  background-color: ${({ is_focused }) => (is_focused === 1 ? '#383839' : '#2a2b2c')};
 `;

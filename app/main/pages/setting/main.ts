@@ -53,9 +53,9 @@ const create = () => {
   }
 
   win.webContents.openDevTools();
-  stateManager.setMainWindow(win);
+  stateManager.setSettingWindow(win);
   win.on('closed', () => {
-    stateManager.setMainWindow();
+    stateManager.setSettingWindow();
   });
   return win;
 };
