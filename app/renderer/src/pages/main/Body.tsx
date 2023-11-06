@@ -6,7 +6,8 @@ import { debounce } from '../../utils/func';
 import { ClipboardDataQuery, ClipData } from '../../types/type';
 import { Context } from './Context';
 import { ContentCard } from './component/ContentCard';
-import { DataTypes } from '../../types/enum';
+import { DataTypes, StoreKey } from '../../types/enum';
+import { useShortcut } from '../../hooks/useShortcut';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
@@ -53,6 +54,22 @@ export const Body = memo(() => {
   const { t } = useTranslation();
 
   const tabs = createTabs(t);
+
+  const handlePreviousTab = () => {
+    const currentTabIndex = tabs.findIndex(tab => tab.key === activeTab);
+    const preTabIndex = (currentTabIndex - 1 + tabs.length) % tabs.length;
+    setActiveTab(tabs[preTabIndex].key);
+  };
+
+  const handleNextTab = () => {
+    const currentTabIndex = tabs.findIndex(tab => tab.key === activeTab);
+    const nextTabIndex = (currentTabIndex + 1) % tabs.length;
+    console.log('🤮 ~ file:Body method: line:67 -----', tabs[nextTabIndex].key);
+    setActiveTab(tabs[nextTabIndex].key);
+  };
+
+  useShortcut(StoreKey.SHORTCUT_PREVIOUS, handlePreviousTab);
+  useShortcut(StoreKey.SHORTCUT_NEXT, handleNextTab);
   const getData = async (queryData: ClipboardDataQuery) => {
     if (query.page === 1) {
       setData([]);

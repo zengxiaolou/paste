@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Wrapper } from '../../../component/Wrapper';
 import { Input, Message, Space } from '@arco-design/web-react';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +22,10 @@ export const Shortcuts = () => {
   const [allShortcuts, setAllShortcuts] = useState<string[]>([]);
   const { t } = useTranslation();
   const initialValues = useStorePrefix('shortcut');
+
+  useEffect(() => {
+    setAllShortcuts([...Object.values(initialValues)]);
+  }, [initialValues]);
 
   const shortcuts = [
     {
@@ -72,7 +76,7 @@ export const Shortcuts = () => {
     return hasModifier && hasCharacter;
   };
 
-  const handleKeyDown = async (e: React.KeyboardEvent, key: string, method: (v: string) => void) => {
+  const handleKeyDown = async (e: React.KeyboardEvent, key: string, method: (v: string) => void, old: string) => {
     e.stopPropagation();
     e.preventDefault();
     const invalidKeys = ['Tab', 'CapsLock', 'Enter', 'Backspace', 'Insert', 'Escape'];
@@ -99,7 +103,10 @@ export const Shortcuts = () => {
         const cur = keys.join('+');
         if (!allShortcuts.some(shortcut => shortcut === cur)) {
           method(cur);
-          setAllShortcuts([...allShortcuts, cur]);
+          setAllShortcuts(prevState => {
+            const newShortcuts = prevState.filter(shortcut => shortcut !== old);
+            return [...newShortcuts, cur];
+          });
           await window.ipc.changeShortcuts(key, ShortcutAction.ADD, cur);
         } else {
           Message.error(t('The shortcut key is occupied'));
@@ -130,7 +137,7 @@ export const Shortcuts = () => {
                 .map((boardKey: string) => keyToIcon[boardKey] || boardKey)
                 .join('')
             }
-            onKeyDown={event => handleKeyDown(event, item.key, item.method)}
+            onKeyDown={event => handleKeyDown(event, item.key, item.method, item.value)}
             placeholder={t('Record Shortcut')}
             suffix={
               item.value ? (

@@ -1,5 +1,11 @@
-export const formatDateTime = (input: Date | string): string => {
-  const newDate = typeof input === 'string' ? new Date(input) : input;
+export const formatDateTime = (input: Date | string | number): string => {
+  let newDate: Date;
+  if (typeof input === 'number') {
+    newDate = new Date(input);
+  } else {
+    newDate = typeof input === 'string' ? new Date(input) : input;
+  }
+
   const inputDate = formatDateTimeInUserTimezone(newDate);
   const today = new Date();
   const sameYear = inputDate.getFullYear() === today.getFullYear();

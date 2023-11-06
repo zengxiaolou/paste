@@ -5,8 +5,8 @@ import { Item, Label } from './CItem';
 import i18n from '../../../i18n/index';
 import useLanguage from '../../../hooks/useLanguage';
 import { useTranslation } from 'react-i18next';
-import useLogin from '../../../hooks/useLogin';
-import useSound from '../../../hooks/useSound';
+import useGetStoreByKey from '../../../hooks/useGetStoreByKey';
+import { StoreKey } from '../../../types/enum';
 
 export const General = () => {
   const [language, setLanguage] = useState<string | undefined>();
@@ -15,8 +15,8 @@ export const General = () => {
 
   const { t } = useTranslation();
   const lng = useLanguage();
-  const loginFlag = useLogin();
-  const soundFlag = useSound();
+  const loginFlag = useGetStoreByKey(StoreKey.GENERAL_LOGIN) as boolean;
+  const soundFlag = useGetStoreByKey(StoreKey.GENERAL_SOUND) as boolean;
 
   useEffect(() => {
     setLanguage(lng);
