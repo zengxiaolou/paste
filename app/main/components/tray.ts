@@ -1,9 +1,9 @@
 import path from 'node:path';
 import { app, BrowserWindow, Tray, Menu } from 'electron';
-import { MAIN_DIRECTORY } from '../const';
-import i18n from '../i18n';
-import { Platform } from '../types/enum';
 import { intervalManager, stateManager } from './singletons';
+import { MAIN_DIRECTORY } from '@/const';
+import i18n from '@/i18n';
+import { Platform } from '@/types/enum';
 
 export const createTray = async (window: BrowserWindow) => {
   const tray = new Tray(path.resolve(MAIN_DIRECTORY, '../../assets/tray16.png'));

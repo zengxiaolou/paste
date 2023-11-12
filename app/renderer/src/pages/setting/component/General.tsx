@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Wrapper } from '../../../component/Wrapper';
+import { Wrapper } from '@/component/Wrapper';
 import { Checkbox } from '@arco-design/web-react';
 import { Item, Label } from './CItem';
-import i18n from '../../../i18n/index';
-import useLanguage from '../../../hooks/useLanguage';
+import i18n from '@/i18n/index';
+import useLanguage from '@/hooks/useLanguage';
 import { useTranslation } from 'react-i18next';
-import useGetStoreByKey from '../../../hooks/useGetStoreByKey';
-import { StoreKey } from '../../../types/enum';
+import useGetStoreByKey from '@/hooks/useGetStoreByKey';
+import { StoreKey } from '@/types/enum';
 
 export const General = () => {
   const [language, setLanguage] = useState<string | undefined>();

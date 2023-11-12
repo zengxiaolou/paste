@@ -13,7 +13,36 @@ const keyToIcon: Record<string, string> = {
   Command: '⌘',
   Shift: '⇧',
   Alt: '⌥',
+  Backquote: '(',
+  Backslash: '\\',
+  BracketLeft: '[',
+  BracketRight: ']',
+  Comma: ',',
+  Period: '.',
+  Quote: '"',
+  Equal: '=',
+  Minus: '-',
+  Plus: '+',
+  Semicolon: ';',
+  Slash: '/',
 };
+
+const specialCharacters = [
+  'Backquote',
+  'Backslash',
+  'BracketLeft',
+  'BracketRight',
+  'Comma',
+  'Equal',
+  'Minus',
+  'Period',
+  'Quote',
+  'Semicolon',
+  'Slash',
+  'IntlBackslash',
+  'IntlRo',
+  'IntlYen',
+];
 export const Shortcuts = () => {
   const [active, setActive] = useState<string | undefined>();
   const [prevValue, setPrevValue] = useState<string | undefined>();
@@ -59,48 +88,47 @@ export const Shortcuts = () => {
   ];
 
   const isValidCombination = (cur: string, key: string) => {
-    const parts = cur.split('+');
-    const hasModifier = parts.some(part => ['Ctrl', 'Shift', 'Alt', 'Cmd'].includes(part));
+    const parts = cur.replace('KEY', '').split('+');
+    const hasModifier = parts.some(part => ['Ctrl', 'Shift', 'Alt', 'Command'].includes(part));
     const hasCharacter = parts.some(part => {
       return (
         part.match(/^[a-zA-Z0-9]$/) ||
-        ['←', '↑', '→', '↓'].includes(part) ||
-        part.match(/[`~!@#$%^&*()_+\-=[\]{}\\|;:'",.<>/?]$/)
+        ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(part) ||
+        specialCharacters.includes(part)
       );
     });
-
     if (key === 'shortcut:paste') {
       return hasModifier && parts.length === 2;
     }
-
     return hasModifier && hasCharacter;
   };
 
-  const handleKeyDown = async (e: React.KeyboardEvent, key: string, method: (v: string) => void, old: string) => {
-    e.stopPropagation();
+  const handleKeyDown = async (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    key: string,
+    method: (v: string) => void,
+    old: string
+  ) => {
     e.preventDefault();
     const invalidKeys = ['Tab', 'CapsLock', 'Enter', 'Backspace', 'Insert', 'Escape'];
     let keys = [];
 
-    if (!invalidKeys.includes(e.key)) {
+    if (!invalidKeys.includes(e.code)) {
       if (e.getModifierState('Control')) keys.push('Ctrl');
       if (e.getModifierState('Shift')) keys.push('Shift');
       if (e.getModifierState('Alt')) keys.push('Alt');
       if (e.getModifierState('Meta')) keys.push('Command');
-      if (
-        (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) ||
-        /^F\d+$/.test(e.key) ||
-        ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) ||
-        /[`~!@#$%^&*()_+\-=[\]{}\\|;:'",.<>/?]/.test(e.key)
-      ) {
-        keys.push(e.key.toUpperCase());
+      if (e.code.match(/^Key[A-Z]$/) || e.code.match(/^Digit[0-9]$/) || e.code.match(/^F[0-9]+$/)) {
+        keys.push(e.code.toLocaleUpperCase());
+      }
+      if (specialCharacters.includes(e.code) || ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+        keys.push(e.code);
       }
 
       const isPasteAction = key === StoreKey.SHORTCUT_PASTE;
       const validModifierCombination = isValidCombination(keys.join('+'), key);
-
       if (validModifierCombination) {
-        const cur = keys.join('+');
+        const cur = keys.join('+').replace('KEY', '');
         if (!allShortcuts.some(shortcut => shortcut === cur)) {
           method(cur);
           setAllShortcuts(prevState => {
@@ -118,10 +146,12 @@ export const Shortcuts = () => {
   };
 
   const handleDeleteShortcut = async (shortcut: string, method: (value: string | undefined) => void, key: string) => {
+    console.log('🤮 ~ file:Shortcuts method:handleDeleteShortcut line:149 -----', allShortcuts);
     setAllShortcuts(allShortcuts.filter(item => item !== shortcut));
     method(undefined);
     await window.ipc.changeShortcuts(key, ShortcutAction.DELETE, shortcut);
   };
+  console.log('🤮 ~ file:Shortcuts method:Shortcuts line:154 -----', prevValue);
 
   return (
     <Wrapper>

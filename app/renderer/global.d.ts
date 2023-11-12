@@ -18,7 +18,7 @@ declare global {
       changeSound: (flag: boolean) => void;
       quit: () => void;
       changeShortcuts: (key: string, action: ShortcutAction, shortcut?: string) => Promise<boolean>;
-      onShortcutChanged: (callback: (data: string) => void) => void;
+      onShortcutChanged: () => Promise<string>;
     };
   }
 }

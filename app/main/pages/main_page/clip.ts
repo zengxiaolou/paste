@@ -6,7 +6,7 @@ import { app, clipboard, nativeImage, NativeImage } from 'electron';
 import { JSDOM } from 'jsdom';
 import { ClipData } from './type';
 import { DataTypes } from './enum';
-import { Platform } from '../../types/enum';
+import { Platform } from '@/types/enum';
 
 class ClipboardManager {
   private pasteContentQueue: ClipData[] = [];

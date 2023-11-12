@@ -1,8 +1,8 @@
 import playSound from 'play-sound';
-import DatabaseManager from '../pages/main_page/database';
-import ClipboardManager from '../pages/main_page/clip';
-import StateManager from '../store';
-import StoreManager from '../store/store';
+import DatabaseManager from '@/pages/main_page/database';
+import ClipboardManager from '@/pages/main_page/clip';
+import StateManager from '@/store';
+import StoreManager from '@/store/store';
 import IntervalManager from './interval-manager';
 import MenuBuilder from './menu';
 

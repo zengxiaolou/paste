@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import { store } from '../../components/singletons';
-import { activeShortcut } from '../../utils/shortcut';
-import { ShortcutAction, StoreKey } from '../../types/enum';
+import { store } from '@/components/singletons';
+import { activeShortcut } from '@/utils/shortcut';
+import { ShortcutAction, StoreKey } from '@/types/enum';
 import { Channels } from './channels';
 
 export const registerIpcHandler = () => {

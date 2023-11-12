@@ -1,12 +1,12 @@
-import { extractOutermostBackgroundColor } from '../../../utils/string';
+import { extractOutermostBackgroundColor } from '@/utils/string';
 import { Card, Image, Notification, Popover, Space } from '@arco-design/web-react';
 import { Collect } from './Collect';
-import { formatDateTime } from '../../../utils/time';
+import { formatDateTime } from '@/utils/time';
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { ClipData } from '../../../types/type';
+import { ClipData } from '@/types/type';
 import { useTranslation } from 'react-i18next';
-import { DataTypes } from '../../../types/enum';
+import { DataTypes } from '@/types/enum';
 
 interface props {
   index: number;

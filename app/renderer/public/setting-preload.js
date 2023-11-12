@@ -24,4 +24,10 @@ contextBridge.exposeInMainWorld('ipc', {
     return await ipcRenderer.invoke(ChannelsMap.CHANGE_SHORTCUTS, { key, action, shortcuts });
   },
   quit: () => ipcRenderer.send(ChannelsMap.QUIT),
+  onShortcutChanged: () =>
+    new Promise(resolve => {
+      ipcRenderer.on(ChannelsMap.SHORTCUT_CHANGE, (event, data) => {
+        resolve(data);
+      });
+    }),
 });

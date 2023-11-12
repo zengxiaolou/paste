@@ -1,7 +1,6 @@
 import { join } from 'node:path';
 import sqlite3 from 'sqlite3';
 import { app } from 'electron';
-import { getBeijingDayStartAndEnd } from '../../utils/time';
 import { ClipboardDataQuery, ClipData } from './type';
 import { DataTypes } from './enum';
 

@@ -1,4 +1,4 @@
-import { DataTypes } from './enum';
+import { DataTypes } from '@/types/enum';
 
 export interface ClipData {
   id: number;

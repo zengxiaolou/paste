@@ -1,13 +1,15 @@
 import { BackTop, Spin, Tabs } from '@arco-design/web-react';
-import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { debounce } from '../../utils/func';
-import { ClipboardDataQuery, ClipData } from '../../types/type';
+import { debounce } from '@/utils/func';
+import { ClipboardDataQuery, ClipData } from '@/types/type';
 import { Context } from './Context';
 import { ContentCard } from './component/ContentCard';
-import { DataTypes, StoreKey } from '../../types/enum';
-import { useShortcut } from '../../hooks/useShortcut';
+import { DataTypes, StoreKey } from '@/types/enum';
+import { useHotkeys } from 'react-hotkeys-hook';
+import useGetStoreByKey from '@/hooks/useGetStoreByKey';
+import { parseShortcut } from '@/utils/string';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
@@ -47,29 +49,50 @@ export const Body = memo(() => {
   const [activeCard, setActiveCard] = useState<number>(-1);
   const [activeTab, setActiveTab] = useState<string | undefined>('all');
   const [loading, setLoading] = useState<boolean>(false);
+  const [previous, setPrevious] = useState<string>('');
+  const [next, setNext] = useState<string>('');
 
   const { search, deletedRecord } = useContext(Context);
 
   const isFetching = useRef(false);
   const { t } = useTranslation();
+  const pre = useGetStoreByKey(StoreKey.SHORTCUT_PREVIOUS) as string;
+  const nextShortcut = useGetStoreByKey(StoreKey.SHORTCUT_NEXT) as string;
+  useEffect(() => {
+    setNext(nextShortcut);
+    setPrevious(pre);
+  }, [pre, nextShortcut]);
+
+  useHotkeys('meta+n', () => {
+    setActiveCard(prevIndex => (prevIndex + 1) % data.length);
+  });
+  useHotkeys('ctrl+p', () => {
+    setActiveCard(prevIndex => (prevIndex - 1 + data.length) % data.length);
+  });
 
   const tabs = createTabs(t);
 
-  const handlePreviousTab = () => {
-    const currentTabIndex = tabs.findIndex(tab => tab.key === activeTab);
-    const preTabIndex = (currentTabIndex - 1 + tabs.length) % tabs.length;
-    setActiveTab(tabs[preTabIndex].key);
+  const onShortcutChanged = async () => {
+    const key = await window.ipc.onShortcutChanged();
+    const newShortcut = (await window.ipc.getStoreValue(key)) as string;
+    if (key === StoreKey.SHORTCUT_PREVIOUS) {
+      setPrevious(newShortcut);
+    } else if (key === StoreKey.SHORTCUT_NEXT) {
+      setNext(newShortcut);
+    }
   };
 
-  const handleNextTab = () => {
-    const currentTabIndex = tabs.findIndex(tab => tab.key === activeTab);
-    const nextTabIndex = (currentTabIndex + 1) % tabs.length;
-    console.log('🤮 ~ file:Body method: line:67 -----', tabs[nextTabIndex].key);
-    setActiveTab(tabs[nextTabIndex].key);
-  };
+  const findNextTab = useCallback(() => {
+    const currentIndex = tabs.findIndex(tab => tab.key === activeTab);
+    return tabs[(currentIndex + 1) % tabs.length].key;
+  }, [activeTab, tabs]);
 
-  useShortcut(StoreKey.SHORTCUT_PREVIOUS, handlePreviousTab);
-  useShortcut(StoreKey.SHORTCUT_NEXT, handleNextTab);
+  const findPreviousTab = useCallback(() => {
+    console.log('🤮 ~ file:Body method: line:91 -----', 'test');
+    const currentIndex = tabs.findIndex(tab => tab.key === activeTab);
+    return tabs[(currentIndex - 1 + tabs.length) % tabs.length].key;
+  }, [activeTab, tabs]);
+
   const getData = async (queryData: ClipboardDataQuery) => {
     if (query.page === 1) {
       setData([]);
@@ -128,6 +151,10 @@ export const Body = memo(() => {
   };
 
   useEffect(() => {
+    onShortcutChanged().then();
+  }, []);
+
+  useEffect(() => {
     getData(query).then();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
@@ -172,21 +199,28 @@ export const Body = memo(() => {
   }, [contextMenu, deletedRecord]);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 'n') {
-        setActiveCard(prevIndex => (prevIndex + 1) % data.length);
-        event.preventDefault();
-      }
-      if (event.ctrlKey && event.key === 'p') {
-        setActiveCard(prevIndex => (prevIndex - 1 + data.length) % data.length);
-        event.preventDefault();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [data.length]);
+    if (previous) {
+      const shortcutObject = parseShortcut(previous);
+      console.log('🤮 ~ file:Body method: line:203 -----', shortcutObject);
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (
+          event.ctrlKey === shortcutObject.ctrl &&
+          event.altKey === shortcutObject.alt &&
+          event.shiftKey === shortcutObject.shift &&
+          event.metaKey === shortcutObject.meta &&
+          event.key.toLowerCase() === shortcutObject.key
+        ) {
+          console.log(`Shortcut ${previous} pressed`);
+          findPreviousTab();
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [findPreviousTab, previous]);
 
   return (
     <CTabs type="rounded" defaultActiveTab="all" activeTab={activeTab} onChange={handleChangeTab}>

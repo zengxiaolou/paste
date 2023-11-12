@@ -1,5 +1,5 @@
 import Store from 'electron-store';
-import { LanguageEnum, RemoveItem, StoreKey } from '../types/enum';
+import { LanguageEnum, RemoveItem, StoreKey } from '@/types/enum';
 
 class StoreManager {
   private static instance: StoreManager;

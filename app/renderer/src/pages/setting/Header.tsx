@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import React, { FC, useEffect, useState } from 'react';
 import { Button } from '@arco-design/web-react';
 import { TabKey } from './const';
-import { IconAbout, IconAdvance, IconGeneral, IconLabs, IconShortcut } from '../../icon/index';
+import { IconAbout, IconAdvance, IconGeneral, IconLabs, IconShortcut } from '@/icon/index';
 
 const handleTabs = (t: any) => {
   return [

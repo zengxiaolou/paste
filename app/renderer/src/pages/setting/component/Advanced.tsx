@@ -1,4 +1,4 @@
-import { Wrapper } from '../../../component/Wrapper';
+import { Wrapper } from '@/component/Wrapper';
 import React from 'react';
 import { Item, Label } from './CItem';
 
