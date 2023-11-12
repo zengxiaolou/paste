@@ -84,13 +84,12 @@ export const Body = memo(() => {
 
   const findNextTab = useCallback(() => {
     const currentIndex = tabs.findIndex(tab => tab.key === activeTab);
-    return tabs[(currentIndex + 1) % tabs.length].key;
+    return handleChangeTab(tabs[(currentIndex + 1) % tabs.length].key);
   }, [activeTab, tabs]);
 
   const findPreviousTab = useCallback(() => {
-    console.log('🤮 ~ file:Body method: line:91 -----', 'test');
     const currentIndex = tabs.findIndex(tab => tab.key === activeTab);
-    return tabs[(currentIndex - 1 + tabs.length) % tabs.length].key;
+    return handleChangeTab(tabs[(currentIndex - 1 + tabs.length) % tabs.length].key);
   }, [activeTab, tabs]);
 
   const getData = async (queryData: ClipboardDataQuery) => {
@@ -201,7 +200,6 @@ export const Body = memo(() => {
   useEffect(() => {
     if (previous) {
       const shortcutObject = parseShortcut(previous);
-      console.log('🤮 ~ file:Body method: line:203 -----', shortcutObject);
       const handleKeyDown = (event: KeyboardEvent) => {
         if (
           event.ctrlKey === shortcutObject.ctrl &&
@@ -210,7 +208,6 @@ export const Body = memo(() => {
           event.metaKey === shortcutObject.meta &&
           event.key.toLowerCase() === shortcutObject.key
         ) {
-          console.log(`Shortcut ${previous} pressed`);
           findPreviousTab();
         }
       };
@@ -221,6 +218,28 @@ export const Body = memo(() => {
       };
     }
   }, [findPreviousTab, previous]);
+
+  useEffect(() => {
+    if (next) {
+      const shortcutObject = parseShortcut(next);
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (
+          event.ctrlKey === shortcutObject.ctrl &&
+          event.altKey === shortcutObject.alt &&
+          event.shiftKey === shortcutObject.shift &&
+          event.metaKey === shortcutObject.meta &&
+          event.key.toLowerCase() === shortcutObject.key
+        ) {
+          findNextTab();
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [next, findNextTab]);
 
   return (
     <CTabs type="rounded" defaultActiveTab="all" activeTab={activeTab} onChange={handleChangeTab}>
