@@ -1,48 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Wrapper } from '../../../component/Wrapper';
+import { Wrapper } from '@/component/Wrapper';
 import { Input, Message, Space } from '@arco-design/web-react';
 import { useTranslation } from 'react-i18next';
 import { Item, Label } from './CItem';
 import styled from 'styled-components';
 import { IconClose } from '@arco-design/web-react/icon';
-import { ShortcutAction, StoreKey } from '../../../types/enum';
-import { useStorePrefix } from '../../../hooks/useStorePrefix';
-
-const keyToIcon: Record<string, string> = {
-  Ctrl: '⌃',
-  Command: '⌘',
-  Shift: '⇧',
-  Alt: '⌥',
-  Backquote: '(',
-  Backslash: '\\',
-  BracketLeft: '[',
-  BracketRight: ']',
-  Comma: ',',
-  Period: '.',
-  Quote: '"',
-  Equal: '=',
-  Minus: '-',
-  Plus: '+',
-  Semicolon: ';',
-  Slash: '/',
-};
-
-const specialCharacters = [
-  'Backquote',
-  'Backslash',
-  'BracketLeft',
-  'BracketRight',
-  'Comma',
-  'Equal',
-  'Minus',
-  'Period',
-  'Quote',
-  'Semicolon',
-  'Slash',
-  'IntlBackslash',
-  'IntlRo',
-  'IntlYen',
-];
+import { ShortcutAction, StoreKey } from '@/types/enum';
+import { useStorePrefix } from '@/hooks/useStorePrefix';
+import { keyToIcon, specialCharacters } from '@/pages/setting/component/const';
 export const Shortcuts = () => {
   const [active, setActive] = useState<string | undefined>();
   const [prevValue, setPrevValue] = useState<string | undefined>();
@@ -51,41 +16,6 @@ export const Shortcuts = () => {
   const [allShortcuts, setAllShortcuts] = useState<string[]>([]);
   const { t } = useTranslation();
   const initialValues = useStorePrefix('shortcut');
-
-  useEffect(() => {
-    setAllShortcuts([...Object.values(initialValues)]);
-  }, [initialValues]);
-
-  const shortcuts = [
-    {
-      label: t('Activate ECM'),
-      placeholder: t('Record Shortcut'),
-      value: active || initialValues.shortcutAction,
-      method: setActive,
-      key: StoreKey.SHORTCUT_ACTION,
-    },
-    {
-      label: t('Select Previous List'),
-      placeholder: t('Record Shortcut'),
-      value: prevValue || initialValues.shortcutPrevious,
-      method: setPrevValue,
-      key: StoreKey.SHORTCUT_PREVIOUS,
-    },
-    {
-      label: t('Select Next List'),
-      placeholder: t('Record Shortcut'),
-      value: nextValue || initialValues.shortcutNext,
-      method: setNextValue,
-      key: StoreKey.SHORTCUT_NEXT,
-    },
-    {
-      label: t('Quick Paste'),
-      placeholder: t('Record Shortcut'),
-      value: pasteValue || initialValues.shortcutPaste,
-      method: setPasteValue,
-      key: StoreKey.SHORTCUT_PASTE,
-    },
-  ];
 
   const isValidCombination = (cur: string, key: string) => {
     const parts = cur.replace('KEY', '').split('+');
@@ -107,7 +37,7 @@ export const Shortcuts = () => {
     e: React.KeyboardEvent<HTMLInputElement>,
     key: string,
     method: (v: string) => void,
-    old: string
+    old?: string
   ) => {
     e.preventDefault();
     const invalidKeys = ['Tab', 'CapsLock', 'Enter', 'Backspace', 'Insert', 'Escape'];
@@ -146,42 +76,73 @@ export const Shortcuts = () => {
   };
 
   const handleDeleteShortcut = async (shortcut: string, method: (value: string | undefined) => void, key: string) => {
-    console.log('🤮 ~ file:Shortcuts method:handleDeleteShortcut line:149 -----', allShortcuts);
     setAllShortcuts(allShortcuts.filter(item => item !== shortcut));
     method(undefined);
     await window.ipc.changeShortcuts(key, ShortcutAction.DELETE, shortcut);
   };
-  console.log('🤮 ~ file:Shortcuts method:Shortcuts line:154 -----', prevValue);
+  const showShortcut = (value?: string) => {
+    if (!value) {
+      return '';
+    }
+    return value
+      .split('+')
+      .map((boardKey: string) => keyToIcon[boardKey] || boardKey)
+      .join('');
+  };
+  const handleSuffix = (method: (value: string | undefined) => void, key: string, value?: string) => {
+    if (!value) {
+      return <div />;
+    }
+    return <IconClose style={{ cursor: 'pointer' }} onClick={() => handleDeleteShortcut(value, method, key)} />;
+  };
+
+  useEffect(() => {
+    setAllShortcuts([...Object.values(initialValues)]);
+    setActive(initialValues?.[StoreKey.SHORTCUT_ACTION]);
+    setPrevValue(initialValues?.[StoreKey.SHORTCUT_PREVIOUS]);
+    setNextValue(initialValues?.[StoreKey.SHORTCUT_NEXT]);
+    setPasteValue(initialValues?.[StoreKey.SHORTCUT_PASTE]);
+  }, [initialValues]);
 
   return (
     <Wrapper>
       <Space style={{ marginBottom: 16 }}>{t('shortcuts setting')}</Space>
-      {shortcuts.map((item, key) => (
-        <Item key={key}>
-          <ULabel>{item.label}:</ULabel>
-          <UInput
-            value={
-              item.value &&
-              item.value
-                .split('+')
-                .map((boardKey: string) => keyToIcon[boardKey] || boardKey)
-                .join('')
-            }
-            onKeyDown={event => handleKeyDown(event, item.key, item.method, item.value)}
-            placeholder={t('Record Shortcut')}
-            suffix={
-              item.value ? (
-                <IconClose
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => item.value && handleDeleteShortcut(item.value, item.method, item.key)}
-                />
-              ) : (
-                <div />
-              )
-            }
-          />
-        </Item>
-      ))}
+      <Item>
+        <ULabel>{t('Activate ECM')}:</ULabel>
+        <UInput
+          value={showShortcut(active)}
+          onKeyDown={event => handleKeyDown(event, StoreKey.SHORTCUT_ACTION, setActive, active)}
+          placeholder={t('Record Shortcut')}
+          suffix={handleSuffix(setActive, StoreKey.SHORTCUT_ACTION, active)}
+        />
+      </Item>
+      <Item>
+        <ULabel>{t('Select Previous List')}:</ULabel>
+        <UInput
+          value={showShortcut(prevValue)}
+          onKeyDown={event => handleKeyDown(event, StoreKey.SHORTCUT_PREVIOUS, setPrevValue, prevValue)}
+          placeholder={t('Record Shortcut')}
+          suffix={handleSuffix(setPrevValue, StoreKey.SHORTCUT_PREVIOUS, prevValue)}
+        />
+      </Item>
+      <Item>
+        <ULabel>{t('Select Next List')}:</ULabel>
+        <UInput
+          value={showShortcut(nextValue)}
+          onKeyDown={event => handleKeyDown(event, StoreKey.SHORTCUT_NEXT, setNextValue, nextValue)}
+          placeholder={t('Record Shortcut')}
+          suffix={handleSuffix(setNextValue, StoreKey.SHORTCUT_NEXT, nextValue)}
+        />
+      </Item>
+      <Item>
+        <ULabel>{t('Quick Paste')}:</ULabel>
+        <UInput
+          value={showShortcut(pasteValue)}
+          onKeyDown={event => handleKeyDown(event, StoreKey.SHORTCUT_PASTE, setPasteValue, pasteValue)}
+          placeholder={t('Record Shortcut')}
+          suffix={handleSuffix(setPasteValue, StoreKey.SHORTCUT_PASTE, pasteValue)}
+        />
+      </Item>
     </Wrapper>
   );
 };
