@@ -35,4 +35,7 @@ export const en = {
   'Record Shortcut': 'Record Shortcut',
   'The shortcut key is occupied': 'The shortcut key is occupied',
   'shortcut paste operation error message': 'The shortcut paste operation must use only one of Ctrl, Alt or Cmd',
+  'Hold Command Key': 'Hold ⌘ Command Key',
+  'Hold Option Key': 'Hold ⌥ Option Key',
+  'Hold Control Key': 'Hold ⌃ Control Key',
 };

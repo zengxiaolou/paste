@@ -35,4 +35,7 @@ export const zh = {
   'Record Shortcut': '记录快捷键',
   'The shortcut key is occupied': '快捷键已被占用',
   'shortcut paste operation error message': '快捷粘贴操作必须只使用 Ctrl、Alt 或 Cmd 中的一个',
+  'Hold Command Key': '按住 ⌘ 命令键',
+  'Hold Option Key': '按住 ⌥ 选项键',
+  'Hold Control Key': '按住 ⌃ 控制键',
 };

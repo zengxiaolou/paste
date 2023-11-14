@@ -30,7 +30,7 @@ class StoreManager {
       this.store.set(StoreKey.SHORTCUT_NEXT, 'Command+Shift+]');
     }
     if (!this.store.has(StoreKey.SHORTCUT_PASTE)) {
-      this.store.set(StoreKey.SHORTCUT_PASTE, 'Command+Shift+V');
+      this.store.set(StoreKey.SHORTCUT_PASTE, 'Command');
     }
     if (!this.store.has(StoreKey.ADVANCED_REMOVE)) {
       this.store.set(StoreKey.ADVANCED_REMOVE, RemoveItem.oneDay);

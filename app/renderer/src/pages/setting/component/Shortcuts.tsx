@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Wrapper } from '@/component/Wrapper';
 import { Input, Message, Space } from '@arco-design/web-react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import { IconClose } from '@arco-design/web-react/icon';
 import { ShortcutAction, StoreKey } from '@/types/enum';
 import { useStorePrefix } from '@/hooks/useStorePrefix';
 import { keyToIcon, specialCharacters } from '@/pages/setting/component/const';
+
 export const Shortcuts = () => {
   const [active, setActive] = useState<string | undefined>();
   const [prevValue, setPrevValue] = useState<string | undefined>();
@@ -17,7 +18,7 @@ export const Shortcuts = () => {
   const { t } = useTranslation();
   const initialValues = useStorePrefix('shortcut');
 
-  const isValidCombination = (cur: string, key: string) => {
+  const isValidCombination = (cur: string) => {
     const parts = cur.replace('KEY', '').split('+');
     const hasModifier = parts.some(part => ['Ctrl', 'Shift', 'Alt', 'Command'].includes(part));
     const hasCharacter = parts.some(part => {
@@ -27,9 +28,6 @@ export const Shortcuts = () => {
         specialCharacters.includes(part)
       );
     });
-    if (key === 'shortcut:paste') {
-      return hasModifier && parts.length === 2;
-    }
     return hasModifier && hasCharacter;
   };
 
@@ -55,8 +53,7 @@ export const Shortcuts = () => {
         keys.push(e.code);
       }
 
-      const isPasteAction = key === StoreKey.SHORTCUT_PASTE;
-      const validModifierCombination = isValidCombination(keys.join('+'), key);
+      const validModifierCombination = isValidCombination(keys.join('+'));
       if (validModifierCombination) {
         const cur = keys.join('+').replace('KEY', '');
         if (!allShortcuts.some(shortcut => shortcut === cur)) {
@@ -69,8 +66,6 @@ export const Shortcuts = () => {
         } else {
           Message.error(t('The shortcut key is occupied'));
         }
-      } else if (isPasteAction) {
-        Message.error(t('shortcut paste operation error message'));
       }
     }
   };
@@ -94,6 +89,11 @@ export const Shortcuts = () => {
       return <div />;
     }
     return <IconClose style={{ cursor: 'pointer' }} onClick={() => handleDeleteShortcut(value, method, key)} />;
+  };
+
+  const handlePaste = async (event: ChangeEvent<HTMLSelectElement>) => {
+    setPasteValue(event.target.value);
+    await window.ipc.changeShortcuts(StoreKey.SHORTCUT_PASTE, ShortcutAction.ADD, event.target.value);
   };
 
   useEffect(() => {
@@ -136,12 +136,11 @@ export const Shortcuts = () => {
       </Item>
       <Item>
         <ULabel>{t('Quick Paste')}:</ULabel>
-        <UInput
-          value={showShortcut(pasteValue)}
-          onKeyDown={event => handleKeyDown(event, StoreKey.SHORTCUT_PASTE, setPasteValue, pasteValue)}
-          placeholder={t('Record Shortcut')}
-          suffix={handleSuffix(setPasteValue, StoreKey.SHORTCUT_PASTE, pasteValue)}
-        />
+        <select value={pasteValue} onChange={handlePaste}>
+          <option value="command">{t('Hold Command Key')}</option>
+          <option value="alt">{t('Hold Option Key')}</option>
+          <option value="ctrl">{t('Hold Control Key')}</option>
+        </select>
       </Item>
     </Wrapper>
   );

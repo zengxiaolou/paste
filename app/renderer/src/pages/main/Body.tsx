@@ -10,38 +10,11 @@ import { DataTypes, StoreKey } from '@/types/enum';
 import { useHotkeys } from 'react-hotkeys-hook';
 import useGetStoreByKey from '@/hooks/useGetStoreByKey';
 import { parseShortcut } from '@/utils/string';
+import { createTabs } from '@/pages/main/component/TabsTItle';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
 
-const createTabs = (t: any) => {
-  return [
-    {
-      title: t('All'),
-      key: 'all',
-    },
-    {
-      title: t('Collect'),
-      key: 'collect',
-    },
-    {
-      title: t('Today'),
-      key: 'today',
-    },
-    {
-      title: t('Text'),
-      key: 'text',
-    },
-    {
-      title: t('Image'),
-      key: 'image',
-    },
-    {
-      title: t('Link'),
-      key: 'link',
-    },
-  ];
-};
 export const Body = memo(() => {
   const [data, setData] = useState<ClipData[]>([]);
   const [query, setQuery] = useState<ClipboardDataQuery>({ page: 1, size: defaultSize });
@@ -275,7 +248,6 @@ const CTabs = styled(Tabs)`
 const BodyContainer = styled.div`
   overflow-y: scroll;
   height: calc(100vh - 130px);
-  /* 滚动条样式 */
   &::-webkit-scrollbar {
     width: 10px;
     background-color: #2b2c2d;
