@@ -38,4 +38,5 @@ export const zh = {
   'Hold Command Key': '按住 ⌘ 命令键',
   'Hold Option Key': '按住 ⌥ 选项键',
   'Hold Control Key': '按住 ⌃ 控制键',
+  'reset shortcut': '重置快捷键',
 };

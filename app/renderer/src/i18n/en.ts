@@ -38,4 +38,5 @@ export const en = {
   'Hold Command Key': 'Hold ⌘ Command Key',
   'Hold Option Key': 'Hold ⌥ Option Key',
   'Hold Control Key': 'Hold ⌃ Control Key',
+  'reset shortcut': 'Reset Shortcut',
 };

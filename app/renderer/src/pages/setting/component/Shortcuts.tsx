@@ -96,6 +96,16 @@ export const Shortcuts = () => {
     await window.ipc.changeShortcuts(StoreKey.SHORTCUT_PASTE, ShortcutAction.ADD, event.target.value);
   };
 
+  const handleRestShortcut = async () => {
+    const res = await window.ipc.resetShortcuts();
+    if (res) {
+      setActive('Shift+Command+X');
+      setPasteValue('Command');
+      setPrevValue('Shift+Command+[');
+      setNextValue('Shift+Command+]');
+    }
+  };
+
   useEffect(() => {
     setAllShortcuts([...Object.values(initialValues)]);
     setActive(initialValues?.[StoreKey.SHORTCUT_ACTION]);
@@ -106,7 +116,9 @@ export const Shortcuts = () => {
 
   return (
     <Wrapper>
-      <Space style={{ marginBottom: 16 }}>{t('shortcuts setting')}</Space>
+      <Space style={{ marginBottom: 16 }}>
+        {t('shortcuts setting')} <button onClick={handleRestShortcut}>{t('reset shortcut')}</button>
+      </Space>
       <Item>
         <ULabel>{t('Activate ECM')}:</ULabel>
         <UInput
