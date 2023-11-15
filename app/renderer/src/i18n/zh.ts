@@ -39,4 +39,13 @@ export const zh = {
   'Hold Option Key': '按住 ⌥ 选项键',
   'Hold Control Key': '按住 ⌃ 控制键',
   'reset shortcut': '重置快捷键',
+  'Remove History Items': '移除历史记录',
+  'After One Day': '一天后',
+  'After One Week': '一周后',
+  'After Two Weeks': '两周后',
+  'After One Month': '一月后',
+  'After Two Months': '两月后',
+  'After Half Year': '半年后',
+  'After One Year': '一年后',
+  Manual: '手动',
 };

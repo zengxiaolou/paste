@@ -39,4 +39,13 @@ export const en = {
   'Hold Option Key': 'Hold ⌥ Option Key',
   'Hold Control Key': 'Hold ⌃ Control Key',
   'reset shortcut': 'Reset Shortcut',
+  'Remove History Items': 'Remove History Items',
+  'After One Day': 'After One Day',
+  'After One Week': 'After One Week',
+  'After Two Weeks': 'After Two Weeks',
+  'After One Month': 'After One Month',
+  'After Two Months': 'After Two Months',
+  'After Half Year': 'After Half Year',
+  'After One Year': 'After One Year',
+  Manual: 'Manual',
 };

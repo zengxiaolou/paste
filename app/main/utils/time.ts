@@ -12,3 +12,9 @@ export const getBeijingDayStartAndEnd = (date: Date) => {
     end: utcDateEnd.toISOString(),
   };
 };
+
+export const subtractDays = (days: number): Date => {
+  const date = new Date();
+  date.setDate(date.getDate() - days);
+  return date;
+};

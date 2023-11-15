@@ -9,6 +9,7 @@ const ChannelsMap = {
   CHANGE_SHORTCUTS: 'change-shortcuts',
   GET_STORE_VALUES: 'get-store-values-by-prefix',
   RESET_SHORTCUTS: 'reset-shortcuts',
+  CHANGE_REMOVE_ITEM: 'change-remove-item',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -33,5 +34,8 @@ contextBridge.exposeInMainWorld('ipc', {
     }),
   resetShortcuts: async () => {
     return await ipcRenderer.invoke(ChannelsMap.RESET_SHORTCUTS);
+  },
+  changeRemoveItem: async date => {
+    return await ipcRenderer.invoke(ChannelsMap.CHANGE_REMOVE_ITEM, date);
   },
 });

@@ -116,9 +116,7 @@ export const Shortcuts = () => {
 
   return (
     <Wrapper>
-      <Space style={{ marginBottom: 16 }}>
-        {t('shortcuts setting')} <button onClick={handleRestShortcut}>{t('reset shortcut')}</button>
-      </Space>
+      <Space style={{ marginBottom: 16 }}>{t('shortcuts setting')}</Space>
       <Item>
         <ULabel>{t('Activate ECM')}:</ULabel>
         <UInput
@@ -154,6 +152,11 @@ export const Shortcuts = () => {
           <option value="ctrl">{t('Hold Control Key')}</option>
         </select>
       </Item>
+
+      <Item>
+        <ULabel />
+        <button onClick={handleRestShortcut}>{t('reset shortcut')}</button>
+      </Item>
     </Wrapper>
   );
 };
@@ -167,4 +170,9 @@ const UInput = styled(Input)`
   && .arco-input {
     padding: 0;
   }
+`;
+
+const Footer = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;

@@ -60,4 +60,9 @@ export const registerIpcHandler = () => {
     }
     return true;
   });
+
+  ipcMain.handle(Channels.CHANGE_REMOVE_ITEM, (event, date) => {
+    store.set(StoreKey.ADVANCED_REMOVE, date);
+    return true;
+  });
 };

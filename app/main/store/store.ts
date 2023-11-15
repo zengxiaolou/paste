@@ -32,8 +32,8 @@ class StoreManager {
     if (!this.store.has(StoreKey.SHORTCUT_PASTE)) {
       this.store.set(StoreKey.SHORTCUT_PASTE, 'Command');
     }
-    if (!this.store.has(StoreKey.ADVANCED_REMOVE)) {
-      this.store.set(StoreKey.ADVANCED_REMOVE, RemoveItem.oneDay);
+    if (!this.store.has(StoreKey.ADVANCED_REMOVE) || this.store.get(StoreKey.ADVANCED_REMOVE) === 0) {
+      this.store.set(StoreKey.ADVANCED_REMOVE, RemoveItem.TWO_WEEKS);
     }
   }
 

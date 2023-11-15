@@ -8,6 +8,7 @@ import { create as createSetting } from './pages/setting/main';
 import { setLanguage } from './utils/language';
 import { activeShortcut } from './utils/shortcut';
 import { Platform, ShortcutAction, StoreKey } from './types/enum';
+import { removeOldData } from '@/components/cronjob';
 
 let mainWindow: BrowserWindow | null;
 const gotTheLock = app.requestSingleInstanceLock();
@@ -21,13 +22,11 @@ app
     await createTray(mainWindow);
     await setLanguage();
     activeShortcut(ShortcutAction.ADD);
-
     await intervalManager.startClipboardInterval();
-
     store.onDidChange(StoreKey.GENERAL_LANGUAGE, () => {
       setLanguage();
     });
-
+    removeOldData();
     await setInitContent();
   })
   // eslint-disable-next-line unicorn/prefer-top-level-await

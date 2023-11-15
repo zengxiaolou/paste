@@ -1,5 +1,5 @@
 import { ClipData, ClipboardDataQuery } from '@/types/type';
-import { ShortcutAction } from '@/types/enum';
+import { RemoveItem, ShortcutAction } from '@/types/enum';
 
 declare global {
   interface Window {
@@ -20,6 +20,7 @@ declare global {
       changeShortcuts: (key: string, action: ShortcutAction, shortcut?: string) => Promise<boolean>;
       onShortcutChanged: () => Promise<string>;
       resetShortcuts: () => Promise<boolean>;
+      changeRemoveItem: (date: number) => Promise<boolean>;
     };
   }
 }

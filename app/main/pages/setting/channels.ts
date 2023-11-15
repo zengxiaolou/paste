@@ -8,4 +8,5 @@ export enum Channels {
   CHANGE_SHORTCUTS = 'change-shortcuts',
   SHORTCUT_CHANGE = 'shortcut-change',
   RESET_SHORTCUTS = 'reset-shortcuts',
+  CHANGE_REMOVE_ITEM = 'change-remove-item',
 }
