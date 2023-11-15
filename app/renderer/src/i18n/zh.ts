@@ -48,4 +48,7 @@ export const zh = {
   'After Half Year': '半年后',
   'After One Year': '一年后',
   Manual: '手动',
+  'Latest version': '最新版本',
+  Update: '更新',
+  sendGifts: '打赏',
 };

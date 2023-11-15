@@ -48,4 +48,7 @@ export const en = {
   'After Half Year': 'After Half Year',
   'After One Year': 'After One Year',
   Manual: 'Manual',
+  'Latest version': 'Latest version',
+  Update: 'Update',
+  sendGifts: 'Buy Me a Coffee',
 };

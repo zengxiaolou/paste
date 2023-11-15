@@ -1,5 +1,5 @@
 import { ClipData, ClipboardDataQuery } from '@/types/type';
-import { RemoveItem, ShortcutAction } from '@/types/enum';
+import { ShortcutAction } from '@/types/enum';
 
 declare global {
   interface Window {
