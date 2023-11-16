@@ -29,6 +29,7 @@ const create = () => {
     y: windowYPosition,
     width: windowWidth,
     height: windowHeight,
+    resizable: false,
     backgroundColor: '#383839',
     show: isDev,
     webPreferences: {
