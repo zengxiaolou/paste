@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import i18n from '../i18n/index';
-import { StoreKey } from '../types/enum';
+import i18n from '@/i18n/index';
+import { StoreKey } from '@/types/enum';
 function useLanguage() {
   const [lng, setLng] = useState<string>('');
   const getLanguage = async () => {

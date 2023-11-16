@@ -1,12 +1,12 @@
 export enum RemoveItem {
-  oneDay,
-  oneWeek,
-  twoWeeks,
-  oneMonth,
-  twoMonth,
-  halfYear,
-  oneYear,
-  Manual,
+  ONE_DAY = 1,
+  ONE_WEEK = 7,
+  TWO_WEEKS = 14,
+  ONE_MONTH = 30,
+  TWO_MONTHS = 60,
+  HALF_YEAR = 180,
+  ONE_YEAR = 365,
+  MANUAL = -1,
 }
 
 export enum LanguageEnum {

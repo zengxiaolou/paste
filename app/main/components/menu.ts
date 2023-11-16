@@ -1,7 +1,7 @@
 import { app, Menu, shell, BrowserWindow, MenuItemConstructorOptions } from 'electron';
 import i18n from '../i18n';
+import { Platform } from '@/types/enum';
 import { stateManager } from './singletons';
-import { Platform } from '../types/enum';
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string;
@@ -52,7 +52,11 @@ export default class MenuBuilder {
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
-        { label: i18n.t('Preferences'), accelerator: 'Command+,' },
+        {
+          label: i18n.t('Preferences'),
+          accelerator: 'Command+,',
+          click: () => stateManager.showOrHideSettingWindow(),
+        },
         { type: 'separator' },
         {
           label: 'Hide',

@@ -4,6 +4,7 @@ import { General } from './component/General';
 import { TabKey } from './const';
 import { Shortcuts } from './component/Shortcuts';
 import { Advanced } from './component/Advanced';
+import { About } from '@/pages/setting/component/About';
 
 interface props {
   currentTab: TabKey;
@@ -13,6 +14,7 @@ const TabsMap: Record<TabKey, React.ReactNode> = {
   general: <General />,
   shortcuts: <Shortcuts />,
   advanced: <Advanced />,
+  about: <About />,
 };
 
 export const Body: FC<props> = ({ currentTab }) => {

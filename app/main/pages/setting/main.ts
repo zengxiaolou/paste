@@ -2,8 +2,8 @@ import path from 'node:path';
 import url from 'node:url';
 import { BrowserWindow, screen } from 'electron';
 import isDev from 'electron-is-dev';
-import i18n from '../../i18n';
-import { stateManager } from '../../components/singletons';
+import i18n from '@/i18n';
+import { stateManager } from '@/components/singletons';
 import { SETTING_PAGE_DIRECTION } from './const';
 import { registerIpcHandler } from './ipc-handlers';
 
@@ -29,6 +29,7 @@ const create = () => {
     y: windowYPosition,
     width: windowWidth,
     height: windowHeight,
+    resizable: false,
     backgroundColor: '#383839',
     show: isDev,
     webPreferences: {

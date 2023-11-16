@@ -1,9 +1,9 @@
 import path from 'node:path';
 import { app, BrowserWindow, Tray, Menu } from 'electron';
-import { MAIN_DIRECTORY } from '../const';
-import i18n from '../i18n';
-import { Platform } from '../types/enum';
-import { intervalManager } from './singletons';
+import { intervalManager, stateManager } from './singletons';
+import { MAIN_DIRECTORY } from '@/const';
+import i18n from '@/i18n';
+import { Platform } from '@/types/enum';
 
 export const createTray = async (window: BrowserWindow) => {
   const tray = new Tray(path.resolve(MAIN_DIRECTORY, '../../assets/tray16.png'));
@@ -43,11 +43,16 @@ const updateContextMenu = (tray: Tray, isMonitoring: boolean) => {
         isMonitoring = !isMonitoring;
         updateContextMenu(tray, isMonitoring);
       },
+      accelerator: 'Command+Ctrl+m',
     },
     { type: 'separator' },
-    { label: i18n.t('Preferences...'), click: () => {} },
+    {
+      label: i18n.t('Preferences'),
+      click: () => stateManager.showOrHideSettingWindow(),
+      accelerator: 'Command+,',
+    },
     { type: 'separator' },
-    { label: i18n.t('Quit'), click: () => app.quit() },
+    { label: i18n.t('Quit'), click: () => app.quit(), accelerator: 'Command+q' },
   ]);
   tray.setContextMenu(contextMenu);
 };

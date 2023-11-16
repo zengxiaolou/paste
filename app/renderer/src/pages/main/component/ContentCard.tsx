@@ -1,12 +1,12 @@
-import { extractOutermostBackgroundColor } from '../../../utils/string';
+import { extractOutermostBackgroundColor } from '@/utils/string';
 import { Card, Image, Notification, Popover, Space } from '@arco-design/web-react';
 import { Collect } from './Collect';
-import { formatDateTime } from '../../../utils/time';
+import { formatDateTime } from '@/utils/time';
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { ClipData } from '../../../types/type';
+import { ClipData } from '@/types/type';
 import { useTranslation } from 'react-i18next';
-import { DataTypes } from '../../../types/enum';
+import { DataTypes } from '@/types/enum';
 
 interface props {
   index: number;
@@ -63,10 +63,10 @@ export const ContentCard: FC<props> = ({ index, data, onClick, activeCard, onDel
               <CenteredImage src={content} loader={true} height={60} />
             </ImageContainer>
           )}
-          <Space style={{ color: 'gray' }}>
+          <RightContainer style={{ color: 'gray' }}>
             <Collect data={data} />
             {created_at && formatDateTime(created_at)}
-          </Space>
+          </RightContainer>
         </Container>
       </UCard>
     </UPopover>
@@ -125,4 +125,10 @@ const UPopover = styled(Popover)`
     width: 600px;
     border-radius: 15px;
   }
+`;
+
+const RightContainer = styled(Space)`
+  display: flex;
+  justify-content: space-around;
+  margin-right: 16px;
 `;

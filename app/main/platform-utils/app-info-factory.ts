@@ -1,7 +1,7 @@
 import MacOSUtils from './mac-os';
 import LinuxUtils from './linux';
 import WindowsUtils from './windows';
-import { Platform } from '../types/enum';
+import { Platform } from '@/types/enum';
 
 interface IPlatformUtils {
   getActiveApplicationName(): Promise<string>;

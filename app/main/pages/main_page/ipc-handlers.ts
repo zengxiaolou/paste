@@ -1,12 +1,12 @@
 import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem } from 'electron';
 import i18n from '../../i18n';
-import { clipboardManager, databaseManager, store } from '../../components/singletons';
-import { deleteFile } from '../../utils/file';
-import { stateManager } from '../../components/singletons';
+import { clipboardManager, databaseManager, store } from '@/components/singletons';
+import { deleteFile } from '@/utils/file';
+import { stateManager } from '@/components/singletons';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';
-import { StoreKey } from '../../types/enum';
+import { StoreKey } from '@/types/enum';
 export const registerIpcHandler = () => {
   ipcMain.handle(Channels.TOGGLE_ALWAYS_ON_TOP, async () => {
     const win = stateManager.getMainWindow();

@@ -9,7 +9,7 @@ const ChannelsMap = {
   SHOW_CONTEXT_MENU: 'show-context-menu',
   LANGUAGE_CHANGED: 'language-changed',
   GET_STORE_VALUE: 'get-store-value',
-  SHORTCUT_CHANGED: 'shortcut-changed',
+  SHORTCUT_CHANGE: 'shortcut-change',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -40,7 +40,7 @@ contextBridge.exposeInMainWorld('ipc', {
   },
 
   onShortcutChanged: callback => {
-    ipcRenderer.on(ChannelsMap.SHORTCUT_CHANGED, (event, data) => {
+    ipcRenderer.on(ChannelsMap.SHORTCUT_CHANGE, (event, data) => {
       callback(data);
     });
   },

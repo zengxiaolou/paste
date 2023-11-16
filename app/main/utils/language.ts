@@ -1,6 +1,6 @@
 import { app } from 'electron';
-import { menuBuilder, store } from '../components/singletons';
-import { LanguageEnum, StoreKey } from '../types/enum';
+import { menuBuilder, store } from '@/components/singletons';
+import { LanguageEnum, StoreKey } from '@/types/enum';
 import i18n from '../i18n';
 
 export const setLanguage = async () => {

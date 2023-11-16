@@ -24,7 +24,7 @@ class DatabaseManager {
       tags TEXT,
       type TEXT,
       collection bool DEFAULT false,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at DATETIME
   )`,
       (error: Error | null) => {
         if (error) {
@@ -38,7 +38,7 @@ class DatabaseManager {
 
   public saveToDatabase(clipData: ClipData): Promise<ClipData | Error> {
     const { icon, appName, content, tags, type } = clipData;
-    const now = new Date().toISOString();
+    const now = new Date();
     const query = `
     INSERT INTO clipboard
     (icon, app_name, content, tags, type, created_at)
@@ -51,7 +51,7 @@ class DatabaseManager {
           console.error('Error inserting data:', error.message);
           reject(error);
         } else {
-          Object.assign( clipData, { id: this.lastID });
+          Object.assign(clipData, { id: this.lastID });
           resolve(clipData);
         }
       });
@@ -88,7 +88,7 @@ class DatabaseManager {
     });
   }
 
-  // eslint-disable-next-line complexity
+  // eslint-disable-next-line complexity,max-statements
   public getRowsByPage(parameters: ClipboardDataQuery): Promise<ClipData[]> {
     let query = 'SELECT * FROM clipboard';
     const queryParameters: (string | number | boolean | Date)[] = [];
@@ -115,9 +115,16 @@ class DatabaseManager {
       queryParameters.push(parameters?.appName);
     }
     if (parameters?.createdAt) {
-      const formattedDate = new Date(parameters.createdAt).toISOString().split('T')[0];
-      conditions.push('DATE(created_at) = DATE(?)');
-      queryParameters.push(formattedDate);
+      const startOfDay = new Date(parameters.createdAt);
+      startOfDay.setHours(0, 0, 0, 0); // 设置为当天开始的时间
+      const endOfDay = new Date(parameters.createdAt);
+      endOfDay.setHours(23, 59, 59, 999); // 设置为当天结束的时间
+
+      const startOfDayTimestamp = startOfDay.getTime(); // 转换为时间戳
+      const endOfDayTimestamp = endOfDay.getTime(); // 转换为时间戳
+
+      conditions.push('created_at >= ? AND created_at <= ?');
+      queryParameters.push(startOfDayTimestamp, endOfDayTimestamp);
     }
 
     if (conditions.length > 0) {
@@ -190,7 +197,6 @@ class DatabaseManager {
       });
     });
   }
-
 
   public deleteByCreatedAt(created_at: Date): Promise<boolean> {
     return new Promise((resolve, reject) => {

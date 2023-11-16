@@ -1,1 +1,1 @@
-export type TabKey = 'general' | 'shortcuts' | 'advanced';
+export type TabKey = 'general' | 'shortcuts' | 'advanced' | 'about';

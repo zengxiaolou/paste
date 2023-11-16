@@ -1,8 +1,8 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
-import { store } from '../../components/singletons';
-import { activeShortcut } from '../../utils/shortcut';
-import { ShortcutAction, StoreKey } from '../../types/enum';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { Channels } from './channels';
+import { store } from '@/components/singletons';
+import { activeShortcut } from '@/utils/shortcut';
+import { ShortcutAction, StoreKey } from '@/types/enum';
 
 export const registerIpcHandler = () => {
   ipcMain.on(Channels.LANGUAGE_CHANGE, (event, language) => {
@@ -47,5 +47,34 @@ export const registerIpcHandler = () => {
 
   ipcMain.handle(Channels.GET_STORE_VALUES, (event, key) => {
     return store.getByPrefix(key);
+  });
+
+  ipcMain.handle(Channels.RESET_SHORTCUTS, () => {
+    const oldActive = store.get(StoreKey.SHORTCUT_ACTION);
+    activeShortcut(ShortcutAction.ADD, 'Shift+Command+X', oldActive);
+    store.set(StoreKey.SHORTCUT_PREVIOUS, 'Shift+Command+[');
+    store.set(StoreKey.SHORTCUT_NEXT, 'Shift+Command+]');
+    for (const window of BrowserWindow.getAllWindows()) {
+      window.webContents.send(Channels.SHORTCUT_CHANGE, StoreKey.SHORTCUT_PREVIOUS);
+      window.webContents.send(Channels.SHORTCUT_CHANGE, StoreKey.SHORTCUT_NEXT);
+    }
+    return true;
+  });
+
+  ipcMain.handle(Channels.CHANGE_REMOVE_ITEM, (event, date) => {
+    store.set(StoreKey.ADVANCED_REMOVE, date);
+    return true;
+  });
+
+  ipcMain.on(Channels.RESET_WINDOW_SIZE, (event, height) => {
+    const window = BrowserWindow.getFocusedWindow();
+    if (window) {
+      const [width] = window.getSize();
+      window.setSize(width, height);
+    }
+  });
+
+  ipcMain.on(Channels.OPEN_EXTERNAL, (event, url) => {
+    shell.openExternal(url);
   });
 };

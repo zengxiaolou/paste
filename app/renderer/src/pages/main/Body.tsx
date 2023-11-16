@@ -1,44 +1,20 @@
 import { BackTop, Spin, Tabs } from '@arco-design/web-react';
-import React, { memo, useContext, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { debounce } from '../../utils/func';
-import { ClipboardDataQuery, ClipData } from '../../types/type';
+import { debounce } from '@/utils/func';
+import { ClipboardDataQuery, ClipData } from '@/types/type';
 import { Context } from './Context';
 import { ContentCard } from './component/ContentCard';
-import { DataTypes } from '../../types/enum';
+import { DataTypes, StoreKey } from '@/types/enum';
+import { useHotkeys } from 'react-hotkeys-hook';
+import useGetStoreByKey from '@/hooks/useGetStoreByKey';
+import { parseShortcut } from '@/utils/string';
+import { createTabs } from '@/pages/main/component/TabsTItle';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
 
-const createTabs = (t: any) => {
-  return [
-    {
-      title: t('All'),
-      key: 'all',
-    },
-    {
-      title: t('Collect'),
-      key: 'collect',
-    },
-    {
-      title: t('Today'),
-      key: 'today',
-    },
-    {
-      title: t('Text'),
-      key: 'text',
-    },
-    {
-      title: t('Image'),
-      key: 'image',
-    },
-    {
-      title: t('Link'),
-      key: 'link',
-    },
-  ];
-};
 export const Body = memo(() => {
   const [data, setData] = useState<ClipData[]>([]);
   const [query, setQuery] = useState<ClipboardDataQuery>({ page: 1, size: defaultSize });
@@ -46,13 +22,49 @@ export const Body = memo(() => {
   const [activeCard, setActiveCard] = useState<number>(-1);
   const [activeTab, setActiveTab] = useState<string | undefined>('all');
   const [loading, setLoading] = useState<boolean>(false);
+  const [previous, setPrevious] = useState<string>('');
+  const [next, setNext] = useState<string>('');
 
   const { search, deletedRecord } = useContext(Context);
 
   const isFetching = useRef(false);
   const { t } = useTranslation();
+  const pre = useGetStoreByKey(StoreKey.SHORTCUT_PREVIOUS) as string;
+  const nextShortcut = useGetStoreByKey(StoreKey.SHORTCUT_NEXT) as string;
+  useEffect(() => {
+    setNext(nextShortcut);
+    setPrevious(pre);
+  }, [pre, nextShortcut]);
+
+  useHotkeys('meta+n', () => {
+    setActiveCard(prevIndex => (prevIndex + 1) % data.length);
+  });
+  useHotkeys('ctrl+p', () => {
+    setActiveCard(prevIndex => (prevIndex - 1 + data.length) % data.length);
+  });
 
   const tabs = createTabs(t);
+
+  const onShortcutChanged = async () => {
+    const key = await window.ipc.onShortcutChanged();
+    const newShortcut = (await window.ipc.getStoreValue(key)) as string;
+    if (key === StoreKey.SHORTCUT_PREVIOUS) {
+      setPrevious(newShortcut);
+    } else if (key === StoreKey.SHORTCUT_NEXT) {
+      setNext(newShortcut);
+    }
+  };
+
+  const findNextTab = useCallback(() => {
+    const currentIndex = tabs.findIndex(tab => tab.key === activeTab);
+    return handleChangeTab(tabs[(currentIndex + 1) % tabs.length].key);
+  }, [activeTab, tabs]);
+
+  const findPreviousTab = useCallback(() => {
+    const currentIndex = tabs.findIndex(tab => tab.key === activeTab);
+    return handleChangeTab(tabs[(currentIndex - 1 + tabs.length) % tabs.length].key);
+  }, [activeTab, tabs]);
+
   const getData = async (queryData: ClipboardDataQuery) => {
     if (query.page === 1) {
       setData([]);
@@ -111,6 +123,10 @@ export const Body = memo(() => {
   };
 
   useEffect(() => {
+    onShortcutChanged().then();
+  }, []);
+
+  useEffect(() => {
     getData(query).then();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
@@ -155,21 +171,48 @@ export const Body = memo(() => {
   }, [contextMenu, deletedRecord]);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 'n') {
-        setActiveCard(prevIndex => (prevIndex + 1) % data.length);
-        event.preventDefault();
-      }
-      if (event.ctrlKey && event.key === 'p') {
-        setActiveCard(prevIndex => (prevIndex - 1 + data.length) % data.length);
-        event.preventDefault();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [data.length]);
+    if (previous) {
+      const shortcutObject = parseShortcut(previous);
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (
+          event.ctrlKey === shortcutObject.ctrl &&
+          event.altKey === shortcutObject.alt &&
+          event.shiftKey === shortcutObject.shift &&
+          event.metaKey === shortcutObject.meta &&
+          event.key.toLowerCase() === shortcutObject.key
+        ) {
+          findPreviousTab();
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [findPreviousTab, previous]);
+
+  useEffect(() => {
+    if (next) {
+      const shortcutObject = parseShortcut(next);
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (
+          event.ctrlKey === shortcutObject.ctrl &&
+          event.altKey === shortcutObject.alt &&
+          event.shiftKey === shortcutObject.shift &&
+          event.metaKey === shortcutObject.meta &&
+          event.key.toLowerCase() === shortcutObject.key
+        ) {
+          findNextTab();
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [next, findNextTab]);
 
   return (
     <CTabs type="rounded" defaultActiveTab="all" activeTab={activeTab} onChange={handleChangeTab}>
@@ -205,7 +248,6 @@ const CTabs = styled(Tabs)`
 const BodyContainer = styled.div`
   overflow-y: scroll;
   height: calc(100vh - 130px);
-  /* 滚动条样式 */
   &::-webkit-scrollbar {
     width: 10px;
     background-color: #2b2c2d;

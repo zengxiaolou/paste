@@ -1,7 +1,7 @@
 import React, { FC, MouseEvent, useState } from 'react';
 import { IconStar, IconStarFill } from '@arco-design/web-react/icon';
-import { Wrapper } from '../../../component/Wrapper';
-import { ClipData } from '../../../types/type';
+import { Wrapper } from '@/component/Wrapper';
+import { ClipData } from '@/types/type';
 import { Message, Tooltip } from '@arco-design/web-react';
 import { useTranslation } from 'react-i18next';
 

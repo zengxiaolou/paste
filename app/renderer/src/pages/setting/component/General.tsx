@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Wrapper } from '../../../component/Wrapper';
+import { Wrapper } from '@/component/Wrapper';
 import { Checkbox } from '@arco-design/web-react';
 import { Item, Label } from './CItem';
-import i18n from '../../../i18n/index';
-import useLanguage from '../../../hooks/useLanguage';
+import i18n from '@/i18n/index';
+import useLanguage from '@/hooks/useLanguage';
 import { useTranslation } from 'react-i18next';
-import useLogin from '../../../hooks/useLogin';
-import useSound from '../../../hooks/useSound';
+import useGetStoreByKey from '@/hooks/useGetStoreByKey';
+import { StoreKey } from '@/types/enum';
+import useResizeWindow from '@/hooks/useResizeWindow';
 
 export const General = () => {
   const [language, setLanguage] = useState<string | undefined>();
@@ -15,8 +16,9 @@ export const General = () => {
 
   const { t } = useTranslation();
   const lng = useLanguage();
-  const loginFlag = useLogin();
-  const soundFlag = useSound();
+  const loginFlag = useGetStoreByKey(StoreKey.GENERAL_LOGIN) as boolean;
+  const soundFlag = useGetStoreByKey(StoreKey.GENERAL_SOUND) as boolean;
+  useResizeWindow(330);
 
   useEffect(() => {
     setLanguage(lng);

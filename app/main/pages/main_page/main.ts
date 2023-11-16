@@ -2,7 +2,7 @@ import path from 'node:path';
 import * as url from 'node:url';
 import { BrowserWindow, nativeImage, screen } from 'electron';
 import isDev from 'electron-is-dev';
-import { stateManager } from '../../components/singletons';
+import { stateManager } from '@/components/singletons';
 import { registerIpcHandler } from './ipc-handlers';
 import { ClipData } from './type';
 import { DataTypes } from './enum';

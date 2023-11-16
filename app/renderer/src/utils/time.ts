@@ -1,5 +1,11 @@
-export const formatDateTime = (input: Date | string): string => {
-  const newDate = typeof input === 'string' ? new Date(input) : input;
+export const formatDateTime = (input: Date | string | number): string => {
+  let newDate: Date;
+  if (typeof input === 'number') {
+    newDate = new Date(input);
+  } else {
+    newDate = typeof input === 'string' ? new Date(input) : input;
+  }
+
   const inputDate = formatDateTimeInUserTimezone(newDate);
   const today = new Date();
   const sameYear = inputDate.getFullYear() === today.getFullYear();
@@ -27,3 +33,18 @@ const formatDateTimeInUserTimezone = (date: Date): Date => {
   const dateString = date.toLocaleString('en-US', { timeZone: userTimeZone });
   return new Date(dateString);
 };
+
+export const isVersionLessThan = (currentVersion: string, releaseVersion: string): boolean =>  {
+  const parseVersion = (version: string) => version.split('.').map(Number);
+
+  const [currentMajor, currentMinor, currentPatch] = parseVersion(currentVersion);
+  const [releaseMajor, releaseMinor, releasePatch] = parseVersion(releaseVersion);
+
+  if (currentMajor < releaseMajor) return true;
+  if (currentMajor > releaseMajor) return false;
+
+  if (currentMinor < releaseMinor) return true;
+  if (currentMinor > releaseMinor) return false;
+
+  return currentPatch < releasePatch;
+}
