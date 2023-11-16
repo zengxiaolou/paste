@@ -29,16 +29,37 @@
 
 ## Application Screenshots
 
-![](docs/screenshot.png)
+![](docs/paste.png)
+![](docs/setting.png)
 
 ## Features for the Next Version
 
-- Enhancement of menu/settings interface functionality development
-- Optimization of repetitive logic judgment
-- Improvement of delete/favorite functionality (issue arising from new content lacking id)
-- Bug fix for image copying
+- Add detail view
+- Add data count statistics at the bottom
+- Quick selection feature
+- Change wake-up method
+- Add link preview
 
 ## Changelog
+
+#### v0.0.3 (2023-11-17)
+- Enhance the functionality of the menu/settings interface
+  - General Settings
+    - Start with the system
+    - Copy sound effect
+    - Language selection
+  - Shortcut Key Settings
+    - Quick wake/hide
+    - Tab switching
+    - Reset shortcuts
+  - Advanced Settings
+    - Scheduled deletion of old data
+  - About
+    Update settings
+- Optimize logic for duplicate judgments
+- Improve delete/favorite features (new content has no ID issue)
+- Fix the bug with copying images
+- Replace the icon
 
 #### v0.0.2 (2023-10-30)
 - Support for icon retrieval on Windows, basic copy-paste functionality completed on Linux
