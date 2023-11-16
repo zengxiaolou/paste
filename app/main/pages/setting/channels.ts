@@ -9,4 +9,6 @@ export enum Channels {
   SHORTCUT_CHANGE = 'shortcut-change',
   RESET_SHORTCUTS = 'reset-shortcuts',
   CHANGE_REMOVE_ITEM = 'change-remove-item',
+  RESET_WINDOW_SIZE = 'reset-window-size',
+  OPEN_EXTERNAL = 'open-external',
 }

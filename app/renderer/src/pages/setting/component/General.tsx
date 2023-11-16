@@ -7,6 +7,7 @@ import useLanguage from '@/hooks/useLanguage';
 import { useTranslation } from 'react-i18next';
 import useGetStoreByKey from '@/hooks/useGetStoreByKey';
 import { StoreKey } from '@/types/enum';
+import useResizeWindow from '@/hooks/useResizeWindow';
 
 export const General = () => {
   const [language, setLanguage] = useState<string | undefined>();
@@ -17,6 +18,7 @@ export const General = () => {
   const lng = useLanguage();
   const loginFlag = useGetStoreByKey(StoreKey.GENERAL_LOGIN) as boolean;
   const soundFlag = useGetStoreByKey(StoreKey.GENERAL_SOUND) as boolean;
+  useResizeWindow(330);
 
   useEffect(() => {
     setLanguage(lng);

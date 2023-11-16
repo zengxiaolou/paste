@@ -10,6 +10,8 @@ const ChannelsMap = {
   GET_STORE_VALUES: 'get-store-values-by-prefix',
   RESET_SHORTCUTS: 'reset-shortcuts',
   CHANGE_REMOVE_ITEM: 'change-remove-item',
+  RESET_WINDOW: 'reset-window-size',
+  OPEN_EXTERNAL: 'open-external',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -38,4 +40,6 @@ contextBridge.exposeInMainWorld('ipc', {
   changeRemoveItem: async date => {
     return await ipcRenderer.invoke(ChannelsMap.CHANGE_REMOVE_ITEM, date);
   },
+  resetWindowSize: height => ipcRenderer.send(ChannelsMap.RESET_WINDOW, height),
+  openExternal: url => ipcRenderer.send(ChannelsMap.OPEN_EXTERNAL, url),
 });

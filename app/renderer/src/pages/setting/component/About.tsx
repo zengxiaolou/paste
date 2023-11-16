@@ -1,14 +1,32 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Image, Popover, Space } from '@arco-design/web-react';
+import { Button, Image, Popover, Space, Spin } from '@arco-design/web-react';
 import Icon from '@/assets/icon.png';
 import Friend from '@/assets/friend.jpg';
 import Pay from '@/assets/pay.png';
 import { Wrapper } from '@/component/Wrapper';
 import { useTranslation } from 'react-i18next';
+import { useGetRelease } from '@/api/service/github';
+import { isVersionLessThan } from '@/utils/time';
+import useResizeWindow from '@/hooks/useResizeWindow';
 
 export const About = () => {
   const { t } = useTranslation();
+  const { data, loading } = useGetRelease({ repoOwner: 'zengxiaolou', repoName: 'paste' });
+  useResizeWindow(600);
+
+  const handleUpdate = () => {
+    const current = process.env.REACT_APP_VERSION;
+    if (current && data?.name) {
+      return !isVersionLessThan(current, data.name);
+    }
+    return true;
+  };
+
+  const handleJump = (event: Event) => {
+    window.ipc.openExternal('https://github.com/zengxiaolou/paste/releases');
+  };
+
   return (
     <Wrapper>
       <Content>
@@ -19,12 +37,17 @@ export const About = () => {
             <Label type="primary">Free</Label>
           </Space>
         </Name>
-        <h4>{t('Latest version')}: </h4>
+        <h4>
+          {t('Latest version')}:{' '}
+          <Spin loading={loading} style={{ color: '#4a9ff3' }}>
+            {data?.name}
+          </Spin>
+        </h4>
         <Copyright>Copyright @ 2023~2023 Ruler </Copyright>
         <ButtonContainer>
           <Space>
             <Popover
-              style={{ width: 400, backgroundColor: 'none' }}
+              style={{ width: 400, height: 250, backgroundColor: 'none' }}
               content={
                 <QR style={{ width: 400 }}>
                   <Image src={Pay} preview={false} width={200} style={{ marginRight: 16 }} />
@@ -37,7 +60,9 @@ export const About = () => {
           </Space>
 
           <div style={{ flex: 1 }} />
-          <UButton type="primary">{t('Update')}</UButton>
+          <UButton type="primary" disabled={handleUpdate()} onClick={handleJump}>
+            {t('Update')}
+          </UButton>
         </ButtonContainer>
       </Content>
     </Wrapper>

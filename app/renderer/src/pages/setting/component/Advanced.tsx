@@ -6,11 +6,13 @@ import { RemoveItem, RemoveItemMap, StoreKey } from '@/types/enum';
 import { translateMapToObject } from '@/utils/func';
 import { useTranslation } from 'react-i18next';
 import useGetStoreByKey from '@/hooks/useGetStoreByKey';
+import useResizeWindow from '@/hooks/useResizeWindow';
 
 export const Advanced = () => {
   const [selected, setSelected] = useState<number>(RemoveItem.TWO_MONTHS);
   const { t } = useTranslation();
   const item = useGetStoreByKey(StoreKey.ADVANCED_REMOVE) as RemoveItem;
+  useResizeWindow(230);
   const handleChange = async (value: string) => {
     const res = await window.ipc.changeRemoveItem(Number(value));
     res && setSelected(Number(value));

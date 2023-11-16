@@ -8,6 +8,7 @@ import { IconClose } from '@arco-design/web-react/icon';
 import { ShortcutAction, StoreKey } from '@/types/enum';
 import { useStorePrefix } from '@/hooks/useStorePrefix';
 import { keyToIcon, specialCharacters } from '@/pages/setting/component/const';
+import useResizeWindow from '@/hooks/useResizeWindow';
 
 export const Shortcuts = () => {
   const [active, setActive] = useState<string | undefined>();
@@ -17,6 +18,7 @@ export const Shortcuts = () => {
   const [allShortcuts, setAllShortcuts] = useState<string[]>([]);
   const { t } = useTranslation();
   const initialValues = useStorePrefix('shortcut');
+  useResizeWindow(400);
 
   const isValidCombination = (cur: string) => {
     const parts = cur.replace('KEY', '').split('+');
@@ -170,9 +172,4 @@ const UInput = styled(Input)`
   && .arco-input {
     padding: 0;
   }
-`;
-
-const Footer = styled.div`
-  display: flex;
-  justify-content: flex-end;
 `;

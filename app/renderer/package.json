@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@arco-design/web-react": "^2.53.2",
+    "axios-hooks": "^5.0.1",
     "i18next": "^23.5.1",
     "i18next-browser-languagedetector": "^7.1.0",
     "moment-timezone": "^0.5.43",

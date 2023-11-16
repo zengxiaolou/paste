@@ -21,6 +21,8 @@ declare global {
       onShortcutChanged: () => Promise<string>;
       resetShortcuts: () => Promise<boolean>;
       changeRemoveItem: (date: number) => Promise<boolean>;
+      resetWindowSize: (height: number) => void;
+      openExternal: (utl: string) => void;
     };
   }
 }

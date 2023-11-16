@@ -199,7 +199,6 @@ class DatabaseManager {
   }
 
   public deleteByCreatedAt(created_at: Date): Promise<boolean> {
-    console.log('🤮 ~ file:database method:deleteByCreatedAt line:202 -----', Date);
     return new Promise((resolve, reject) => {
       const query = 'DELETE FROM clipboard WHERE created_at <?';
       this.db?.run(query, created_at, error => {

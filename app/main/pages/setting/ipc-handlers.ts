@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { Channels } from './channels';
 import { store } from '@/components/singletons';
 import { activeShortcut } from '@/utils/shortcut';
@@ -64,5 +64,17 @@ export const registerIpcHandler = () => {
   ipcMain.handle(Channels.CHANGE_REMOVE_ITEM, (event, date) => {
     store.set(StoreKey.ADVANCED_REMOVE, date);
     return true;
+  });
+
+  ipcMain.on(Channels.RESET_WINDOW_SIZE, (event, height) => {
+    const window = BrowserWindow.getFocusedWindow();
+    if (window) {
+      const [width] = window.getSize();
+      window.setSize(width, height);
+    }
+  });
+
+  ipcMain.on(Channels.OPEN_EXTERNAL, (event, url) => {
+    shell.openExternal(url);
   });
 };

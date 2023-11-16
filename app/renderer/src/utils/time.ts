@@ -33,3 +33,18 @@ const formatDateTimeInUserTimezone = (date: Date): Date => {
   const dateString = date.toLocaleString('en-US', { timeZone: userTimeZone });
   return new Date(dateString);
 };
+
+export const isVersionLessThan = (currentVersion: string, releaseVersion: string): boolean =>  {
+  const parseVersion = (version: string) => version.split('.').map(Number);
+
+  const [currentMajor, currentMinor, currentPatch] = parseVersion(currentVersion);
+  const [releaseMajor, releaseMinor, releasePatch] = parseVersion(releaseVersion);
+
+  if (currentMajor < releaseMajor) return true;
+  if (currentMajor > releaseMajor) return false;
+
+  if (currentMinor < releaseMinor) return true;
+  if (currentMinor > releaseMinor) return false;
+
+  return currentPatch < releasePatch;
+}
