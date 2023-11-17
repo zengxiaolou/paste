@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ES2022",
     "module": "commonjs",
     "outDir": "./../dist",
@@ -14,7 +15,7 @@
     "lib": ["es2021", "dom"],
     "typeRoots": ["./types", "./node_modules/@types"],
     "paths": {
-      "@/*": ["../main/*"]
+      "@/*": ["./*"]
     }
   },
   "include": ["./**/*.ts", "./../*.icns", "./**/*.json"],

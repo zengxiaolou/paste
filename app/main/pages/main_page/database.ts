@@ -116,12 +116,12 @@ class DatabaseManager {
     }
     if (parameters?.createdAt) {
       const startOfDay = new Date(parameters.createdAt);
-      startOfDay.setHours(0, 0, 0, 0); // 设置为当天开始的时间
+      startOfDay.setHours(0, 0, 0, 0);
       const endOfDay = new Date(parameters.createdAt);
-      endOfDay.setHours(23, 59, 59, 999); // 设置为当天结束的时间
+      endOfDay.setHours(23, 59, 59, 999);
 
-      const startOfDayTimestamp = startOfDay.getTime(); // 转换为时间戳
-      const endOfDayTimestamp = endOfDay.getTime(); // 转换为时间戳
+      const startOfDayTimestamp = startOfDay.getTime();
+      const endOfDayTimestamp = endOfDay.getTime();
 
       conditions.push('created_at >= ? AND created_at <= ?');
       queryParameters.push(startOfDayTimestamp, endOfDayTimestamp);

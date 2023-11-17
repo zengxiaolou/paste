@@ -1,10 +1,10 @@
 import path from 'node:path';
+import { clipboardManager, databaseManager, player, store } from './singletons';
+import { COMPONENT__DIRECTORY } from './const';
 import { AppInfoFactory } from '@/platform-utils/app-info-factory';
 import { sendClipboardDataToRenderer } from '@/pages/main_page/main';
 import { ClipData } from '@/pages/main_page/type';
 import { StoreKey } from '@/types/enum';
-import { clipboardManager, databaseManager, player, store } from './singletons';
-import { COMPONENT__DIRECTORY } from './const';
 class IntervalManager {
   private clipboardIntervalID: ReturnType<typeof setInterval> | undefined;
   async startClipboardInterval() {
