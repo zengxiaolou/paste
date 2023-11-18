@@ -10,6 +10,7 @@ const ChannelsMap = {
   LANGUAGE_CHANGED: 'language-changed',
   GET_STORE_VALUE: 'get-store-value',
   SHORTCUT_CHANGE: 'shortcut-change',
+  RESET_WINDOW: 'reset-window-size',
 };
 
 contextBridge.exposeInMainWorld('ipc', {
@@ -44,4 +45,6 @@ contextBridge.exposeInMainWorld('ipc', {
       callback(data);
     });
   },
+
+  resetWindowSize: height => ipcRenderer.send(ChannelsMap.RESET_WINDOW, height),
 });

@@ -25,7 +25,7 @@ export const Body = memo(() => {
   const [previous, setPrevious] = useState<string>('');
   const [next, setNext] = useState<string>('');
 
-  const { search, deletedRecord } = useContext(Context);
+  const { search, deletedRecord, setTotal } = useContext(Context);
 
   const isFetching = useRef(false);
   const { t } = useTranslation();
@@ -74,10 +74,11 @@ export const Body = memo(() => {
     setLoading(true);
     const res = await window.ipc.getData(queryData);
     if (res) {
+      res.total && setTotal(res.total);
       if (queryData.page && queryData.page > 1) {
-        setData(prevData => (prevData ? [...prevData, ...res] : [...res]));
+        setData(prevData => (prevData ? [...prevData, ...res.data] : [...res.data]));
       } else {
-        setData(res);
+        setData(res.data);
       }
       isFetching.current = false;
     }
@@ -92,10 +93,12 @@ export const Body = memo(() => {
   };
 
   const handleClipboardData = (data: ClipData) => {
-    data &&
+    if (data) {
       setData((prevData: any) =>
         prevData ? [data, ...prevData.filter((item: ClipData) => item?.id !== data?.id)] : [data]
       );
+      setTotal(pre => pre + 1);
+    }
   };
   const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
 

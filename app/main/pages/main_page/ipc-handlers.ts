@@ -18,25 +18,29 @@ export const registerIpcHandler = () => {
     return false;
   });
 
-  ipcMain.handle(Channels.GET_DATA, async (event, arguments_): Promise<ClipData[] | undefined> => {
-    try {
-      const row: ClipData[] = await databaseManager.getRowsByPage(arguments_.query);
-      return row.map((item: ClipData) => {
-        if (item.type === DataTypes.IMAGE) {
-          const image = nativeImage.createFromPath(item.content);
-          Object.assign(item, { content: image.toDataURL() });
-        }
-        if (item.icon) {
-          const icon = nativeImage.createFromPath(item.icon);
-          Object.assign(item, { icon: icon.toDataURL() });
-        }
-        return item;
-      });
-    } catch (error: any) {
-      console.error(error);
-      event.sender.send(Channels.DATA_ERROR, error?.message);
+  ipcMain.handle(
+    Channels.GET_DATA,
+    async (event, arguments_): Promise<{ data: ClipData[]; total: number } | undefined> => {
+      try {
+        const { data, total } = await databaseManager.getRowsByPage(arguments_.query);
+        const result = data.map((item: ClipData) => {
+          if (item.type === DataTypes.IMAGE) {
+            const image = nativeImage.createFromPath(item.content);
+            Object.assign(item, { content: image.toDataURL() });
+          }
+          if (item.icon) {
+            const icon = nativeImage.createFromPath(item.icon);
+            Object.assign(item, { icon: icon.toDataURL() });
+          }
+          return item;
+        });
+        return { data: result, total };
+      } catch (error: any) {
+        console.error(error);
+        event.sender.send(Channels.DATA_ERROR, error?.message);
+      }
     }
-  });
+  );
 
   ipcMain.handle(Channels.REQUEST_PASTE, async (event, arguments_) => {
     if (arguments_.type === DataTypes.IMAGE) {

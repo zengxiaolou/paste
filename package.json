@@ -1,5 +1,5 @@
 {
-  "name": "ElectronClipboardManager",
+  "name": "paster",
   "version": "1.0.0",
   "description": "electron clip manager",
   "main": "app/build/index.js",
@@ -12,8 +12,8 @@
     "start:render:win": "cd app/renderer && yarn start:win",
     "start:render:mac": "cd app/renderer && yarn start:mac",
     "watch:main": "nodemon",
-    "dist": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder --mac --win --linux",
-    "dist:mac": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder --mac ",
+    "dist": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder --mac --win",
+    "dist:linux": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder --linux ",
     "babel": "babel app/dist --out-dir app/build",
     "init:all": "yarn install && cd app/renderer && yarn install"
   },
@@ -101,7 +101,7 @@
   },
   "build": {
     "appId": "com.ruler.ecm",
-    "productName": "ElectronClipgbboardManager",
+    "productName": "paster",
     "directories": {
       "output": "build"
     },

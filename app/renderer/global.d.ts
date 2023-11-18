@@ -5,7 +5,7 @@ declare global {
   interface Window {
     ipc: {
       toggleAlwaysOnTop: () => Promise<boolean>;
-      getData: (query: ClipboardDataQuery) => Promise<ClipData[] | undefined>;
+      getData: (query: ClipboardDataQuery) => Promise<{ data: ClipData[]; total: number } | undefined>;
       onClipboardData: (callback: (data: any) => void) => void;
       requestPaste: (type: string, content: string, id: number) => Promise<boolean>;
       updateRecord: (data: ClipData) => Promise<boolean>;

@@ -89,8 +89,10 @@ class DatabaseManager {
   }
 
   // eslint-disable-next-line complexity,max-statements
-  public getRowsByPage(parameters: ClipboardDataQuery): Promise<ClipData[]> {
+  public getRowsByPage(parameters: ClipboardDataQuery): Promise<{ data: ClipData[]; total: number }> {
     let query = 'SELECT * FROM clipboard';
+    let countQuery = 'SELECT COUNT(*) AS total FROM clipboard';
+    const baseQueryParameters: (string | number | boolean | Date)[] = [];
     const queryParameters: (string | number | boolean | Date)[] = [];
     const conditions = [];
 
@@ -128,7 +130,10 @@ class DatabaseManager {
     }
 
     if (conditions.length > 0) {
-      query += ' WHERE ' + conditions.join(' AND ');
+      const whereClause = ' WHERE ' + conditions.join(' AND ');
+      query += whereClause;
+      countQuery += whereClause;
+      Array.prototype.push.apply(baseQueryParameters, queryParameters);
     }
 
     if (parameters?.size && parameters?.size > 0 && parameters?.page) {
@@ -139,17 +144,24 @@ class DatabaseManager {
 
     return new Promise((resolve, reject) => {
       this.db?.serialize(() => {
-        this.db?.all(query, queryParameters, (error, rows: ClipData[]) => {
+        this.db?.all(countQuery, baseQueryParameters, (error, countResult: [{ total: number }]) => {
           if (error) {
             reject(error);
-          } else {
-            resolve(rows);
+            return;
           }
+          const totalCount = countResult[0].total;
+
+          this.db?.all(query, queryParameters, (error, rows: ClipData[]) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve({ data: rows, total: totalCount });
+            }
+          });
         });
       });
     });
   }
-
   public deleteById(id: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const query = 'DELETE FROM clipboard WHERE id = ?';
