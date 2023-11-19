@@ -1,10 +1,32 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "electron", "import", "react", "security", "promise", "node", "jsdoc",
-    "react-hooks", "complexity", "optimize-regex","unicorn", "jest", "jsx-a11y"],
-  "extends": ["eslint:recommended", "plugin:prettier/recommended", "plugin:security/recommended",
-    "plugin:promise/recommended", "plugin:node/recommended", "plugin:jsdoc/recommended", "plugin:unicorn/recommended",
-    "plugin:jest/recommended","plugin:jsx-a11y/recommended"],
+  "plugins": [
+    "@typescript-eslint",
+    "electron",
+    "import",
+    "react",
+    "security",
+    "promise",
+    "node",
+    "jsdoc",
+    "react-hooks",
+    "complexity",
+    "optimize-regex",
+    "unicorn",
+    "jest",
+    "jsx-a11y"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:prettier/recommended",
+    "plugin:security/recommended",
+    "plugin:promise/recommended",
+    "plugin:node/recommended",
+    "plugin:jsdoc/recommended",
+    "plugin:unicorn/recommended",
+    "plugin:jest/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
   "rules": {
     "prettier/prettier": [0],
     "@typescript-eslint/explicit-function-return-type": "off",
@@ -23,7 +45,7 @@
     "max-statements": ["error", 30],
     "max-params": ["error", 4],
     "node/no-unsupported-features/es-syntax": ["error", { "ignores": ["modules"] }],
-    "node/no-unpublished-import": ["error", {"allowModules": ["electron"]}],
+    "node/no-unpublished-import": ["error", { "allowModules": ["electron"] }],
     "node/no-missing-import": "off",
     "security/detect-non-literal-fs-filename": "off",
     "react-hooks/rules-of-hooks": "error",
@@ -39,5 +61,6 @@
     "es2022": true,
     "browser": true,
     "node": true
-  }
+  },
+  "ignorePatterns": ["node_modules/"]
 }

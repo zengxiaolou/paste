@@ -90,7 +90,7 @@
       "prettier --write"
     ],
     "*.{js,jsx,ts,tsx}": [
-      "eslint --fix --cache --quiet"
+      "eslint --fix --cache --quiet --ignore-pattern 'node_modules/'"
     ],
     "*.{css,less}": [
       "stylelint  --fix --cache"

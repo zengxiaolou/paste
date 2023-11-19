@@ -31,7 +31,11 @@ export const ContentCard: FC<props> = ({ index, data, onClick, activeCard, onDel
 
   const handleContextMenu = async (event: any, data: ClipData) => {
     event.preventDefault();
-    const res = await window.ipc.showContextMenu({ ...data, content: '', icon: undefined });
+    const res = await window.ipc.showContextMenu({
+      ...data,
+      content: data.tags === 'link' ? data.content : '',
+      icon: undefined,
+    });
     res && onDelete?.();
   };
 

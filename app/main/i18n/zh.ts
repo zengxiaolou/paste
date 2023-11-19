@@ -31,4 +31,5 @@ export const zh = {
   Shortcuts: '快捷键',
   Advanced: '高级',
   Labs: '实验',
+  openLike: '打开链接',
 };

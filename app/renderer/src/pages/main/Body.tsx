@@ -11,7 +11,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import useGetStoreByKey from '@/hooks/useGetStoreByKey';
 import { parseShortcut } from '@/utils/string';
 import { createTabs } from '@/pages/main/component/TabsTItle';
-import { ImageContainer } from '@/pages/main/component/ImageContainer';
+import { ImageContainer } from '@/pages/main/component/ImageContainerr';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
@@ -99,13 +99,16 @@ export const Body = memo(() => {
 
   const handleClipboardData = (data: ClipData) => {
     if (data) {
-      if (activeTabRef.current !== 'image') {
+      if (activeTabRef.current !== 'image' && activeTabRef.current !== 'link') {
         setData((prevData: any) =>
           prevData ? [data, ...prevData.filter((item: ClipData) => item?.id !== data?.id)] : [data]
         );
         setTotal(pre => pre + 1);
       } else {
-        if (data?.type === DataTypes.IMAGE) {
+        if (
+          (data?.type === DataTypes.IMAGE && activeTabRef.current === 'image') ||
+          (data?.tags === 'link' && activeTabRef.current === 'link')
+        ) {
           setData((prevData: any) =>
             prevData ? [data, ...prevData.filter((item: ClipData) => item?.id !== data?.id)] : [data]
           );
@@ -132,6 +135,9 @@ export const Body = memo(() => {
         break;
       case 'image':
         setQuery({ page: 1, size: imageSize, type: DataTypes.IMAGE });
+        break;
+      case 'link':
+        setQuery({ page: 1, size: defaultSize, tags: 'link' });
         break;
       default:
         break;

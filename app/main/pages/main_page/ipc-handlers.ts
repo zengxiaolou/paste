@@ -1,11 +1,11 @@
-import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem } from 'electron';
-import i18n from '../../i18n';
-import { clipboardManager, databaseManager, store } from '@/components/singletons';
-import { deleteFile } from '@/utils/file';
-import { stateManager } from '@/components/singletons';
+import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem, shell } from 'electron';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';
+import i18n from '@/i18n';
+import { clipboardManager, databaseManager, store } from '@/components/singletons';
+import { deleteFile } from '@/utils/file';
+import { stateManager } from '@/components/singletons';
 import { StoreKey } from '@/types/enum';
 export const registerIpcHandler = () => {
   ipcMain.handle(Channels.TOGGLE_ALWAYS_ON_TOP, async () => {
@@ -74,6 +74,17 @@ export const registerIpcHandler = () => {
               await deleteFile(row.content);
             }
             status = await databaseManager.deleteById(arguments_.id);
+            resolve(status);
+          },
+        })
+      );
+      menu.append(
+        new MenuItem({
+          label: i18n.t('openLike', { lng: language }),
+          id: 'link',
+          enabled: arguments_.tags === 'link',
+          click: async () => {
+            const status = await shell.openExternal(arguments_.content);
             resolve(status);
           },
         })
