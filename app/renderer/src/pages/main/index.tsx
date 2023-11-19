@@ -8,12 +8,9 @@ import { Footer } from '@/pages/main/Footer';
 import { Provider } from '@/pages/main/Context';
 import i18n from '@/i18n/index';
 import useLanguage from '@/hooks/useLanguage';
-import useResizeWindow from '@/hooks/useResizeWindow';
 const { Header: AHeader, Content } = Layout;
 
 function ClipBoard() {
-  const windowHeight = Math.floor(window.innerHeight * 0.9);
-  useResizeWindow(windowHeight);
   useLanguage();
   useEffect(() => {
     window.ipc.onLanguageChange((language: string) => i18n.changeLanguage(language));

@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { Channels } from './channels';
-import { store } from '@/components/singletons';
+import { stateManager, store } from '@/components/singletons';
 import { activeShortcut } from '@/utils/shortcut';
 import { ShortcutAction, StoreKey } from '@/types/enum';
 
@@ -67,7 +67,7 @@ export const registerIpcHandler = () => {
   });
 
   ipcMain.on(Channels.RESET_WINDOW_SIZE, (event, height) => {
-    const window = BrowserWindow.getFocusedWindow();
+    const window = stateManager.getSettingWindow();
     if (window) {
       const [width] = window.getSize();
       window.setSize(width, height);
