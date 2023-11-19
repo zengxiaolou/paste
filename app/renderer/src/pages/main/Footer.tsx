@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 import React, { useContext } from 'react';
 import { Context } from '@/pages/main/Context';
+import { useTranslation } from 'react-i18next';
 
 export const Footer = () => {
   const { total } = useContext(Context);
-  return <FooterContainer>total: {total}</FooterContainer>;
+  const { t } = useTranslation();
+  return <FooterContainer>{`${t('total')}: ${total} ${t('items')}`}</FooterContainer>;
 };
 
 const FooterContainer = styled.div`

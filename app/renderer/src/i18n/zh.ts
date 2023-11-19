@@ -51,4 +51,6 @@ export const zh = {
   'Latest version': '最新版本',
   Update: '更新',
   sendGifts: '打赏',
+  total: '总计',
+  items: '条',
 };

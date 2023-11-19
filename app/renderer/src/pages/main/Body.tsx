@@ -1,4 +1,4 @@
-import { BackTop, Spin, Tabs } from '@arco-design/web-react';
+import { BackTop, Grid, Spin, Tabs } from '@arco-design/web-react';
 import React, { memo, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
@@ -11,9 +11,12 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import useGetStoreByKey from '@/hooks/useGetStoreByKey';
 import { parseShortcut } from '@/utils/string';
 import { createTabs } from '@/pages/main/component/TabsTItle';
+import { ImageContainer } from '@/pages/main/component/ImageContainer';
 
 const TabPane = Tabs.TabPane;
 const defaultSize = 30;
+const imageSize = 6;
+const { Row } = Grid;
 
 export const Body = memo(() => {
   const [data, setData] = useState<ClipData[]>([]);
@@ -24,6 +27,8 @@ export const Body = memo(() => {
   const [loading, setLoading] = useState<boolean>(false);
   const [previous, setPrevious] = useState<string>('');
   const [next, setNext] = useState<string>('');
+  const activeTabRef = useRef(activeTab);
+  activeTabRef.current = activeTab;
 
   const { search, deletedRecord, setTotal } = useContext(Context);
 
@@ -94,10 +99,19 @@ export const Body = memo(() => {
 
   const handleClipboardData = (data: ClipData) => {
     if (data) {
-      setData((prevData: any) =>
-        prevData ? [data, ...prevData.filter((item: ClipData) => item?.id !== data?.id)] : [data]
-      );
-      setTotal(pre => pre + 1);
+      if (activeTabRef.current !== 'image') {
+        setData((prevData: any) =>
+          prevData ? [data, ...prevData.filter((item: ClipData) => item?.id !== data?.id)] : [data]
+        );
+        setTotal(pre => pre + 1);
+      } else {
+        if (data?.type === DataTypes.IMAGE) {
+          setData((prevData: any) =>
+            prevData ? [data, ...prevData.filter((item: ClipData) => item?.id !== data?.id)] : [data]
+          );
+          setTotal(pre => pre + 1);
+        }
+      }
     }
   };
   const handleClipboardDataDebounced = debounce(handleClipboardData, 100);
@@ -117,7 +131,7 @@ export const Body = memo(() => {
         setQuery({ page: 1, size: defaultSize, type: DataTypes.HTML });
         break;
       case 'image':
-        setQuery({ page: 1, size: defaultSize, type: DataTypes.IMAGE });
+        setQuery({ page: 1, size: imageSize, type: DataTypes.IMAGE });
         break;
       default:
         break;
@@ -217,22 +231,43 @@ export const Body = memo(() => {
     }
   }, [next, findNextTab]);
 
+  const handleContainer = (v: ClipData, index: number) => {
+    if (activeTab === 'image') {
+      return (
+        <ImageContainer
+          data={v}
+          key={index}
+          index={index}
+          onClick={setActiveCard}
+          activeCard={activeCard}
+          onDelete={() => setData(prevData => prevData.filter(value => value.id !== v.id))}
+        />
+      );
+    } else {
+      return (
+        <ContentCard
+          key={index}
+          index={index}
+          data={v}
+          onClick={setActiveCard}
+          activeCard={activeCard}
+          onDelete={() => setData(prevData => prevData.filter(value => value.id !== v.id))}
+        />
+      );
+    }
+  };
+
   return (
     <CTabs type="rounded" defaultActiveTab="all" activeTab={activeTab} onChange={handleChangeTab}>
       {tabs.map(item => (
         <TabPane title={t(item.title)} key={item.key}>
           <BodyContainer onScroll={handleScroll} id="top">
             <Spin loading={loading} block dot size={16} style={{ height: '100%' }}>
-              {data?.map((v: ClipData, index: number) => (
-                <ContentCard
-                  key={index}
-                  index={index}
-                  data={v}
-                  onClick={setActiveCard}
-                  activeCard={activeCard}
-                  onDelete={() => setData(prevData => prevData.filter(value => value.id !== v.id))}
-                />
-              ))}
+              {activeTab !== 'image' ? (
+                data?.map((v: ClipData, index: number) => handleContainer(v, index))
+              ) : (
+                <Row gutter={16}>{data?.map((v: ClipData, index: number) => handleContainer(v, index))}</Row>
+              )}
               <UBackTop visibleHeight={40} target={() => document.getElementById('top') || document.body} />
             </Spin>
           </BodyContainer>
