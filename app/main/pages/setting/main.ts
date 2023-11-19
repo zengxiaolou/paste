@@ -31,7 +31,7 @@ const create = () => {
     height: windowHeight,
     resizable: false,
     backgroundColor: '#383839',
-    show: isDev,
+    show: false,
     webPreferences: {
       devTools: isDev,
       preload: path.join(

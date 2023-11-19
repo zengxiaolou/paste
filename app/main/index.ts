@@ -1,4 +1,3 @@
-import 'module-alias/register';
 import { app, BrowserWindow, globalShortcut } from 'electron';
 import { create } from './pages/main_page/main';
 import { clipboardManager, databaseManager, intervalManager, store } from './components/singletons';

@@ -32,6 +32,19 @@ class ClipboardManager {
       });
     }
   }
+
+  isValidUrl = (content: string) => {
+    try {
+      // eslint-disable-next-line node/no-unsupported-features/node-builtins
+      new URL(content);
+      return true;
+      // eslint-disable-next-line node/no-unsupported-features/es-syntax
+    } catch {
+      return false;
+    }
+  };
+
+  // eslint-disable-next-line complexity
   checkClipboardContent(): { data: ClipData | undefined; isDuplicate: boolean } {
     const htmlContent = clipboard.readHTML();
     const imageContent = clipboard.readImage();
@@ -42,10 +55,17 @@ class ClipboardManager {
 
     if (htmlContent) {
       newContent = { type: DataTypes.HTML, content: htmlContent };
+      const content = clipboard.readText();
+      if (this.isValidUrl(content)) {
+        newContent.tags = 'link';
+      }
     } else if (imageContent.isEmpty()) {
       const textContent = clipboard.readText();
       if (textContent) {
         newContent = { type: DataTypes.HTML, content: textContent };
+        if (this.isValidUrl(textContent)) {
+          newContent.tags = 'link';
+        }
       }
     } else {
       const imagePath = this.saveImageToDisk(imageContent);
@@ -72,8 +92,8 @@ class ClipboardManager {
       }
       return { data: duplicateContent, isDuplicate: true };
     } else if (newContent) {
-      // eslint-disable-next-line node/no-unsupported-features/es-syntax
       this.pasteContentQueue.push(
+        // eslint-disable-next-line node/no-unsupported-features/es-syntax
         newContent.type === DataTypes.HTML ? newContent : { ...newContent, content: currentImageHash }
       );
       if (this.pasteContentQueue.length > 30) {

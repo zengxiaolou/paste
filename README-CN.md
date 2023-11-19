@@ -1,12 +1,12 @@
 # Electron-ClipBoard-Manager(ECM)
 
 ## 简介
-  这是一个由Electron + React + ArcoDesign 实现的剪切板管理工具。目前仅支持MacOS，但在不久的将来，将会陆续支持Windows和Linux。现在还在开发
-  初期，各种缺陷会有很多，但是作者会持续修复，发现缺陷请在issue中添加，作者将使用空余时间修复。
+  这是一个由Electron + React + ArcoDesign 实现的剪切板管理工具。目前macOS已实现所有功能，Windows和Linux 实现了核心功能，但页面待进行优化。
+  接下来将重点对Windows和Linux进行优化。希望大佬们给一些建议，使这个工具更加的完善。
   PS： UI借鉴了 PasteNow
 
 ## 开发
-  目前项目结构还未完全优化完成，所以开发环境还不是特别理想，项目结构的调整将在MacOS端功能完善后进行调整
+  项目未使用electron相关脚手架，所以整体不是太好，现在整体已经开发完了，接下来会投入时间对整个架构进行优化
 
   > Node: 18.18.0  Electron: 27.0.0  React: 18.2.0  ArcoDesign: 2.53.2
 
@@ -32,16 +32,27 @@
 
 ![](docs/paste.png)
 ![](docs/setting.png)
+![](docs/image.png)
+![](docs/Link.png)
 
 ## 下一个版本功能
-- 增加详情视图
-- 增加底部数据条数统计
 - 快捷选中功能
-- 更改唤醒方式
-- 增加Link 预览
+- 优化windows和linux页面展示
+- 修复右键未点击功能报错
+- 粘贴内容根据需求黏贴富文本/纯文本
+- 主进程使用resolvePath 代替复杂相对路径
+- preload改为ts
 
 
 ## 更新日志
+
+#### v1.0.0(2023-11-19)
+- 数量统计展示
+- 增加链接打开功能
+- 增加Image详情视图
+- 增加husky
+- 取消linux和windows上的菜单
+- 取消frame
 
 #### v0.0.3(2023-11-17)
 - 完善菜单/设置界面功能开发

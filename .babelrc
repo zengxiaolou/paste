@@ -1,4 +1,12 @@
 {
   "presets": ["@babel/preset-env"],
-  "sourceMaps": "inline"
+  "sourceMaps": "inline",
+  "plugins": [
+    ["module-resolver", {
+      "root": ["./"],
+      "alias": {
+        "@": "./app/build"
+      }
+    }]
+  ]
 }

@@ -33,7 +33,7 @@ function create() {
     width: windowWidth,
     height: windowHeight,
     backgroundColor: '#292A2A10',
-    // frame: false,
+    frame: false,
     webPreferences: {
       javascript: true,
       nodeIntegration: false,

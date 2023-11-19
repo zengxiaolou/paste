@@ -51,4 +51,6 @@ export const en = {
   'Latest version': 'Latest version',
   Update: 'Update',
   sendGifts: 'Buy Me a Coffee',
+  total: 'Total',
+  items: 'Items',
 };

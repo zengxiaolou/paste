@@ -1,5 +1,5 @@
 {
-  "name": "ElectronClipboardManager",
+  "name": "paster",
   "version": "1.0.0",
   "description": "electron clip manager",
   "main": "app/build/index.js",
@@ -12,7 +12,8 @@
     "start:render:win": "cd app/renderer && yarn start:win",
     "start:render:mac": "cd app/renderer && yarn start:mac",
     "watch:main": "nodemon",
-    "dist": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder --mac --win --linux",
+    "dist": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder --mac --win",
+    "dist:linux": "rimraf build && yarn build:main && yarn build:renderer &&  electron-builder --linux ",
     "babel": "babel app/dist --out-dir app/build",
     "init:all": "yarn install && cd app/renderer && yarn install"
   },
@@ -26,7 +27,6 @@
     "i18next-fs-backend": "^2.2.0",
     "icon-extractor": "^1.0.3",
     "jsdom": "^22.1.0",
-    "module-alias": "^2.2.3",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
     "play-sound": "^1.1.6",
@@ -36,8 +36,8 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.23.0",
-    "@babel/core": "^7.23.2",
-    "@babel/preset-env": "^7.23.2",
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
     "@types/i18next": "^13.0.0",
     "@types/jsdom": "^21.1.4",
     "@types/node": "^20.8.7",
@@ -45,6 +45,7 @@
     "@types/react-dom": "^18.2.10",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
+    "babel-plugin-module-resolver": "^5.0.0",
     "concurrently": "^8.2.1",
     "electron": "27.0.0",
     "electron-builder": "^24.6.4",
@@ -89,18 +90,18 @@
       "prettier --write"
     ],
     "*.{js,jsx,ts,tsx}": [
-      "eslint --fix --cache --quiet"
+      "eslint --fix --cache --quiet "
     ],
     "*.{css,less}": [
       "stylelint  --fix --cache"
     ]
   },
   "_moduleAliases": {
-    "@": "./app/build"
+    "@": "app/build"
   },
   "build": {
     "appId": "com.ruler.ecm",
-    "productName": "ElectronClipgbboardManager",
+    "productName": "paster",
     "directories": {
       "output": "build"
     },

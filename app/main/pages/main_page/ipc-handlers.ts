@@ -1,11 +1,11 @@
-import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem } from 'electron';
-import i18n from '../../i18n';
-import { clipboardManager, databaseManager, store } from '@/components/singletons';
-import { deleteFile } from '@/utils/file';
-import { stateManager } from '@/components/singletons';
+import { BrowserWindow, ipcMain, Menu, nativeImage, MenuItem, shell } from 'electron';
 import { ClipData } from './type';
 import { Channels } from './channels';
 import { DataTypes } from './enum';
+import i18n from '@/i18n';
+import { clipboardManager, databaseManager, store } from '@/components/singletons';
+import { deleteFile } from '@/utils/file';
+import { stateManager } from '@/components/singletons';
 import { StoreKey } from '@/types/enum';
 export const registerIpcHandler = () => {
   ipcMain.handle(Channels.TOGGLE_ALWAYS_ON_TOP, async () => {
@@ -18,25 +18,29 @@ export const registerIpcHandler = () => {
     return false;
   });
 
-  ipcMain.handle(Channels.GET_DATA, async (event, arguments_): Promise<ClipData[] | undefined> => {
-    try {
-      const row: ClipData[] = await databaseManager.getRowsByPage(arguments_.query);
-      return row.map((item: ClipData) => {
-        if (item.type === DataTypes.IMAGE) {
-          const image = nativeImage.createFromPath(item.content);
-          Object.assign(item, { content: image.toDataURL() });
-        }
-        if (item.icon) {
-          const icon = nativeImage.createFromPath(item.icon);
-          Object.assign(item, { icon: icon.toDataURL() });
-        }
-        return item;
-      });
-    } catch (error: any) {
-      console.error(error);
-      event.sender.send(Channels.DATA_ERROR, error?.message);
+  ipcMain.handle(
+    Channels.GET_DATA,
+    async (event, arguments_): Promise<{ data: ClipData[]; total: number } | undefined> => {
+      try {
+        const { data, total } = await databaseManager.getRowsByPage(arguments_.query);
+        const result = data.map((item: ClipData) => {
+          if (item.type === DataTypes.IMAGE) {
+            const image = nativeImage.createFromPath(item.content);
+            Object.assign(item, { content: image.toDataURL() });
+          }
+          if (item.icon) {
+            const icon = nativeImage.createFromPath(item.icon);
+            Object.assign(item, { icon: icon.toDataURL() });
+          }
+          return item;
+        });
+        return { data: result, total };
+      } catch (error: any) {
+        console.error(error);
+        event.sender.send(Channels.DATA_ERROR, error?.message);
+      }
     }
-  });
+  );
 
   ipcMain.handle(Channels.REQUEST_PASTE, async (event, arguments_) => {
     if (arguments_.type === DataTypes.IMAGE) {
@@ -70,6 +74,17 @@ export const registerIpcHandler = () => {
               await deleteFile(row.content);
             }
             status = await databaseManager.deleteById(arguments_.id);
+            resolve(status);
+          },
+        })
+      );
+      menu.append(
+        new MenuItem({
+          label: i18n.t('openLike', { lng: language }),
+          id: 'link',
+          enabled: arguments_.tags === 'link',
+          click: async () => {
+            const status = await shell.openExternal(arguments_.content);
             resolve(status);
           },
         })

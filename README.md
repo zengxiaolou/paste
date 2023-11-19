@@ -1,11 +1,11 @@
 # Electron-ClipBoard-Manager (ECM)
 
 ## Introduction
-  This is a clipboard management tool implemented with Electron + React + ArcoDesign. Currently, it only supports MacOS, but support for Windows and Linux will be added in the near future. It's still in the early stages of development, so there are many defects, but the author will continue to fix them. Please add defects in the issue section, and the author will fix them in their spare time.
+  This is a clipboard management tool implemented with Electron + React + ArcoDesign.Currently, all features have been implemented on macOS, while Windows and Linux have the core features, but the pages need further optimization. Next, the focus will be on optimizing Windows and Linux. I hope the experts can provide some suggestions to make this tool more perfect.
   PS: The UI is inspired by PasteNow.
 
 ## Development
-  The project structure has not been fully optimized yet, so the development environment is not ideal. The adjustment of the project structure will be carried out after the MacOS version is perfected.
+  The project did not use any Electron-related scaffolding, so the overall quality is not very good. However, the development is now complete, and the next step will be to devote time to optimizing the entire architecture.
 
   > Node: 18.18.0  Electron: 27.0.0  React: 18.2.0  ArcoDesign: 2.53.2
 
@@ -31,16 +31,27 @@
 
 ![](docs/paste.png)
 ![](docs/setting.png)
+![](docs/image.png)
+![](docs/Link.png)
 
 ## Features for the Next Version
 
-- Add detail view
-- Add data count statistics at the bottom
-- Quick selection feature
-- Change wake-up method
-- Add link preview
+- Quick Select Function
+- Optimize Windows and Linux Page Display
+- Fix Right-Click Unactivated Function Error
+- Paste Content as Rich Text/Plain Text Based on Requirement
+- Main Process Uses resolvePath to Replace Complex Relative Paths
+- Change Preload to TypeScript (TS)
 
 ## Changelog
+
+#### v1.0.0(2023-11-19)
+- Quantity Statistics Display
+- Add Link Opening Feature
+- Add Image Detail View
+- Add Husky
+- Disable Menu on Linux and Windows
+- Disable Frame
 
 #### v0.0.3 (2023-11-17)
 - Enhance the functionality of the menu/settings interface
