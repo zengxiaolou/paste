@@ -61,6 +61,5 @@
     "es2022": true,
     "browser": true,
     "node": true
-  },
-  "ignorePatterns": ["node_modules/"]
+  }
 }
